@@ -1,0 +1,1 @@
+Move the 2x1 block b7 one step up into empty space e1.
