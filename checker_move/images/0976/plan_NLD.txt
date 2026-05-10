@@ -1,0 +1,1 @@
+The khaki checker c18 moves from position p18 to the adjacent empty position p19 to the right. 

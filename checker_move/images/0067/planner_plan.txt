@@ -1,0 +1,93 @@
+Domain parsed
+Problem parsed
+Grounding..
+Grounding Time: 17747
+Aibr Preprocessing
+|F|:148
+|X|:0
+|A|:229
+|P|:0
+|E|:0
+H1 Setup Time (msec): 107
+ g(n)= 1.0 h(n)=234.0
+ g(n)= 3.0 h(n)=227.0
+ g(n)= 4.0 h(n)=225.0
+ g(n)= 5.0 h(n)=191.0
+ g(n)= 6.0 h(n)=162.0
+ g(n)= 12.0 h(n)=142.0
+ g(n)= 13.0 h(n)=119.0
+ g(n)= 14.0 h(n)=101.0
+ g(n)= 20.0 h(n)=81.0
+ g(n)= 21.0 h(n)=69.0
+ g(n)= 22.0 h(n)=62.0
+ g(n)= 23.0 h(n)=61.0
+ g(n)= 27.0 h(n)=50.0
+ g(n)= 28.0 h(n)=40.0
+ g(n)= 29.0 h(n)=39.0
+ g(n)= 30.0 h(n)=34.0
+ g(n)= 31.0 h(n)=32.0
+ g(n)= 32.0 h(n)=31.0
+ g(n)= 34.0 h(n)=27.0
+ g(n)= 35.0 h(n)=19.0
+ g(n)= 36.0 h(n)=17.0
+ g(n)= 38.0 h(n)=13.0
+ g(n)= 39.0 h(n)=9.0
+ g(n)= 40.0 h(n)=6.0
+ g(n)= 41.0 h(n)=3.0
+ g(n)= 42.0 h(n)=1.0
+Problem Solved
+
+Found Plan:
+0.0: (move-left c4 p5 p4)
+1.0: (jump-right c3 p3 p4 p5)
+2.0: (move-right c2 p2 p3)
+3.0: (jump-left c4 p2 p3 p4)
+4.0: (jump-left c5 p4 p5 p6)
+5.0: (move-left c6 p7 p6)
+6.0: (jump-right c3 p5 p6 p7)
+7.0: (jump-right c2 p3 p4 p5)
+8.0: (jump-right c1 p1 p2 p3)
+9.0: (move-left c4 p2 p1)
+10.0: (jump-left c5 p2 p3 p4)
+11.0: (jump-left c6 p4 p5 p6)
+12.0: (jump-left c7 p6 p7 p8)
+13.0: (move-left c8 p9 p8)
+14.0: (jump-right c3 p7 p8 p9)
+15.0: (jump-right c2 p5 p6 p7)
+16.0: (jump-right c1 p3 p4 p5)
+17.0: (move-left c6 p4 p3)
+18.0: (jump-left c7 p4 p5 p6)
+19.0: (jump-left c8 p6 p7 p8)
+20.0: (jump-left c9 p8 p9 p10)
+21.0: (move-left c10 p11 p10)
+22.0: (jump-right c3 p9 p10 p11)
+23.0: (jump-right c2 p7 p8 p9)
+24.0: (jump-right c1 p5 p6 p7)
+25.0: (move-left c8 p6 p5)
+26.0: (jump-left c9 p6 p7 p8)
+27.0: (jump-left c10 p8 p9 p10)
+28.0: (jump-left c11 p10 p11 p12)
+29.0: (move-left c12 p13 p12)
+30.0: (jump-right c3 p11 p12 p13)
+31.0: (jump-right c2 p9 p10 p11)
+32.0: (jump-right c1 p7 p8 p9)
+33.0: (move-left c10 p8 p7)
+34.0: (jump-left c11 p8 p9 p10)
+35.0: (jump-left c12 p10 p11 p12)
+36.0: (jump-left c13 p12 p13 p14)
+37.0: (move-right c3 p13 p14)
+38.0: (jump-right c2 p11 p12 p13)
+39.0: (jump-right c1 p9 p10 p11)
+40.0: (move-left c12 p10 p9)
+41.0: (jump-left c13 p10 p11 p12)
+42.0: (move-right c1 p11 p12)
+
+Plan-Length:43
+Metric (Search):43.0
+Planning Time (msec): 293
+Heuristic Time (msec): 198
+Search Time (msec): 277
+Expanded Nodes:49
+States Evaluated:50
+Number of Dead-Ends detected:34
+Number of Duplicates detected:0

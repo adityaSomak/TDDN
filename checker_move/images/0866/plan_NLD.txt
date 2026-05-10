@@ -1,0 +1,1 @@
+The magenta checker c11 moves from position p12 to the adjacent empty position p11 to the left. 

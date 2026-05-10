@@ -1,0 +1,4 @@
+The red checker c1 jumps over a blue checker from position p1 to land at the empty position p3, with the blue checker in p2. 
+The blue checker c2 moves from position p2 to the adjacent empty position p1 to the left. 
+The blue checker c3 jumps over a red checker from position p4 to land at the empty position p2, with the red checker in p3. 
+The blue checker c5 jumps over a red checker from position p6 to land at the empty position p4, with the red checker in p5. 

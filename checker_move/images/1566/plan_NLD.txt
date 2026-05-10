@@ -1,0 +1,1 @@
+The pink checker c7 jumps over a green checker from position p7 to land at the empty position p9, with the green checker in p8. 

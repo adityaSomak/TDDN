@@ -1,0 +1,2 @@
+The coral checker c18 jumps over a turquoise checker from position p19 to land at the empty position p17, with the turquoise checker in p18. 
+The turquoise checker c17 moves from position p18 to the adjacent empty position p19 to the right. 

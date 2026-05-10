@@ -1,0 +1,3 @@
+The pink checker c11 jumps over a green checker from position p11 to land at the empty position p13, with the green checker in p12. 
+The green checker c12 moves from position p12 to the adjacent empty position p11 to the left. 
+The green checker c13 jumps over a pink checker from position p14 to land at the empty position p12, with the pink checker in p13. 

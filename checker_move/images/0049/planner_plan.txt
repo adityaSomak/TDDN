@@ -1,0 +1,90 @@
+Domain parsed
+Problem parsed
+Grounding..
+Grounding Time: 3769
+Aibr Preprocessing
+|F|:119
+|X|:0
+|A|:181
+|P|:0
+|E|:0
+H1 Setup Time (msec): 20
+ g(n)= 1.0 h(n)=147.0
+ g(n)= 3.0 h(n)=129.0
+ g(n)= 4.0 h(n)=127.0
+ g(n)= 6.0 h(n)=112.0
+ g(n)= 7.0 h(n)=110.0
+ g(n)= 10.0 h(n)=106.0
+ g(n)= 11.0 h(n)=104.0
+ g(n)= 12.0 h(n)=90.0
+ g(n)= 15.0 h(n)=83.0
+ g(n)= 16.0 h(n)=81.0
+ g(n)= 17.0 h(n)=73.0
+ g(n)= 22.0 h(n)=63.0
+ g(n)= 23.0 h(n)=51.0
+ g(n)= 24.0 h(n)=49.0
+ g(n)= 28.0 h(n)=38.0
+ g(n)= 29.0 h(n)=32.0
+ g(n)= 30.0 h(n)=31.0
+ g(n)= 32.0 h(n)=27.0
+ g(n)= 33.0 h(n)=19.0
+ g(n)= 34.0 h(n)=17.0
+ g(n)= 36.0 h(n)=13.0
+ g(n)= 37.0 h(n)=9.0
+ g(n)= 38.0 h(n)=6.0
+ g(n)= 39.0 h(n)=3.0
+ g(n)= 40.0 h(n)=1.0
+Problem Solved
+
+Found Plan:
+0.0: (move-right c6 p6 p7)
+1.0: (jump-left c7 p6 p7 p8)
+2.0: (move-left c8 p9 p8)
+3.0: (jump-right c6 p7 p8 p9)
+4.0: (jump-right c5 p5 p6 p7)
+5.0: (move-right c4 p4 p5)
+6.0: (jump-left c7 p4 p5 p6)
+7.0: (jump-left c8 p6 p7 p8)
+8.0: (jump-left c9 p8 p9 p10)
+9.0: (move-left c10 p11 p10)
+10.0: (jump-right c6 p9 p10 p11)
+11.0: (jump-right c5 p7 p8 p9)
+12.0: (jump-right c4 p5 p6 p7)
+13.0: (jump-right c3 p3 p4 p5)
+14.0: (move-right c2 p2 p3)
+15.0: (jump-left c7 p2 p3 p4)
+16.0: (jump-left c8 p4 p5 p6)
+17.0: (jump-left c9 p6 p7 p8)
+18.0: (jump-left c10 p8 p9 p10)
+19.0: (jump-left c11 p10 p11 p12)
+20.0: (move-right c6 p11 p12)
+21.0: (jump-right c5 p9 p10 p11)
+22.0: (jump-right c4 p7 p8 p9)
+23.0: (jump-right c3 p5 p6 p7)
+24.0: (jump-right c2 p3 p4 p5)
+25.0: (jump-right c1 p1 p2 p3)
+26.0: (move-left c7 p2 p1)
+27.0: (jump-left c8 p2 p3 p4)
+28.0: (jump-left c9 p4 p5 p6)
+29.0: (jump-left c10 p6 p7 p8)
+30.0: (jump-left c11 p8 p9 p10)
+31.0: (move-right c4 p9 p10)
+32.0: (jump-right c3 p7 p8 p9)
+33.0: (jump-right c2 p5 p6 p7)
+34.0: (jump-right c1 p3 p4 p5)
+35.0: (move-left c9 p4 p3)
+36.0: (jump-left c10 p4 p5 p6)
+37.0: (jump-left c11 p6 p7 p8)
+38.0: (move-right c2 p7 p8)
+39.0: (jump-right c1 p5 p6 p7)
+40.0: (move-left c11 p6 p5)
+
+Plan-Length:41
+Metric (Search):41.0
+Planning Time (msec): 98
+Heuristic Time (msec): 52
+Search Time (msec): 93
+Expanded Nodes:46
+States Evaluated:47
+Number of Dead-Ends detected:33
+Number of Duplicates detected:0

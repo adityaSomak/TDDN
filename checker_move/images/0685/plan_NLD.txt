@@ -1,0 +1,1 @@
+The green checker c8 jumps over a red checker from position p8 to land at the empty position p10, with the red checker in p9. 

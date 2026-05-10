@@ -1,0 +1,2 @@
+The firebrick checker c12 jumps over a khaki checker from position p13 to land at the empty position p11, with the khaki checker in p12. 
+The firebrick checker c13 moves from position p14 to the adjacent empty position p13 to the left. 

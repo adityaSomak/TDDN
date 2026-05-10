@@ -1,0 +1,1 @@
+The red checker c16 moves from position p17 to the adjacent empty position p16 to the left. 

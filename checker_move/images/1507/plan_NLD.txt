@@ -1,0 +1,3 @@
+The green checker c16 moves from position p16 to the adjacent empty position p17 to the right. 
+The blue checker c17 jumps over a green checker from position p18 to land at the empty position p16, with the green checker in p17. 
+The green checker c16 moves from position p17 to the adjacent empty position p18 to the right. 

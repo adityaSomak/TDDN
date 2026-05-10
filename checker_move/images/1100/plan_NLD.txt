@@ -1,0 +1,2 @@
+The green checker c4 moves from position p4 to the adjacent empty position p5 to the right. 
+The blue checker c5 jumps over a green checker from position p6 to land at the empty position p4, with the green checker in p5. 

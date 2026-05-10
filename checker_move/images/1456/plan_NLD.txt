@@ -1,0 +1,1 @@
+The green checker c9 moves from position p10 to the adjacent empty position p9 to the left. 
