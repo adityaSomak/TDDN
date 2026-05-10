@@ -1,0 +1,4 @@
+Move disc d4 from the top of disc d6 to the top of disc d5 
+Move disc d1 from the top of disc d4 to the top of disc d2 
+Move disc d2 from the top of disc d5 to the top of disc d3 
+Move disc d1 from the top of disc d2 to the top of disc d4 

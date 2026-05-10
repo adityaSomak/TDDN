@@ -1,0 +1,36 @@
+Domain parsed
+Problem parsed
+Grounding..
+Grounding Time: 86
+Aibr Preprocessing
+|F|:32
+|X|:0
+|A|:135
+|P|:0
+|E|:0
+H1 Setup Time (msec): 39
+ g(n)= 1.0 h(n)=10.0
+ g(n)= 2.0 h(n)=8.0
+ g(n)= 3.0 h(n)=7.0
+ g(n)= 5.0 h(n)=6.0
+ g(n)= 6.0 h(n)=2.0
+Problem Solved
+
+Found Plan:
+0.0: (move d3 peg3 d4)
+1.0: (move d1 d2 d3)
+2.0: (move d2 d5 peg3)
+3.0: (move d1 d3 d5)
+4.0: (move d2 peg3 d3)
+5.0: (move d1 d5 d2)
+6.0: (move d5 peg1 peg3)
+
+Plan-Length:7
+Metric (Search):7.0
+Planning Time (msec): 82
+Heuristic Time (msec): 39
+Search Time (msec): 72
+Expanded Nodes:9
+States Evaluated:14
+Number of Dead-Ends detected:0
+Number of Duplicates detected:11
