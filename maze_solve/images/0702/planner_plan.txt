@@ -1,0 +1,147 @@
+Domain parsed
+Problem parsed
+Grounding..
+Grounding Time: 705
+Aibr Preprocessing
+|F|:676
+|X|:0
+|A|:4
+|P|:0
+|E|:0
+H1 Setup Time (msec): 4968
+ g(n)= 1.0 h(n)=61.0
+ g(n)= 2.0 h(n)=60.0
+ g(n)= 3.0 h(n)=59.0
+ g(n)= 4.0 h(n)=58.0
+ g(n)= 5.0 h(n)=57.0
+ g(n)= 6.0 h(n)=56.0
+ g(n)= 7.0 h(n)=55.0
+ g(n)= 8.0 h(n)=54.0
+ g(n)= 9.0 h(n)=53.0
+ g(n)= 10.0 h(n)=52.0
+ g(n)= 11.0 h(n)=51.0
+ g(n)= 12.0 h(n)=50.0
+ g(n)= 13.0 h(n)=49.0
+ g(n)= 14.0 h(n)=48.0
+ g(n)= 15.0 h(n)=47.0
+ g(n)= 16.0 h(n)=46.0
+ g(n)= 17.0 h(n)=45.0
+ g(n)= 18.0 h(n)=44.0
+ g(n)= 19.0 h(n)=43.0
+ g(n)= 20.0 h(n)=42.0
+ g(n)= 21.0 h(n)=41.0
+ g(n)= 22.0 h(n)=40.0
+ g(n)= 23.0 h(n)=39.0
+ g(n)= 24.0 h(n)=38.0
+ g(n)= 25.0 h(n)=37.0
+ g(n)= 26.0 h(n)=36.0
+ g(n)= 27.0 h(n)=35.0
+ g(n)= 28.0 h(n)=34.0
+ g(n)= 29.0 h(n)=33.0
+ g(n)= 30.0 h(n)=32.0
+ g(n)= 31.0 h(n)=31.0
+ g(n)= 32.0 h(n)=30.0
+ g(n)= 33.0 h(n)=29.0
+ g(n)= 34.0 h(n)=28.0
+ g(n)= 35.0 h(n)=27.0
+ g(n)= 36.0 h(n)=26.0
+ g(n)= 37.0 h(n)=25.0
+ g(n)= 38.0 h(n)=24.0
+ g(n)= 39.0 h(n)=23.0
+ g(n)= 40.0 h(n)=22.0
+ g(n)= 41.0 h(n)=21.0
+ g(n)= 42.0 h(n)=20.0
+ g(n)= 43.0 h(n)=19.0
+ g(n)= 44.0 h(n)=18.0
+ g(n)= 45.0 h(n)=17.0
+ g(n)= 46.0 h(n)=16.0
+ g(n)= 47.0 h(n)=15.0
+ g(n)= 48.0 h(n)=14.0
+ g(n)= 49.0 h(n)=13.0
+ g(n)= 50.0 h(n)=12.0
+ g(n)= 51.0 h(n)=11.0
+ g(n)= 52.0 h(n)=10.0
+ g(n)= 53.0 h(n)=9.0
+ g(n)= 54.0 h(n)=8.0
+ g(n)= 55.0 h(n)=7.0
+ g(n)= 56.0 h(n)=6.0
+ g(n)= 57.0 h(n)=5.0
+ g(n)= 58.0 h(n)=4.0
+ g(n)= 59.0 h(n)=3.0
+ g(n)= 60.0 h(n)=2.0
+ g(n)= 61.0 h(n)=1.0
+Problem Solved
+
+Found Plan:
+0.0: (move-right agent1)
+1.0: (move-right agent1)
+2.0: (move-right agent1)
+3.0: (move-down agent1)
+4.0: (move-down agent1)
+5.0: (move-left agent1)
+6.0: (move-left agent1)
+7.0: (move-down agent1)
+8.0: (move-down agent1)
+9.0: (move-right agent1)
+10.0: (move-right agent1)
+11.0: (move-right agent1)
+12.0: (move-right agent1)
+13.0: (move-right agent1)
+14.0: (move-right agent1)
+15.0: (move-up agent1)
+16.0: (move-up agent1)
+17.0: (move-up agent1)
+18.0: (move-up agent1)
+19.0: (move-right agent1)
+20.0: (move-right agent1)
+21.0: (move-down agent1)
+22.0: (move-down agent1)
+23.0: (move-down agent1)
+24.0: (move-down agent1)
+25.0: (move-right agent1)
+26.0: (move-right agent1)
+27.0: (move-down agent1)
+28.0: (move-down agent1)
+29.0: (move-down agent1)
+30.0: (move-down agent1)
+31.0: (move-left agent1)
+32.0: (move-left agent1)
+33.0: (move-up agent1)
+34.0: (move-up agent1)
+35.0: (move-left agent1)
+36.0: (move-left agent1)
+37.0: (move-left agent1)
+38.0: (move-left agent1)
+39.0: (move-left agent1)
+40.0: (move-left agent1)
+41.0: (move-left agent1)
+42.0: (move-left agent1)
+43.0: (move-down agent1)
+44.0: (move-down agent1)
+45.0: (move-down agent1)
+46.0: (move-down agent1)
+47.0: (move-right agent1)
+48.0: (move-right agent1)
+49.0: (move-up agent1)
+50.0: (move-up agent1)
+51.0: (move-right agent1)
+52.0: (move-right agent1)
+53.0: (move-down agent1)
+54.0: (move-down agent1)
+55.0: (move-right agent1)
+56.0: (move-right agent1)
+57.0: (move-right agent1)
+58.0: (move-right agent1)
+59.0: (move-right agent1)
+60.0: (move-right agent1)
+61.0: (move-right agent1)
+
+Plan-Length:62
+Metric (Search):62.0
+Planning Time (msec): 1397
+Heuristic Time (msec): 404
+Search Time (msec): 1393
+Expanded Nodes:63
+States Evaluated:66
+Number of Dead-Ends detected:0
+Number of Duplicates detected:183

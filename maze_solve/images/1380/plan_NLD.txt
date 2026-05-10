@@ -1,0 +1,14 @@
+ Agent1 moves one step to the right within the maze 
+ Agent1 moves one step downward within the maze 
+ Agent1 moves one step downward within the maze 
+ Agent1 moves one step downward within the maze 
+ Agent1 moves one step downward within the maze 
+ Agent1 moves one step to the right within the maze 
+ Agent1 moves one step to the right within the maze 
+ Agent1 moves one step downward within the maze 
+ Agent1 moves one step downward within the maze 
+ Agent1 moves one step to the right within the maze 
+ Agent1 moves one step to the right within the maze 
+ Agent1 moves one step to the right within the maze 
+ Agent1 moves one step to the right within the maze 
+ Agent1 moves one step to the right within the maze 
