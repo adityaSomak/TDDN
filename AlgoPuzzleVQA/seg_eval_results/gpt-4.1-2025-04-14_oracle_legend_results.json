@@ -1,0 +1,61 @@
+{
+  "model": "gpt-4.1-2025-04-14",
+  "backend": "openai",
+  "reasoning": null,
+  "maze": {
+    "raw": {},
+    "seg": {}
+  },
+  "nqueens": {
+    "raw": {},
+    "seg": {}
+  },
+  "chess_pieces": {
+    "raw": {
+      "parse_ok": 1.0,
+      "exact": 0.1,
+      "abs_err": 2.72
+    },
+    "seg": {
+      "parse_ok": 1.0,
+      "exact": 0.1,
+      "abs_err": 3.76
+    }
+  },
+  "chess_empty": {
+    "raw": {
+      "parse_ok": 1.0,
+      "exact": 0.06,
+      "abs_err": 11.37
+    },
+    "seg": {
+      "parse_ok": 1.0,
+      "exact": 0.21,
+      "abs_err": 5.4
+    }
+  },
+  "chess_black": {
+    "raw": {
+      "cell": 64.3125,
+      "f1": 48.036178713745386,
+      "dim": 1.0
+    },
+    "seg": {
+      "cell": 63.015625,
+      "f1": 43.175341484361276,
+      "dim": 1.0
+    }
+  },
+  "chess_white": {
+    "raw": {
+      "cell": 60.765625,
+      "f1": 36.51896488956682,
+      "dim": 1.0
+    },
+    "seg": {
+      "cell": 58.140625,
+      "f1": 32.66659515155396,
+      "dim": 1.0
+    }
+  }
+}

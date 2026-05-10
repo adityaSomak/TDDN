@@ -1,0 +1,2 @@
+The cyan checker c3 jumps over a magenta checker from position p3 to land at the empty position p5, with the magenta checker in p4. 
+The magenta checker c4 moves from position p4 to the adjacent empty position p3 to the left. 

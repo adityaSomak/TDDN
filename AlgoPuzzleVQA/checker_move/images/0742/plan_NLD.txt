@@ -1,0 +1,4 @@
+The pink checker c8 jumps over a blue checker from position p8 to land at the empty position p10, with the blue checker in p9. 
+The pink checker c6 jumps over a blue checker from position p6 to land at the empty position p8, with the blue checker in p7. 
+The pink checker c5 moves from position p5 to the adjacent empty position p6 to the right. 
+The blue checker c7 jumps over a pink checker from position p7 to land at the empty position p5, with the pink checker in p6. 

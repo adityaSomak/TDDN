@@ -1,1 +1,0 @@
-The green checker c2 jumps over a pink checker from position p3 to land at the empty position p1, with the pink checker in p2. 

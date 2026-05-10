@@ -1,2 +1,0 @@
-The purple checker c10 jumps over a orange checker from position p10 to land at the empty position p12, with the orange checker in p11. 
-The purple checker c8 jumps over a orange checker from position p8 to land at the empty position p10, with the orange checker in p9. 

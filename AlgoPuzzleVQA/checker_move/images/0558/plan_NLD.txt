@@ -1,0 +1,1 @@
+The firebrick checker c5 jumps over a khaki checker from position p6 to land at the empty position p4, with the khaki checker in p5. 

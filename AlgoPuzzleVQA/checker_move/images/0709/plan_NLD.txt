@@ -1,0 +1,1 @@
+The pink checker c11 jumps over a blue checker from position p11 to land at the empty position p13, with the blue checker in p12. 
