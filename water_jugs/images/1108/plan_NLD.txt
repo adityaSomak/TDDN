@@ -1,0 +1,2 @@
+Empty j3 by pouring the entire water from j3 into j1 if j1 has enough capacity to hold the water 
+Empty j5 by pouring the entire water from j5 into j3 if j3 has enough capacity to hold the water 

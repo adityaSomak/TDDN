@@ -1,0 +1,28 @@
+Domain parsed
+Problem parsed
+Grounding..
+Grounding Time: 36
+Aibr Preprocessing
+|F|:0
+|X|:4
+|A|:32
+|P|:0
+|E|:0
+H1 Setup Time (msec): 14
+ g(n)= 1.0 h(n)=2.0
+ g(n)= 2.0 h(n)=1.0
+Problem Solved
+
+Found Plan:
+0.0: (pour-partial j2 j1)
+1.0: (pour-partial j1 j3)
+
+Plan-Length:2
+Metric (Search):2.0
+Planning Time (msec): 222
+Heuristic Time (msec): 175
+Search Time (msec): 216
+Expanded Nodes:38
+States Evaluated:205
+Number of Dead-Ends detected:0
+Number of Duplicates detected:106

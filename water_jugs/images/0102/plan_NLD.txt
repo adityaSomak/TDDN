@@ -1,0 +1,1 @@
+Empty j2 by pouring the entire water from j2 into j1 if j1 has enough capacity to hold the water 
