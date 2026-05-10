@@ -1,0 +1,55 @@
+{
+  "model": "llava-hf/llava-v1.6-mistral-7b-hf",
+  "backend": "vllm",
+  "reasoning": null,
+  "maze": {
+    "raw": {
+      "cell": 2.7625,
+      "wall": 3.160542986425339,
+      "path": 2.253746253746254,
+      "dim": 0.0
+    },
+    "seg": {
+      "cell": 0.0,
+      "wall": 0.0,
+      "path": 0.0,
+      "dim": 0.0
+    }
+  },
+  "nqueens": {
+    "raw": {
+      "cell": 2.987528096903097,
+      "f1": 0.25,
+      "dim": 0.02
+    },
+    "seg": {
+      "cell": 22.5625,
+      "f1": 2.9,
+      "dim": 0.0
+    }
+  },
+  "chess_black": {
+    "raw": {
+      "cell": 0.0,
+      "f1": 0.0,
+      "dim": 0.0
+    },
+    "seg": {
+      "cell": 0.0,
+      "f1": 0.0,
+      "dim": 0.0
+    }
+  },
+  "chess_white": {
+    "raw": {
+      "cell": 0.0,
+      "f1": 0.0,
+      "dim": 0.0
+    },
+    "seg": {
+      "cell": 0.0,
+      "f1": 0.0,
+      "dim": 0.0
+    }
+  }
+}

@@ -1,0 +1,14 @@
+q1:
+  question: "Determine the list of row(s) without a queen."
+q2:
+  question: "Determine the list of column(s) without a queen."
+q3:
+  question: "Determine the list of cells occupied by queens."
+q4:
+  question: "Which rows are safe for insertion of a queen?"
+q5:
+  question: "Which columns are safe for insertion of a queen?"
+q6:
+  question: "Determine the location of empty cells and then the occupied cells."
+q7:
+  question: "Determine the location of occupied cells and then the empty cells."

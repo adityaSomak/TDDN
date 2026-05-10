@@ -1,0 +1,61 @@
+{
+  "model": "google/gemma-3-27b-it",
+  "backend": "vllm",
+  "reasoning": null,
+  "maze": {
+    "raw": {},
+    "seg": {}
+  },
+  "nqueens": {
+    "raw": {},
+    "seg": {}
+  },
+  "chess_pieces": {
+    "raw": {
+      "parse_ok": 1.0,
+      "exact": 0.08,
+      "abs_err": 4.08
+    },
+    "seg": {
+      "parse_ok": 1.0,
+      "exact": 0.14,
+      "abs_err": 3.37
+    }
+  },
+  "chess_empty": {
+    "raw": {
+      "parse_ok": 1.0,
+      "exact": 0.02,
+      "abs_err": 13.84
+    },
+    "seg": {
+      "parse_ok": 1.0,
+      "exact": 0.07,
+      "abs_err": 13.82
+    }
+  },
+  "chess_black": {
+    "raw": {
+      "cell": 51.796875,
+      "f1": 21.720084586282507,
+      "dim": 0.91
+    },
+    "seg": {
+      "cell": 52.51696428571429,
+      "f1": 23.94066240814319,
+      "dim": 0.98
+    }
+  },
+  "chess_white": {
+    "raw": {
+      "cell": 53.390625,
+      "f1": 15.435304454078954,
+      "dim": 0.99
+    },
+    "seg": {
+      "cell": 52.0,
+      "f1": 18.817561393052895,
+      "dim": 0.98
+    }
+  }
+}

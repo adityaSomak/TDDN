@@ -1,0 +1,17 @@
+{
+  "model": "OpenGVLab/InternVL3-78B",
+  "backend": "vllm",
+  "reasoning": null,
+  "nqueens": {
+    "raw": {
+      "cell": 70.3125,
+      "f1": 17.62237762237762,
+      "dim": 0.0
+    },
+    "seg": {
+      "cell": 82.53472222222223,
+      "f1": 19.555555555555554,
+      "dim": 0.2
+    }
+  }
+}
