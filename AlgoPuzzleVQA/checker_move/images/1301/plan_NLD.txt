@@ -1,1 +1,0 @@
-The khaki checker c10 moves from position p10 to the adjacent empty position p11 to the right. 

@@ -1,1 +1,0 @@
-The green checker c14 jumps over a red checker from position p14 to land at the empty position p16, with the red checker in p15. 

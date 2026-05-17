@@ -1,1 +1,0 @@
-The green checker c4 moves from position p4 to the adjacent empty position p5 to the right. 

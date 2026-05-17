@@ -1,1 +1,0 @@
-The orange checker c13 moves from position p14 to the adjacent empty position p13 to the left. 

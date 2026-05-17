@@ -1,1 +1,0 @@
-The magenta checker c9 jumps over a cyan checker from position p10 to land at the empty position p8, with the cyan checker in p9. 

@@ -1,8 +1,0 @@
-# Eval outputs (run locally; not versioned)
-*/eval_results_low_detail/
-
-# OS / editor cruft
-.DS_Store
-*.pyc
-__pycache__/
-.ipynb_checkpoints/

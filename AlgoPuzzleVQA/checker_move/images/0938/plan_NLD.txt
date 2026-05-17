@@ -1,2 +1,0 @@
-The orange checker c14 jumps over a purple checker from position p15 to land at the empty position p13, with the purple checker in p14. 
-The orange checker c16 jumps over a purple checker from position p17 to land at the empty position p15, with the purple checker in p16. 

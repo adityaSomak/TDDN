@@ -1,1 +1,0 @@
-The red checker c6 jumps over a blue checker from position p6 to land at the empty position p8, with the blue checker in p7. 

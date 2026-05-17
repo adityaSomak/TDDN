@@ -1,4 +1,0 @@
-The firebrick checker c10 moves from position p11 to the adjacent empty position p10 to the left. 
-The khaki checker c9 jumps over a firebrick checker from position p9 to land at the empty position p11, with the firebrick checker in p10. 
-The khaki checker c7 jumps over a firebrick checker from position p7 to land at the empty position p9, with the firebrick checker in p8. 
-The khaki checker c6 moves from position p6 to the adjacent empty position p7 to the right. 

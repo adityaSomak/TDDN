@@ -1,2 +1,0 @@
-The magenta checker c14 jumps over a cyan checker from position p15 to land at the empty position p13, with the cyan checker in p14. 
-The magenta checker c16 jumps over a cyan checker from position p17 to land at the empty position p15, with the cyan checker in p16. 

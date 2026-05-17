@@ -1,5 +1,0 @@
-The green checker c16 jumps over a pink checker from position p17 to land at the empty position p15, with the pink checker in p16. 
-The green checker c17 moves from position p18 to the adjacent empty position p17 to the left. 
-The pink checker c15 jumps over a green checker from position p16 to land at the empty position p18, with the green checker in p17. 
-The pink checker c14 jumps over a green checker from position p14 to land at the empty position p16, with the green checker in p15. 
-The pink checker c12 jumps over a green checker from position p12 to land at the empty position p14, with the green checker in p13. 

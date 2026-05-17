@@ -1,8 +1,15 @@
-# Eval outputs (run locally; not versioned)
-*/eval_results_low_detail/
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Env / secrets
+.env
+.env.*
 
 # OS / editor cruft
 .DS_Store
-*.pyc
-__pycache__/
 .ipynb_checkpoints/
+
+# Eval outputs (run locally; not versioned)
+**/eval_results_low_detail/

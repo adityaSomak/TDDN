@@ -1,1 +1,0 @@
-The magenta checker c7 moves from position p8 to the adjacent empty position p7 to the left. 

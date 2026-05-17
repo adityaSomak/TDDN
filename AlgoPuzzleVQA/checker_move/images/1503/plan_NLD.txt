@@ -1,1 +1,0 @@
-The green checker c2 moves from position p2 to the adjacent empty position p3 to the right. 

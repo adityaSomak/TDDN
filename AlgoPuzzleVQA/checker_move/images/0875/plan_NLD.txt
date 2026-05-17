@@ -1,1 +1,0 @@
-The turquoise checker c11 moves from position p11 to the adjacent empty position p12 to the right. 
