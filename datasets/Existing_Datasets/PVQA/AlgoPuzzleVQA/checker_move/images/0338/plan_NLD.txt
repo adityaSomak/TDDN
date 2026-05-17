@@ -1,0 +1,5 @@
+The purple checker c7 jumps over a orange checker from position p7 to land at the empty position p9, with the orange checker in p8. 
+The purple checker c5 jumps over a orange checker from position p5 to land at the empty position p7, with the orange checker in p6. 
+The purple checker c3 jumps over a orange checker from position p3 to land at the empty position p5, with the orange checker in p4. 
+The purple checker c2 moves from position p2 to the adjacent empty position p3 to the right. 
+The orange checker c4 jumps over a purple checker from position p4 to land at the empty position p2, with the purple checker in p3. 

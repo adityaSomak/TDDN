@@ -1,0 +1,1 @@
+The purple checker c2 jumps over a orange checker from position p2 to land at the empty position p4, with the orange checker in p3. 

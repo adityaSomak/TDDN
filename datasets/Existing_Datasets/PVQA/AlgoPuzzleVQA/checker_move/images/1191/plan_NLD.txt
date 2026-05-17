@@ -1,0 +1,2 @@
+The orange checker c6 jumps over a purple checker from position p7 to land at the empty position p5, with the purple checker in p6. 
+The purple checker c5 moves from position p6 to the adjacent empty position p7 to the right. 

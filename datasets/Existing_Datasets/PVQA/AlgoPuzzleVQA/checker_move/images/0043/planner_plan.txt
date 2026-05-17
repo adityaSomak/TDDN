@@ -1,0 +1,57 @@
+Domain parsed
+Problem parsed
+Grounding..
+Grounding Time: 4416
+Aibr Preprocessing
+|F|:85
+|X|:0
+|A|:118
+|P|:0
+|E|:0
+H1 Setup Time (msec): 45
+ g(n)= 1.0 h(n)=94.0
+ g(n)= 3.0 h(n)=90.0
+ g(n)= 4.0 h(n)=72.0
+ g(n)= 5.0 h(n)=57.0
+ g(n)= 7.0 h(n)=53.0
+ g(n)= 8.0 h(n)=40.0
+ g(n)= 9.0 h(n)=30.0
+ g(n)= 11.0 h(n)=26.0
+ g(n)= 12.0 h(n)=18.0
+ g(n)= 13.0 h(n)=13.0
+ g(n)= 15.0 h(n)=9.0
+ g(n)= 16.0 h(n)=6.0
+ g(n)= 17.0 h(n)=3.0
+ g(n)= 18.0 h(n)=1.0
+Problem Solved
+
+Found Plan:
+0.0: (move-right c9 p9 p10)
+1.0: (jump-left c10 p9 p10 p11)
+2.0: (move-right c9 p10 p11)
+3.0: (jump-right c8 p8 p9 p10)
+4.0: (move-right c7 p7 p8)
+5.0: (jump-left c10 p7 p8 p9)
+6.0: (move-right c7 p8 p9)
+7.0: (jump-right c6 p6 p7 p8)
+8.0: (move-right c5 p5 p6)
+9.0: (jump-left c10 p5 p6 p7)
+10.0: (move-right c5 p6 p7)
+11.0: (jump-right c4 p4 p5 p6)
+12.0: (move-right c3 p3 p4)
+13.0: (jump-left c10 p3 p4 p5)
+14.0: (move-right c3 p4 p5)
+15.0: (jump-right c2 p2 p3 p4)
+16.0: (move-right c1 p1 p2)
+17.0: (jump-left c10 p1 p2 p3)
+18.0: (move-right c1 p2 p3)
+
+Plan-Length:19
+Metric (Search):19.0
+Planning Time (msec): 78
+Heuristic Time (msec): 36
+Search Time (msec): 70
+Expanded Nodes:20
+States Evaluated:25
+Number of Dead-Ends detected:4
+Number of Duplicates detected:0

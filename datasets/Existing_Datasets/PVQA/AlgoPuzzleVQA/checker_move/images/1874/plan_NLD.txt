@@ -1,0 +1,3 @@
+The coral checker c3 moves from position p4 to the adjacent empty position p3 to the left. 
+The coral checker c5 jumps over a turquoise checker from position p6 to land at the empty position p4, with the turquoise checker in p5. 
+The coral checker c7 jumps over a turquoise checker from position p8 to land at the empty position p6, with the turquoise checker in p7. 

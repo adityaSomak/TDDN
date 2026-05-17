@@ -1,0 +1,2 @@
+The blue checker c6 jumps over a pink checker from position p7 to land at the empty position p5, with the pink checker in p6. 
+The blue checker c8 jumps over a pink checker from position p9 to land at the empty position p7, with the pink checker in p8. 

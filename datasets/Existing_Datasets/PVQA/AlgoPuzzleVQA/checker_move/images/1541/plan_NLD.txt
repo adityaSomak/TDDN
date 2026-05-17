@@ -1,0 +1,1 @@
+The green checker c14 moves from position p14 to the adjacent empty position p15 to the right. 

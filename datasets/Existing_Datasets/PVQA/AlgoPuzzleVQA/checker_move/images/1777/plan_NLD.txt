@@ -1,0 +1,2 @@
+The khaki checker c15 jumps over a firebrick checker from position p15 to land at the empty position p17, with the firebrick checker in p16. 
+The khaki checker c13 jumps over a firebrick checker from position p13 to land at the empty position p15, with the firebrick checker in p14. 

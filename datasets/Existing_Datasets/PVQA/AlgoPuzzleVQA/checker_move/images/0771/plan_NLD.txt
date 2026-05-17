@@ -1,0 +1,1 @@
+The yellow checker c1 moves from position p2 to the adjacent empty position p1 to the left. 

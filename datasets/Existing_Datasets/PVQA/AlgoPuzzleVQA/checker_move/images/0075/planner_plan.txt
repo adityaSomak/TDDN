@@ -1,0 +1,82 @@
+Domain parsed
+Problem parsed
+Grounding..
+Grounding Time: 8584
+Aibr Preprocessing
+|F|:140
+|X|:0
+|A|:213
+|P|:0
+|E|:0
+H1 Setup Time (msec): 20
+ g(n)= 1.0 h(n)=216.0
+ g(n)= 3.0 h(n)=212.0
+ g(n)= 4.0 h(n)=209.0
+ g(n)= 5.0 h(n)=176.0
+ g(n)= 6.0 h(n)=148.0
+ g(n)= 10.0 h(n)=137.0
+ g(n)= 11.0 h(n)=112.0
+ g(n)= 12.0 h(n)=92.0
+ g(n)= 16.0 h(n)=81.0
+ g(n)= 17.0 h(n)=64.0
+ g(n)= 18.0 h(n)=52.0
+ g(n)= 22.0 h(n)=41.0
+ g(n)= 23.0 h(n)=32.0
+ g(n)= 24.0 h(n)=28.0
+ g(n)= 25.0 h(n)=26.0
+ g(n)= 27.0 h(n)=22.0
+ g(n)= 28.0 h(n)=15.0
+ g(n)= 29.0 h(n)=14.0
+ g(n)= 30.0 h(n)=12.0
+ g(n)= 31.0 h(n)=9.0
+ g(n)= 32.0 h(n)=6.0
+ g(n)= 33.0 h(n)=3.0
+ g(n)= 34.0 h(n)=1.0
+Problem Solved
+
+Found Plan:
+0.0: (move-right c11 p11 p12)
+1.0: (jump-left c12 p11 p12 p13)
+2.0: (move-left c13 p14 p13)
+3.0: (jump-right c11 p12 p13 p14)
+4.0: (jump-right c10 p10 p11 p12)
+5.0: (move-right c9 p9 p10)
+6.0: (jump-left c12 p9 p10 p11)
+7.0: (jump-left c13 p11 p12 p13)
+8.0: (move-right c10 p12 p13)
+9.0: (jump-right c9 p10 p11 p12)
+10.0: (jump-right c8 p8 p9 p10)
+11.0: (move-right c7 p7 p8)
+12.0: (jump-left c12 p7 p8 p9)
+13.0: (jump-left c13 p9 p10 p11)
+14.0: (move-right c8 p10 p11)
+15.0: (jump-right c7 p8 p9 p10)
+16.0: (jump-right c6 p6 p7 p8)
+17.0: (move-right c5 p5 p6)
+18.0: (jump-left c12 p5 p6 p7)
+19.0: (jump-left c13 p7 p8 p9)
+20.0: (move-right c6 p8 p9)
+21.0: (jump-right c5 p6 p7 p8)
+22.0: (jump-right c4 p4 p5 p6)
+23.0: (move-right c3 p3 p4)
+24.0: (jump-left c12 p3 p4 p5)
+25.0: (jump-left c13 p5 p6 p7)
+26.0: (move-right c4 p6 p7)
+27.0: (jump-right c3 p4 p5 p6)
+28.0: (jump-right c2 p2 p3 p4)
+29.0: (move-right c1 p1 p2)
+30.0: (jump-left c12 p1 p2 p3)
+31.0: (jump-left c13 p3 p4 p5)
+32.0: (move-right c2 p4 p5)
+33.0: (jump-right c1 p2 p3 p4)
+34.0: (move-left c13 p3 p2)
+
+Plan-Length:35
+Metric (Search):35.0
+Planning Time (msec): 81
+Heuristic Time (msec): 57
+Search Time (msec): 77
+Expanded Nodes:42
+States Evaluated:43
+Number of Dead-Ends detected:27
+Number of Duplicates detected:0

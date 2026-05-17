@@ -1,0 +1,3 @@
+The magenta checker c14 moves from position p15 to the adjacent empty position p14 to the left. 
+The cyan checker c13 jumps over a magenta checker from position p13 to land at the empty position p15, with the magenta checker in p14. 
+The cyan checker c11 jumps over a magenta checker from position p11 to land at the empty position p13, with the magenta checker in p12. 

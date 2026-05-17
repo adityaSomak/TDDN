@@ -1,0 +1,2 @@
+The yellow checker c17 jumps over a blue checker from position p18 to land at the empty position p16, with the blue checker in p17. 
+The yellow checker c18 moves from position p19 to the adjacent empty position p18 to the left. 

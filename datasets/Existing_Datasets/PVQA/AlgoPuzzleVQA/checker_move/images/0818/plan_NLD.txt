@@ -1,0 +1,1 @@
+The red checker c5 moves from position p6 to the adjacent empty position p5 to the left. 

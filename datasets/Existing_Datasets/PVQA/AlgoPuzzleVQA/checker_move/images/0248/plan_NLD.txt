@@ -1,0 +1,1 @@
+The turquoise checker c7 moves from position p7 to the adjacent empty position p8 to the right. 

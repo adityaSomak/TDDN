@@ -1,0 +1,46 @@
+q1:
+  question: "How many checkers are there in total?"
+q2:
+  question: "How many {color} checkers are there?"
+  color: ["red", "green"]
+q3:
+  question: "Do the {color1} checkers outnumber the {color2} checkers?"
+  color1: ["red", "green"]
+  color2: ["green", "red"]
+q4:
+  question: "Which color has the {amount} number of checkers?"
+  amount: ["higher", "lower"]
+q5:
+  question: "How many {color} checkers are to the {direction} of the empty cell?"
+  direction: ["left", "right"]
+  color: ["red", "green"]
+  image-position: ["start-position", "end-position"]
+q6:
+  question: "Is the number of checkers to the {direction1} of the empty cell {amount} than the number to the {direction2}?"
+  direction1: ["left", "right"]
+  direction2: ["right", "left"]
+  amount: ["greater", "lower"]
+  image-position: ["start-position", "end-position"]
+q7:
+  question: "Are there an equal number of {color1} and {color2} checkers?"
+  color: ["red", "green"]
+q8:
+  question: "How many cells are to the {direction} of the empty cell?"
+  direction: ["left", "right"]
+  image-position: ["start-position", "end-position"]
+q9:
+  question: "Determine the number of {color1} checkers that are located between every pair of adjacent {color2} checkers."
+  image-position: ["start-position", "end-position"]
+q10:
+  question: "Which color(s) are adjacent to the empty cell?"
+  image-position: ["start-position", "end-position"]
+q11:
+  question: "Determine the position of the empty cell."
+  image-position: ["start-position", "end-position"]
+q12:
+  question: "What is the position of the {rank} {color} checker?"
+  rank: ["first", "last"]
+  image-position: ["start-position", "end-position"]
+q13:
+  question: "Determine the positions of the {color} checkers."
+  image-position: ["start-position", "end-position"]

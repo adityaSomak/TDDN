@@ -1,0 +1,1 @@
+The blue checker c10 jumps over a yellow checker from position p10 to land at the empty position p12, with the yellow checker in p11. 

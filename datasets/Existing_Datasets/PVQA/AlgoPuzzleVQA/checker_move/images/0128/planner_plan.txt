@@ -1,0 +1,149 @@
+Domain parsed
+Problem parsed
+Grounding..
+Grounding Time: 22232
+Aibr Preprocessing
+|F|:258
+|X|:0
+|A|:429
+|P|:0
+|E|:0
+H1 Setup Time (msec): 42
+ g(n)= 1.0 h(n)=450.0
+ g(n)= 3.0 h(n)=419.0
+ g(n)= 4.0 h(n)=417.0
+ g(n)= 5.0 h(n)=395.0
+ g(n)= 6.0 h(n)=358.0
+ g(n)= 12.0 h(n)=332.0
+ g(n)= 13.0 h(n)=314.0
+ g(n)= 15.0 h(n)=284.0
+ g(n)= 16.0 h(n)=282.0
+ g(n)= 24.0 h(n)=256.0
+ g(n)= 25.0 h(n)=238.0
+ g(n)= 28.0 h(n)=226.0
+ g(n)= 29.0 h(n)=224.0
+ g(n)= 30.0 h(n)=210.0
+ g(n)= 39.0 h(n)=182.0
+ g(n)= 40.0 h(n)=164.0
+ g(n)= 46.0 h(n)=146.0
+ g(n)= 47.0 h(n)=136.0
+ g(n)= 54.0 h(n)=119.0
+ g(n)= 55.0 h(n)=103.0
+ g(n)= 56.0 h(n)=101.0
+ g(n)= 61.0 h(n)=100.0
+ g(n)= 62.0 h(n)=81.0
+ g(n)= 63.0 h(n)=73.0
+ g(n)= 68.0 h(n)=63.0
+ g(n)= 69.0 h(n)=51.0
+ g(n)= 70.0 h(n)=49.0
+ g(n)= 74.0 h(n)=38.0
+ g(n)= 75.0 h(n)=32.0
+ g(n)= 76.0 h(n)=31.0
+ g(n)= 78.0 h(n)=27.0
+ g(n)= 79.0 h(n)=19.0
+ g(n)= 80.0 h(n)=17.0
+ g(n)= 82.0 h(n)=13.0
+ g(n)= 83.0 h(n)=9.0
+ g(n)= 84.0 h(n)=6.0
+ g(n)= 85.0 h(n)=3.0
+ g(n)= 86.0 h(n)=1.0
+Problem Solved
+
+Found Plan:
+0.0: (move-right c10 p10 p11)
+1.0: (jump-left c11 p10 p11 p12)
+2.0: (move-left c12 p13 p12)
+3.0: (jump-right c10 p11 p12 p13)
+4.0: (jump-right c9 p9 p10 p11)
+5.0: (move-right c8 p8 p9)
+6.0: (jump-left c11 p8 p9 p10)
+7.0: (jump-left c12 p10 p11 p12)
+8.0: (jump-left c13 p12 p13 p14)
+9.0: (move-left c14 p15 p14)
+10.0: (jump-right c10 p13 p14 p15)
+11.0: (jump-right c9 p11 p12 p13)
+12.0: (jump-right c8 p9 p10 p11)
+13.0: (jump-right c7 p7 p8 p9)
+14.0: (move-right c6 p6 p7)
+15.0: (jump-left c11 p6 p7 p8)
+16.0: (jump-left c12 p8 p9 p10)
+17.0: (jump-left c13 p10 p11 p12)
+18.0: (jump-left c14 p12 p13 p14)
+19.0: (jump-left c15 p14 p15 p16)
+20.0: (move-left c16 p17 p16)
+21.0: (jump-right c10 p15 p16 p17)
+22.0: (jump-right c9 p13 p14 p15)
+23.0: (jump-right c8 p11 p12 p13)
+24.0: (jump-right c7 p9 p10 p11)
+25.0: (jump-right c6 p7 p8 p9)
+26.0: (jump-right c5 p5 p6 p7)
+27.0: (move-right c4 p4 p5)
+28.0: (jump-left c11 p4 p5 p6)
+29.0: (jump-left c12 p6 p7 p8)
+30.0: (jump-left c13 p8 p9 p10)
+31.0: (jump-left c14 p10 p11 p12)
+32.0: (jump-left c15 p12 p13 p14)
+33.0: (jump-left c16 p14 p15 p16)
+34.0: (jump-left c17 p16 p17 p18)
+35.0: (move-right c10 p17 p18)
+36.0: (jump-right c9 p15 p16 p17)
+37.0: (jump-right c8 p13 p14 p15)
+38.0: (jump-right c7 p11 p12 p13)
+39.0: (jump-right c6 p9 p10 p11)
+40.0: (jump-right c5 p7 p8 p9)
+41.0: (jump-right c4 p5 p6 p7)
+42.0: (jump-right c3 p3 p4 p5)
+43.0: (move-right c2 p2 p3)
+44.0: (jump-left c11 p2 p3 p4)
+45.0: (jump-left c12 p4 p5 p6)
+46.0: (jump-left c13 p6 p7 p8)
+47.0: (jump-left c14 p8 p9 p10)
+48.0: (jump-left c15 p10 p11 p12)
+49.0: (jump-left c16 p12 p13 p14)
+50.0: (jump-left c17 p14 p15 p16)
+51.0: (move-right c8 p15 p16)
+52.0: (jump-right c7 p13 p14 p15)
+53.0: (jump-right c6 p11 p12 p13)
+54.0: (jump-right c5 p9 p10 p11)
+55.0: (jump-right c4 p7 p8 p9)
+56.0: (jump-right c3 p5 p6 p7)
+57.0: (jump-right c2 p3 p4 p5)
+58.0: (jump-right c1 p1 p2 p3)
+59.0: (move-left c11 p2 p1)
+60.0: (jump-left c12 p2 p3 p4)
+61.0: (jump-left c13 p4 p5 p6)
+62.0: (jump-left c14 p6 p7 p8)
+63.0: (jump-left c15 p8 p9 p10)
+64.0: (jump-left c16 p10 p11 p12)
+65.0: (jump-left c17 p12 p13 p14)
+66.0: (move-right c6 p13 p14)
+67.0: (jump-right c5 p11 p12 p13)
+68.0: (jump-right c4 p9 p10 p11)
+69.0: (jump-right c3 p7 p8 p9)
+70.0: (jump-right c2 p5 p6 p7)
+71.0: (jump-right c1 p3 p4 p5)
+72.0: (move-left c13 p4 p3)
+73.0: (jump-left c14 p4 p5 p6)
+74.0: (jump-left c15 p6 p7 p8)
+75.0: (jump-left c16 p8 p9 p10)
+76.0: (jump-left c17 p10 p11 p12)
+77.0: (move-right c4 p11 p12)
+78.0: (jump-right c3 p9 p10 p11)
+79.0: (jump-right c2 p7 p8 p9)
+80.0: (jump-right c1 p5 p6 p7)
+81.0: (move-left c15 p6 p5)
+82.0: (jump-left c16 p6 p7 p8)
+83.0: (jump-left c17 p8 p9 p10)
+84.0: (move-right c2 p9 p10)
+85.0: (jump-right c1 p7 p8 p9)
+86.0: (move-left c17 p8 p7)
+
+Plan-Length:87
+Metric (Search):87.0
+Planning Time (msec): 247
+Heuristic Time (msec): 203
+Search Time (msec): 242
+Expanded Nodes:95
+States Evaluated:96
+Number of Dead-Ends detected:76
+Number of Duplicates detected:0

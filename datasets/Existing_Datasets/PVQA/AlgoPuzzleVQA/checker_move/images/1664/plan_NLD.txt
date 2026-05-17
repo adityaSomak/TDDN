@@ -1,0 +1,2 @@
+The blue checker c14 jumps over a red checker from position p15 to land at the empty position p13, with the red checker in p14. 
+The blue checker c16 jumps over a red checker from position p17 to land at the empty position p15, with the red checker in p16. 

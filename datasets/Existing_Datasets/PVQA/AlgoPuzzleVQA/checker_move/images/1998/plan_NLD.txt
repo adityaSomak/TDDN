@@ -1,0 +1,4 @@
+The magenta checker c15 jumps over a cyan checker from position p16 to land at the empty position p14, with the cyan checker in p15. 
+The magenta checker c17 jumps over a cyan checker from position p18 to land at the empty position p16, with the cyan checker in p17. 
+The magenta checker c18 moves from position p19 to the adjacent empty position p18 to the left. 
+The cyan checker c16 jumps over a magenta checker from position p17 to land at the empty position p19, with the magenta checker in p18. 
