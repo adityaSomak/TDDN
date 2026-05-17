@@ -1,0 +1,43 @@
+======================================================================
+EVAL REPORT -- maze_solve | gpt-4o-mini (reasoning=default)
+Total: 50  Correct: 10  Accuracy: 20.0%
+======================================================================
+
+--- Per Question Type ---
+Q       Correct  Total   Accuracy
+q1            4      4     100.0%
+q2            0      4       0.0%
+q3            0      4       0.0%
+q4            0      4       0.0%
+q5            0      4       0.0%
+q6            0      3       0.0%
+q7            3      3     100.0%
+q8            0      3       0.0%
+q9            3      3     100.0%
+q10           0      3       0.0%
+q11           0      3       0.0%
+q12           0      3       0.0%
+q13           0      3       0.0%
+q14           0      3       0.0%
+q15           0      3       0.0%
+
+--- Per Answer Type ---
+coordinate                        4/8      (50.0%)
+coordinate_list                   0/12     (0.0%)
+coordinate_list_long              0/6      (0.0%)
+dimensions                        0/4      (0.0%)
+number                            6/20     (30.0%)
+
+--- Failure Sample ---
+  pid=1860 q=q2 expected='(5, 12)' got='(3, 9)'
+  pid=1860 q=q3 expected='7x13' got='6x14'
+  pid=1860 q=q4 expected='37' got='20'
+  pid=1860 q=q5 expected='54' got='24'
+  pid=1860 q=q6 expected='1' got='2'
+  pid=1860 q=q8 expected='1' got='2'
+  pid=1860 q=q10 expected='[(1, 1)]' got='[(1, 1), (2, 0)]'
+  pid=1860 q=q11 expected='[(0, 0), (2, 0)]' got='[(0, 0), (1, 1)]'
+  pid=1860 q=q12 expected='[(5, 11)]' got='[(2, 5), (3, 5)]'
+  pid=1860 q=q13 expected='[(4, 12), (6, 12)]' got='[(1, 6), (2, 6), (3, 6)]'
+  ... and 30 more
+======================================================================

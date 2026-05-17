@@ -1,1 +1,0 @@
-The green checker c16 moves from position p16 to the adjacent empty position p17 to the right. 

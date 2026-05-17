@@ -1,4 +1,0 @@
-Empty j5 by pouring the entire water from j5 into j2 if j2 has enough capacity to hold the water 
-Partially pour water from j4 into j5, filling j5 to its full capacity/ The remaining water stays in j4 
-Empty j5 by pouring the entire water from j5 into j1 if j1 has enough capacity to hold the water 
-Partially pour water from j4 into j5, filling j5 to its full capacity/ The remaining water stays in j4 

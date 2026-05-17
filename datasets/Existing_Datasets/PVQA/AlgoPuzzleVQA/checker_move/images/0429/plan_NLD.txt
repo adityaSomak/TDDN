@@ -1,2 +1,0 @@
-The magenta checker c11 moves from position p12 to the adjacent empty position p11 to the left. 
-The cyan checker c10 jumps over a magenta checker from position p10 to land at the empty position p12, with the magenta checker in p11. 

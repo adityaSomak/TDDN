@@ -1,0 +1,80 @@
+{
+  "model": "gpt-4o-mini",
+  "backend": "openai",
+  "reasoning": null,
+  "mode": "oracle_mask",
+  "maze": {
+    "raw": {
+      "cell": 58.14426153391008,
+      "wall": 62.59559029756247,
+      "path": 54.748200852439176,
+      "dim": 0.01
+    },
+    "oracle_mask": {
+      "cell": 59.6044819217309,
+      "wall": 65.28985914841023,
+      "path": 53.60220590919572,
+      "dim": 0.01
+    }
+  },
+  "nqueens": {
+    "raw": {
+      "cell": 79.54081632653062,
+      "f1": 16.505888555888554,
+      "dim": 0.02
+    },
+    "oracle_mask": {
+      "cell": 78.48395408163266,
+      "f1": 11.795382395382394,
+      "dim": 0.04
+    }
+  },
+  "chess_pieces": {
+    "raw": {
+      "parse_ok": 1.0,
+      "exact": 0.04,
+      "abs_err": 2.44
+    },
+    "oracle_mask": {
+      "parse_ok": 1.0,
+      "exact": 0.0,
+      "abs_err": 3.84
+    }
+  },
+  "chess_empty": {
+    "raw": {
+      "parse_ok": 1.0,
+      "exact": 0.08,
+      "abs_err": 5.92
+    },
+    "oracle_mask": {
+      "parse_ok": 1.0,
+      "exact": 0.08,
+      "abs_err": 6.92
+    }
+  },
+  "chess_black": {
+    "raw": {
+      "cell": 53.99107142857143,
+      "f1": 23.60602126114336,
+      "dim": 0.44
+    },
+    "oracle_mask": {
+      "cell": 52.9375,
+      "f1": 22.17836217355274,
+      "dim": 0.44
+    }
+  },
+  "chess_white": {
+    "raw": {
+      "cell": 45.40376984126984,
+      "f1": 8.626327644258678,
+      "dim": 0.64
+    },
+    "oracle_mask": {
+      "cell": 43.375,
+      "f1": 6.056848163219977,
+      "dim": 0.56
+    }
+  }
+}

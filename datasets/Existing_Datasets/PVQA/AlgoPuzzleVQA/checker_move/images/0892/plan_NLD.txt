@@ -1,2 +1,0 @@
-The green checker c8 moves from position p8 to the adjacent empty position p9 to the right. 
-The green checker c6 jumps over a blue checker from position p6 to land at the empty position p8, with the blue checker in p7. 

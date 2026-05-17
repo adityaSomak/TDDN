@@ -1,3 +1,0 @@
-The coral checker c15 jumps over a turquoise checker from position p16 to land at the empty position p14, with the turquoise checker in p15. 
-The coral checker c16 moves from position p17 to the adjacent empty position p16 to the left. 
-The turquoise checker c14 jumps over a coral checker from position p15 to land at the empty position p17, with the coral checker in p16. 

@@ -1,0 +1,43 @@
+======================================================================
+EVAL REPORT -- checker_move | gpt-4o-mini (reasoning=default)
+Total: 50  Correct: 19  Accuracy: 38.0%
+======================================================================
+
+--- Per Question Type ---
+Q       Correct  Total   Accuracy
+q1            1      2      50.0%
+q2            1      4      25.0%
+q3            2      2     100.0%
+q4            1      1     100.0%
+q5            2      8      25.0%
+q6            5      8      62.5%
+q7            1      1     100.0%
+q8            0      4       0.0%
+q9            2      4      50.0%
+q10           1      2      50.0%
+q11           0      2       0.0%
+q12           3      8      37.5%
+q13           0      4       0.0%
+
+--- Per Answer Type ---
+boolean                           8/11     (72.7%)
+color                             1/1      (100.0%)
+color_list                        1/2      (50.0%)
+mcq                               2/6      (33.3%)
+number                            4/16     (25.0%)
+position                          3/10     (30.0%)
+position_list                     0/4      (0.0%)
+
+--- Failure Sample ---
+  pid=1860 q=q2_red expected='C' got='A'
+  pid=1860 q=q2_green expected='C' got='B'
+  pid=1860 q=q5_red_left_start expected='9' got='6'
+  pid=1860 q=q5_green_left_start expected='0' got='1'
+  pid=1860 q=q5_green_right_start expected='2' got='1'
+  pid=1860 q=q5_red_left_end expected='10' got='6'
+  pid=1860 q=q5_green_left_end expected='0' got='1'
+  pid=1860 q=q5_green_right_end expected='2' got='1'
+  pid=1860 q=q6_left_lower_start expected='False' got='True'
+  pid=1860 q=q6_left_lower_end expected='False' got='True'
+  ... and 21 more
+======================================================================

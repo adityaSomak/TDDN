@@ -1,1 +1,0 @@
-The orange checker c8 moves from position p9 to the adjacent empty position p8 to the left. 

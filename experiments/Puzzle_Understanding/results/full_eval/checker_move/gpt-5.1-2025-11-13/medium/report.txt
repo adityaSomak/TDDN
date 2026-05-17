@@ -1,0 +1,155 @@
+======================================================================
+EVAL REPORT — gpt-5.1-2025-11-13 (reasoning=medium)
+Total: 4700  |  Correct: 2214  |  Accuracy: 47.1%
+======================================================================
+
+--- Per Question Type ---
+Q       Correct  Total   Accuracy
+-----------------------------------
+q1           38    100      38.0%
+q2           76    200      38.0%
+q3          173    200      86.5%
+q4           92    100      92.0%
+q5          338    800      42.2%
+q6          709    800      88.6%
+q7           77    100      77.0%
+q8          105    400      26.2%
+q9          128    400      32.0%
+q10          98    200      49.0%
+q11          58    200      29.0%
+q12         291    800      36.4%
+q13          31    400       7.8%
+
+--- MCQ vs Open-ended ---
+MCQ             114/300    (38.0%)
+Open-ended     2100/4400   (47.7%)
+
+--- Per Answer Type ---
+mcq                114/300    (38.0%)
+boolean            959/1100   (87.2%)
+color               92/100    (92.0%)
+number             571/1600   (35.7%)
+color_list          98/200    (49.0%)
+position           349/1000   (34.9%)
+position_list       31/400    (7.8%)
+
+--- MCQ Confusion Patterns ---
+  expected=A got=B: 23
+  expected=A got=C: 23
+  expected=D got=B: 18
+  expected=B got=A: 15
+  expected=B got=C: 15
+  expected=D got=C: 15
+  expected=C got=B: 14
+  expected=B got=D: 13
+  expected=A got=D: 13
+  expected=C got=D: 13
+
+--- Failed Records ---
+Total failures: 2486
+
+  q1 (62 failures):
+    puzzle=1860 expected='C' got='B'
+    puzzle=0353 expected='D' got='B'
+    puzzle=1289 expected='A' got='D'
+    puzzle=1273 expected='B' got='C'
+    puzzle=0938 expected='A' got='C'
+    ... and 57 more
+
+  q2 (124 failures):
+    puzzle=1860 expected='C' got='B'
+    puzzle=1860 expected='C' got='A'
+    puzzle=0353 expected='A' got='B'
+    puzzle=0353 expected='B' got='A'
+    puzzle=1333 expected='D' got='A'
+    ... and 119 more
+
+  q3 (27 failures):
+    puzzle=0905 expected='True' got='False'
+    puzzle=0905 expected='False' got='True'
+    puzzle=1273 expected='False' got='True'
+    puzzle=0746 expected='True' got='False'
+    puzzle=0128 expected='True' got='False'
+    ... and 22 more
+
+  q4 (8 failures):
+    puzzle=0938 expected='green' got='red'
+    puzzle=1292 expected='green' got='red'
+    puzzle=1646 expected='green' got='red'
+    puzzle=0674 expected='red' got='green'
+    puzzle=1847 expected='red' got='green'
+    ... and 3 more
+
+  q5 (462 failures):
+    puzzle=1860 expected='9' got='6'
+    puzzle=1860 expected='6' got='5'
+    puzzle=1860 expected='0' got='2'
+    puzzle=1860 expected='2' got='3'
+    puzzle=1860 expected='10' got='13'
+    ... and 457 more
+
+  q6 (91 failures):
+    puzzle=1860 expected='False' got='True'
+    puzzle=1860 expected='False' got='True'
+    puzzle=1333 expected='False' got='True'
+    puzzle=0905 expected='True' got='False'
+    puzzle=0905 expected='False' got='True'
+    ... and 86 more
+
+  q7 (23 failures):
+    puzzle=0905 expected='False' got='True'
+    puzzle=1292 expected='True' got='False'
+    puzzle=0746 expected='False' got='True'
+    puzzle=0128 expected='False' got='True'
+    puzzle=1646 expected='False' got='True'
+    ... and 18 more
+
+  q8 (295 failures):
+    puzzle=1860 expected='9' got='2'
+    puzzle=1860 expected='8' got='4'
+    puzzle=1860 expected='10' got='12'
+    puzzle=1860 expected='7' got='5'
+    puzzle=0353 expected='5' got='2'
+    ... and 290 more
+
+  q9 (272 failures):
+    puzzle=0353 expected='1' got='0'
+    puzzle=0353 expected='1' got='0'
+    puzzle=0353 expected='2' got='0'
+    puzzle=1333 expected='4' got='0'
+    puzzle=1333 expected='2' got='1'
+    ... and 267 more
+
+  q10 (102 failures):
+    puzzle=1333 expected="['green', 'green']" got="['red', 'green']"
+    puzzle=1333 expected="['red', 'red']" got="['red', 'green']"
+    puzzle=1289 expected="['red', 'red']" got="['red', 'green']"
+    puzzle=1273 expected="['red', 'red']" got="['red', 'green']"
+    puzzle=1273 expected="['red', 'red']" got="['red', 'green']"
+    ... and 97 more
+
+  q11 (142 failures):
+    puzzle=1860 expected='9' got='6'
+    puzzle=1860 expected='10' got='11'
+    puzzle=0353 expected='5' got='3'
+    puzzle=1333 expected='8' got='7'
+    puzzle=1333 expected='7' got='6'
+    ... and 137 more
+
+  q12 (509 failures):
+    puzzle=1860 expected='12' got='9'
+    puzzle=1860 expected='17' got='13'
+    puzzle=1860 expected='14' got='12'
+    puzzle=1860 expected='17' got='14'
+    puzzle=0353 expected='0' got='2'
+    ... and 504 more
+
+  q13 (369 failures):
+    puzzle=1860 expected='[10, 12]' got='[10, 11]'
+    puzzle=1860 expected='[0, 1, 2, 3, 4, 5, 6, 7, 8, 11, 13, 14, 15, 16, 17]' got='[0, 1, 2, 3, 4, 5, 6, 9, 10, 11, 12, 13]'
+    puzzle=1860 expected='[12, 14]' got='[13, 14]'
+    puzzle=1860 expected='[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 13, 15, 16, 17]' got='[0, 1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15]'
+    puzzle=0353 expected='[0, 1, 3]' got='[0, 1]'
+    ... and 364 more
+
+======================================================================

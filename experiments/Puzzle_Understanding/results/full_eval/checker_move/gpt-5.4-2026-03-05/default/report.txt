@@ -1,0 +1,132 @@
+======================================================================
+EVAL REPORT — gpt-5.4-2026-03-05 (low_detail)
+Total: 4700  |  Correct: 3924  |  Accuracy: 83.5%
+======================================================================
+
+--- Per Question Type ---
+Q       Correct  Total   Accuracy
+-----------------------------------
+q1           90    100      90.0%
+q2          125    200      62.5%
+q3          190    200      95.0%
+q4           96    100      96.0%
+q5          669    800      83.6%
+q6          649    800      81.1%
+q7           94    100      94.0%
+q8          381    400      95.2%
+q9          159    400      39.8%
+q10          72    200      36.0%
+q11         199    200      99.5%
+q12         800    800     100.0%
+q13         400    400     100.0%
+
+--- MCQ vs Open-ended ---
+MCQ             215/300    (71.7%)
+Open-ended     3709/4400   (84.3%)
+
+--- Per Answer Type ---
+mcq                215/300    (71.7%)
+boolean            933/1100   (84.8%)
+color               96/100    (96.0%)
+number            1209/1600   (75.6%)
+color_list          72/200    (36.0%)
+position           999/1000   (99.9%)
+position_list      400/400    (100.0%)
+
+--- MCQ Confusion Patterns ---
+  expected=C got=B: 13
+  expected=C got=A: 12
+  expected=A got=D: 10
+  expected=A got=B: 9
+  expected=D got=A: 6
+  expected=A got=C: 6
+  expected=B got=D: 6
+  expected=B got=C: 6
+  expected=C got=D: 5
+  expected=D got=C: 4
+
+--- Failed Records ---
+Total failures: 776
+
+  q1 (10 failures):
+    puzzle=1292 expected='A' got='C'
+    puzzle=0281 expected='C' got='B'
+    puzzle=0678 expected='B' got='D'
+    puzzle=0070 expected='C' got='B'
+    puzzle=0128 expected='A' got='D'
+    ... and 5 more
+
+  q2 (75 failures):
+    puzzle=1922 expected='D' got='A'
+    puzzle=1078 expected='A' got='C'
+    puzzle=1292 expected='A' got='B'
+    puzzle=1847 expected='B' got='D'
+    puzzle=0585 expected='C' got='A'
+    ... and 70 more
+
+  q3 (10 failures):
+    puzzle=0746 expected='True' got='False'
+    puzzle=1233 expected='True' got='False'
+    puzzle=0324 expected='True' got='False'
+    puzzle=1474 expected='False' got='True'
+    puzzle=0787 expected='True' got='False'
+    ... and 5 more
+
+  q4 (4 failures):
+    puzzle=1292 expected='green' got='red'
+    puzzle=1474 expected='green' got='red'
+    puzzle=0478 expected='green' got='red'
+    puzzle=0938 expected='green' got='red'
+
+  q5 (131 failures):
+    puzzle=0368 expected='9' got='10'
+    puzzle=1922 expected='9' got='10'
+    puzzle=0247 expected='11' got='12'
+    puzzle=1922 expected='4' got='5'
+    puzzle=1078 expected='8' got='11'
+    ... and 126 more
+
+  q6 (151 failures):
+    puzzle=0247 expected='False' got='True'
+    puzzle=0368 expected='True' got='False'
+    puzzle=0247 expected='True' got='False'
+    puzzle=0247 expected='False' got='True'
+    puzzle=1922 expected='True' got='False'
+    ... and 146 more
+
+  q7 (6 failures):
+    puzzle=0938 expected='True' got='False'
+    puzzle=0478 expected='True' got='False'
+    puzzle=1292 expected='True' got='False'
+    puzzle=1474 expected='True' got='False'
+    puzzle=1556 expected='True' got='False'
+    ... and 1 more
+
+  q8 (19 failures):
+    puzzle=1244 expected='5' got='6'
+    puzzle=1333 expected='3' got='4'
+    puzzle=1078 expected='6' got='7'
+    puzzle=1233 expected='4' got='5'
+    puzzle=0746 expected='6' got='7'
+    ... and 14 more
+
+  q9 (241 failures):
+    puzzle=0368 expected='2' got='1'
+    puzzle=0368 expected='2' got='1'
+    puzzle=0368 expected='1' got='0'
+    puzzle=1922 expected='4' got='1'
+    puzzle=0247 expected='2' got='1'
+    ... and 236 more
+
+  q10 (128 failures):
+    puzzle=0368 expected="['green', 'green']" got="['green']"
+    puzzle=0247 expected="['red', 'red']" got="['red']"
+    puzzle=1922 expected="['green', 'green']" got="['green']"
+    puzzle=1741 expected="['red', 'red']" got="['red']"
+    puzzle=0792 expected="['red', 'red']" got="['red']"
+    ... and 123 more
+
+  q11 (1 failures):
+    puzzle=0824 expected='0' got='5'
+
+======================================================================

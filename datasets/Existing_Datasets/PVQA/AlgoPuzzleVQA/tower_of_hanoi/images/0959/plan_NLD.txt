@@ -1,2 +1,0 @@
-Move disc d1 from peg1 to the top of disc d4 
-Move disc d2 from the top of disc d3 to peg1 

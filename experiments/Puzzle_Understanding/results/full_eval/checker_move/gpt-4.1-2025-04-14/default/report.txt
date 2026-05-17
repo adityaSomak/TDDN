@@ -1,0 +1,17 @@
+======================================================================
+EVAL REPORT -- checker_move | gpt-4.1-2025-04-14 (reasoning=default)
+Total: 5  Correct: 4  Accuracy: 80.0%
+======================================================================
+
+--- Per Question Type ---
+Q       Correct  Total   Accuracy
+q1            0      1       0.0%
+q2            2      2     100.0%
+q3            2      2     100.0%
+
+--- Per Answer Type ---
+unknown                           4/5      (80.0%)
+
+--- Failure Sample ---
+  pid=1860 q=q1 expected='C' got='B'
+======================================================================

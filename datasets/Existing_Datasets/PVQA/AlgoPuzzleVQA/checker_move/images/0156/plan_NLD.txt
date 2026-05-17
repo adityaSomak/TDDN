@@ -1,1 +1,0 @@
-The purple checker c12 moves from position p12 to the adjacent empty position p13 to the right. 

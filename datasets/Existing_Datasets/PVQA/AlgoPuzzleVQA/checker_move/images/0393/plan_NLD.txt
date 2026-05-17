@@ -1,1 +1,0 @@
-The cyan checker c17 moves from position p17 to the adjacent empty position p18 to the right. 

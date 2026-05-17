@@ -1,1 +1,0 @@
-The orange checker c6 moves from position p7 to the adjacent empty position p6 to the left. 

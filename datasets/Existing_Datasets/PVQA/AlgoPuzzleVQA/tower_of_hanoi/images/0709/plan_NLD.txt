@@ -1,1 +1,0 @@
-Move disc d2 from the top of disc d6 to the top of disc d3 

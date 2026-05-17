@@ -1,5 +1,0 @@
-The yellow checker c12 jumps over a blue checker from position p13 to land at the empty position p11, with the blue checker in p12. 
-The yellow checker c14 jumps over a blue checker from position p15 to land at the empty position p13, with the blue checker in p14. 
-The yellow checker c16 jumps over a blue checker from position p17 to land at the empty position p15, with the blue checker in p16. 
-The blue checker c15 moves from position p16 to the adjacent empty position p17 to the right. 
-The blue checker c13 jumps over a yellow checker from position p14 to land at the empty position p16, with the yellow checker in p15. 

@@ -1,0 +1,121 @@
+======================================================================
+EVAL REPORT — InternVL3-78B (reasoning=default) — maze_solve
+Total: 1500  |  Correct: 612  |  Accuracy: 40.8%
+======================================================================
+
+--- Per Question ---
+Q       Correct  Total   Accuracy  Type
+-------------------------------------------------------
+q1          100    100     100.0%  coordinate (const)
+q2            3    100       3.0%  coordinate
+q3           10    100      10.0%  dimensions
+q4            0    100       0.0%  number
+q5            0    100       0.0%  number
+q6          100    100     100.0%  number (const)
+q7           99    100      99.0%  number (const)
+q8          100    100     100.0%  number (const)
+q9          100    100     100.0%  number (const)
+q10          96    100      96.0%  coordinate_list (const)
+q11           0    100       0.0%  coordinate_list (const)
+q12           4    100       4.0%  coordinate_list
+q13           0    100       0.0%  coordinate_list
+q14           0    100       0.0%  coordinate_list_long
+q15           0    100       0.0%  coordinate_list_long
+
+--- Constant vs Variable Questions ---
+Constant (Q1,Q6-Q11)              595/700    (85.0%)
+Variable (Q2-Q5,Q12-Q15)           17/800    (2.1%)
+Variable excl. Q14/Q15             17/600    (2.8%)
+
+--- Per Answer Type ---
+coordinate                   103/200    (51.5%)
+dimensions                    10/100    (10.0%)
+number                       399/600    (66.5%)
+coordinate_list              100/400    (25.0%)
+coordinate_list_long           0/200    (0.0%)
+
+--- Failed Records ---
+Total failures: 888
+
+  q2 (97 failures):
+    puzzle=1860 expected='(5, 12)' got='(1, 12)'
+    puzzle=0353 expected='(10, 13)' got='(11, 11)'
+    puzzle=1333 expected='(6, 9)' got='(10, 8)'
+    puzzle=1289 expected='(14, 5)' got='(11, 7)'
+    puzzle=0905 expected='(11, 8)' got='(10, 10)'
+    ... and 92 more
+
+  q3 (90 failures):
+    puzzle=1333 expected='7x11' got='11x11'
+    puzzle=0905 expected='13x9' got='11x11'
+    puzzle=1289 expected='15x7' got='11x11'
+    puzzle=0353 expected='11x15' got='11x11'
+    puzzle=1273 expected='9x11' got='11x11'
+    ... and 85 more
+
+  q4 (100 failures):
+    puzzle=0353 expected='71' got='24'
+    puzzle=1860 expected='37' got='18'
+    puzzle=1289 expected='43' got='20'
+    puzzle=0905 expected='49' got='21'
+    puzzle=1333 expected='31' got='16'
+    ... and 95 more
+
+  q5 (100 failures):
+    puzzle=1333 expected='46' got='24'
+    puzzle=1860 expected='54' got='32'
+    puzzle=0353 expected='94' got='40'
+    puzzle=0905 expected='68' got='36'
+    puzzle=1289 expected='62' got='36'
+    ... and 95 more
+
+  q7 (1 failures):
+    puzzle=0905 expected='2' got='1'
+
+  q10 (4 failures):
+    puzzle=1083 expected='[(1, 1)]' got='[(2, 0)]'
+    puzzle=1608 expected='[(1, 1)]' got='[(2, 0)]'
+    puzzle=1182 expected='[(1, 1)]' got='[(2, 0)]'
+    puzzle=0361 expected='[(1, 1)]' got='[(1, 1), (2, 0)]'
+
+  q11 (100 failures):
+    puzzle=0905 expected='[(0, 0), (2, 0)]' got='[(1, 1)]'
+    puzzle=1860 expected='[(0, 0), (2, 0)]' got='[(1, 1), (2, 0)]'
+    puzzle=1333 expected='[(0, 0), (2, 0)]' got='[(0, 0), (1, 1)]'
+    puzzle=0353 expected='[(0, 0), (2, 0)]' got='[(1, 1), (2, 0)]'
+    puzzle=1289 expected='[(0, 0), (2, 0)]' got='[(0, 0), (1, 1)]'
+    ... and 95 more
+
+  q12 (96 failures):
+    puzzle=0353 expected='[(9, 13)]' got='[(11, 11)]'
+    puzzle=0905 expected='[(11, 7)]' got='[(8, 7)]'
+    puzzle=1333 expected='[(5, 9)]' got='[(10, 7)]'
+    puzzle=1860 expected='[(5, 11)]' got='[(1, 13), (2, 14)]'
+    puzzle=1289 expected='[(13, 5)]' got='[(14, 7)]'
+    ... and 91 more
+
+  q13 (100 failures):
+    puzzle=0905 expected='[(10, 8), (12, 8)]' got='[(10, 9), (11, 9)]'
+    puzzle=1333 expected='[(6, 8), (6, 10)]' got='[(10, 7), (10, 8), (11, 8)]'
+    puzzle=0353 expected='[(10, 12), (10, 14)]' got='[(10, 10), (11, 10), (11, 11)]'
+    puzzle=1860 expected='[(4, 12), (6, 12)]' got='[(1, 14), (2, 14), (3, 14)]'
+    puzzle=1289 expected='[(14, 4), (14, 6)]' got='[(15, 10), (16, 10), (16, 11)]'
+    ... and 95 more
+
+  q14 (100 failures):
+    puzzle=0938 expected='[(1, 0), (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (2, 5), (3,...' got='[(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (2,...'
+    puzzle=1333 expected='[(1, 0), (1, 1), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1,...' got='[(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1,...'
+    puzzle=1860 expected='[(1, 0), (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 7), (1,...' got='[(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1,...'
+    puzzle=1273 expected='[(1, 0), (1, 1), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7), (1,...' got='[(1, 0), (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1,...'
+    puzzle=1731 expected='[(1, 0), (1, 1), (1, 3), (1, 4), (1, 5), (2, 1), (2, 3), (2,...' got='[(1, 0), (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1,...'
+    ... and 95 more
+
+  q15 (100 failures):
+    puzzle=0938 expected='[(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (1,...' got='[(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0,...'
+    puzzle=1289 expected='[(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (1,...' got='[(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0,...'
+    puzzle=0905 expected='[(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0,...' got='[(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0,...'
+    puzzle=1731 expected='[(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (1,...' got='[(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0,...'
+    puzzle=0275 expected='[(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (1,...' got='[(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0,...'
+    ... and 95 more
+
+======================================================================

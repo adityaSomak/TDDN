@@ -1,3 +1,0 @@
-The orange checker c17 moves from position p18 to the adjacent empty position p17 to the left. 
-The purple checker c16 jumps over a orange checker from position p16 to land at the empty position p18, with the orange checker in p17. 
-The purple checker c14 jumps over a orange checker from position p14 to land at the empty position p16, with the orange checker in p15. 

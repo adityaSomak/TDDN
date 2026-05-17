@@ -1,0 +1,56 @@
+======================================================================
+EVAL REPORT — gpt-5.4-2026-03-05 (reasoning=default) — wood_slide
+Total: 2200  |  Correct: 1597  |  Accuracy: 72.6%
+======================================================================
+
+--- Per Base Question ---
+Q       Correct  Total   Accuracy  Type
+-------------------------------------------------------
+q1          200    200     100.0%  coordinate_list
+q2          800    800     100.0%  number (const)
+q3           15    200       7.5%  dimension_list
+q4           36    200      18.0%  number
+q5          546    800      68.2%  boolean
+
+--- Constant vs Variable ---
+Constant (Q2)                800/800    (100.0%)
+Variable (Q1,Q3-Q5)          797/1400   (56.9%)
+
+--- Start vs End Position ---
+start                        815/1100   (74.1%)
+end                          782/1100   (71.1%)
+
+--- Per Answer Type ---
+coordinate_list              200/200    (100.0%)
+number                       836/1000   (83.6%)
+dimension_list                15/200    (7.5%)
+boolean                      546/800    (68.2%)
+
+--- Failed Records (by base question) ---
+Total failures: 603
+
+  q3 (185 failures):
+    puzzle=0259 q3_end: expected="['1x2', '1x2', '1x1', '2x1']" got="['2x2', '1x1', '1x2', '2x1']"
+    puzzle=0192 q3_start: expected="['1x2', '1x2']" got="['1x2', '2x1']"
+    puzzle=0741 q3_start: expected="['2x2', '1x2']" got="['2x2', '1x1', '1x2']"
+    puzzle=0259 q3_start: expected="['2x2', '1x2', '1x1', '1x1', '1x2']" got="['1x2', '2x2', '1x1']"
+    puzzle=0741 q3_end: expected="['2x2', '1x2', '1x2']" got="['2x2', '1x1', '1x2']"
+    ... and 180 more
+
+  q4 (164 failures):
+    puzzle=0192 q4_start: expected='2' got='4'
+    puzzle=0192 q4_end: expected='3' got='4'
+    puzzle=0259 q4_end: expected='4' got='7'
+    puzzle=0741 q4_end: expected='3' got='4'
+    puzzle=0741 q4_start: expected='2' got='4'
+    ... and 159 more
+
+  q5 (254 failures):
+    puzzle=0259 q5_2x1_start: expected='False' got='True'
+    puzzle=0756 q5_2x2_start: expected='False' got='True'
+    puzzle=0192 q5_1x1_start: expected='False' got='True'
+    puzzle=0741 q5_1x1_end: expected='False' got='True'
+    puzzle=0192 q5_2x1_end: expected='False' got='True'
+    ... and 249 more
+
+======================================================================

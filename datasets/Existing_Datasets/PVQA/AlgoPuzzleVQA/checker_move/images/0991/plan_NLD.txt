@@ -1,5 +1,0 @@
-The blue checker c9 jumps over a yellow checker from position p9 to land at the empty position p11, with the yellow checker in p10. 
-The blue checker c7 jumps over a yellow checker from position p7 to land at the empty position p9, with the yellow checker in p8. 
-The blue checker c5 jumps over a yellow checker from position p5 to land at the empty position p7, with the yellow checker in p6. 
-The yellow checker c6 moves from position p6 to the adjacent empty position p5 to the left. 
-The yellow checker c8 jumps over a blue checker from position p8 to land at the empty position p6, with the blue checker in p7. 

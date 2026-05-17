@@ -1,0 +1,30 @@
+======================================================================
+EVAL REPORT — gpt-5.4-2026-03-05 (reasoning=low) — nqueens
+Total: 700  |  Correct: 700  |  Accuracy: 100.0%
+======================================================================
+
+--- Per Question ---
+Q       Correct  Total   Accuracy  Type
+-----------------------------------------------------------------
+q1          100    100     100.0%  integer_list_rows
+q2          100    100     100.0%  integer_list_cols
+q3          100    100     100.0%  coordinate_list
+q4          100    100     100.0%  integer_list_rows (≡q1)
+q5          100    100     100.0%  integer_list_cols (≡q2)
+q6          100    100     100.0%  cell_dict_empty_first
+q7          100    100     100.0%  cell_dict_occupied_first
+
+--- Redundant Pair Comparison ---
+  q1: 100.0%  vs  q4 (≡q1): 100.0%
+  q2: 100.0%  vs  q5 (≡q2): 100.0%
+
+--- Per Answer Type ---
+integer_list_rows                 200/200    (100.0%)
+integer_list_cols                 200/200    (100.0%)
+coordinate_list                   100/100    (100.0%)
+cell_dict_empty_first             100/100    (100.0%)
+cell_dict_occupied_first          100/100    (100.0%)
+
+--- Failed Records ---
+  No failures!
+======================================================================

@@ -1,0 +1,72 @@
+======================================================================
+EVAL REPORT — gpt-4.1-2025-04-14 (reasoning=default) — wood_slide
+Total: 2200  |  Correct: 1506  |  Accuracy: 68.5%
+======================================================================
+
+--- Per Base Question ---
+Q       Correct  Total   Accuracy  Type
+-------------------------------------------------------
+q1          147    200      73.5%  coordinate_list
+q2          741    800      92.6%  number (const)
+q3            5    200       2.5%  dimension_list
+q4           66    200      33.0%  number
+q5          547    800      68.4%  boolean
+
+--- Constant vs Variable ---
+Constant (Q2)                741/800    (92.6%)
+Variable (Q1,Q3-Q5)          765/1400   (54.6%)
+
+--- Start vs End Position ---
+start                        755/1100   (68.6%)
+end                          751/1100   (68.3%)
+
+--- Per Answer Type ---
+coordinate_list              147/200    (73.5%)
+number                       807/1000   (80.7%)
+dimension_list                 5/200    (2.5%)
+boolean                      547/800    (68.4%)
+
+--- Failed Records (by base question) ---
+Total failures: 694
+
+  q1 (53 failures):
+    puzzle=0530 q1_start: expected='[(0, 3), (2, 0)]' got='[(1, 0), (2, 0)]'
+    puzzle=0530 q1_end: expected='[(3, 2), (3, 3)]' got='[(2, 2), (2, 3)]'
+    puzzle=0585 q1_end: expected='[(1, 3), (3, 3)]' got='[(1, 3), (2, 3)]'
+    puzzle=0352 q1_end: expected='[(1, 0), (4, 0)]' got='[(1, 0), (3, 0)]'
+    puzzle=0696 q1_start: expected='[(1, 1), (3, 0)]' got='[(1, 1), (2, 1)]'
+    ... and 48 more
+
+  q2 (59 failures):
+    puzzle=0067 q2_1x1_start: expected='2' got='0'
+    puzzle=0067 q2_1x1_end: expected='2' got='0'
+    puzzle=0585 q2_1x1_end: expected='2' got='0'
+    puzzle=0585 q2_1x1_start: expected='2' got='0'
+    puzzle=0570 q2_1x1_start: expected='2' got='0'
+    ... and 54 more
+
+  q3 (195 failures):
+    puzzle=0211 q3_start: expected="['1x2', '1x1']" got="['1x2', '2x1']"
+    puzzle=0669 q3_start: expected="['2x2', '1x1', '2x1', '2x1', '1x2']" got="['1x2', '2x1', '2x2']"
+    puzzle=0485 q3_end: expected="['1x2', '1x1', '1x1', '2x1', '2x1']" got="['1x2', '2x1', '2x2']"
+    puzzle=0211 q3_end: expected="['1x2', '1x2', '2x1', '2x1', '1x2']" got="['2x1', '1x2', '2x2']"
+    puzzle=0485 q3_start: expected="['2x2', '1x1', '1x1', '2x1', '2x1', '1x2']" got="['2x2', '2x1', '1x2', '1x1']"
+    ... and 190 more
+
+  q4 (134 failures):
+    puzzle=0669 q4_end: expected='6' got='4'
+    puzzle=0139 q4_start: expected='5' got='4'
+    puzzle=0485 q4_end: expected='5' got='4'
+    puzzle=0485 q4_start: expected='6' got='4'
+    puzzle=0211 q4_start: expected='2' got='3'
+    ... and 129 more
+
+  q5 (253 failures):
+    puzzle=0139 q5_2x2_end: expected='True' got='False'
+    puzzle=0139 q5_2x1_end: expected='False' got='True'
+    puzzle=0139 q5_1x1_end: expected='False' got='True'
+    puzzle=0139 q5_2x1_start: expected='False' got='True'
+    puzzle=0669 q5_1x1_start: expected='True' got='False'
+    ... and 248 more
+
+======================================================================

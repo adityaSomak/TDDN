@@ -1,0 +1,12 @@
+# Eval-runner dependencies.
+#
+# Install into the venv you use to invoke `run_full_eval.py`, `run_seg_eval.py`,
+# and the analyzer modes. This venv does NOT need vLLM (see requirements_vllm.txt
+# for that). Closed-source backends call OpenAI; open-source backends speak HTTP
+# to a separately-launched vLLM server.
+openai>=1.0
+aiohttp>=3.9
+Pillow>=10.0
+PyYAML>=6.0
+tqdm>=4.66
+numpy>=1.26

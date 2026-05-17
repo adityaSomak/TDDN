@@ -1,0 +1,77 @@
+======================================================================
+EVAL REPORT — gpt-5.4-2026-03-05 (reasoning=medium)
+Total: 4700  |  Correct: 4642  |  Accuracy: 98.8%
+======================================================================
+
+--- Per Question Type ---
+Q       Correct  Total   Accuracy
+-----------------------------------
+q1           99    100      99.0%
+q2          200    200     100.0%
+q3          200    200     100.0%
+q4           95    100      95.0%
+q5          796    800      99.5%
+q6          800    800     100.0%
+q7          100    100     100.0%
+q8          397    400      99.2%
+q9          357    400      89.2%
+q10         199    200      99.5%
+q11         199    200      99.5%
+q12         800    800     100.0%
+q13         400    400     100.0%
+
+--- MCQ vs Open-ended ---
+MCQ             299/300    (99.7%)
+Open-ended     4343/4400   (98.7%)
+
+--- Per Answer Type ---
+mcq                299/300    (99.7%)
+boolean           1100/1100   (100.0%)
+color               95/100    (95.0%)
+number            1550/1600   (96.9%)
+color_list         199/200    (99.5%)
+position           999/1000   (99.9%)
+position_list      400/400    (100.0%)
+
+--- MCQ Confusion Patterns ---
+  expected=A got=B: 1
+
+--- Failed Records ---
+Total failures: 58
+
+  q1 (1 failures):
+    puzzle=0247 expected='A' got='B'
+
+  q4 (5 failures):
+    puzzle=0938 expected='green' got='red'
+    puzzle=1292 expected='green' got='red'
+    puzzle=1474 expected='green' got='red'
+    puzzle=0478 expected='green' got='red'
+    puzzle=1556 expected='green' got='red'
+
+  q5 (4 failures):
+    puzzle=0824 expected='0' got='1'
+    puzzle=0824 expected='10' got='9'
+    puzzle=0824 expected='0' got='3'
+    puzzle=0824 expected='3' got='0'
+
+  q8 (3 failures):
+    puzzle=0824 expected='0' got='4'
+    puzzle=0824 expected='14' got='9'
+    puzzle=0824 expected='13' got='14'
+
+  q9 (43 failures):
+    puzzle=1860 expected='2' got='1'
+    puzzle=0353 expected='2' got='1'
+    puzzle=1273 expected='4' got='1'
+    puzzle=1323 expected='3' got='1'
+    puzzle=1292 expected='1' got='0'
+    ... and 38 more
+
+  q10 (1 failures):
+    puzzle=0824 expected="['green']" got="['red', 'green']"
+
+  q11 (1 failures):
+    puzzle=0824 expected='0' got='5'
+
+======================================================================

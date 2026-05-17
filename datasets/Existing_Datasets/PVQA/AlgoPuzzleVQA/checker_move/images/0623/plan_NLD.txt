@@ -1,1 +1,0 @@
-The coral checker c4 moves from position p5 to the adjacent empty position p4 to the left. 

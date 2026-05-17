@@ -1,0 +1,87 @@
+======================================================================
+EVAL REPORT — gpt-4.1-2025-04-14 (reasoning=default) — nqueens
+Total: 700  |  Correct: 3  |  Accuracy: 0.4%
+======================================================================
+
+--- Per Question ---
+Q       Correct  Total   Accuracy  Type
+-----------------------------------------------------------------
+q1            0    100       0.0%  integer_list_rows
+q2            0    100       0.0%  integer_list_cols
+q3            0    100       0.0%  coordinate_list
+q4            3    100       3.0%  integer_list_rows (≡q1)
+q5            0    100       0.0%  integer_list_cols (≡q2)
+q6            0    100       0.0%  cell_dict_empty_first
+q7            0    100       0.0%  cell_dict_occupied_first
+
+--- Redundant Pair Comparison ---
+  q1: 0.0%  vs  q4 (≡q1): 3.0%
+  q2: 0.0%  vs  q5 (≡q2): 0.0%
+
+--- Per Answer Type ---
+integer_list_rows                   3/200    (1.5%)
+integer_list_cols                   0/200    (0.0%)
+coordinate_list                     0/100    (0.0%)
+cell_dict_empty_first               0/100    (0.0%)
+cell_dict_occupied_first            0/100    (0.0%)
+
+--- Failed Records ---
+Total failures: 697
+
+  q1 (100 failures):
+    puzzle=1083 expected='[0, 6]' got='[2, 6, 8]'
+    puzzle=1922 expected='[3, 7]' got='[5]'
+    puzzle=0507 expected='[6, 9]' got='[6]'
+    puzzle=0111 expected='[3, 5]' got='[2, 5, 7]'
+    puzzle=0824 expected='[0, 7]' got='[2, 6]'
+    ... and 95 more
+
+  q2 (100 failures):
+    puzzle=1083 expected='[8, 9]' got='[2, 6, 8]'
+    puzzle=0353 expected='[7, 8]' got='[2, 5, 7]'
+    puzzle=1922 expected='[9, 10]' got='[5]'
+    puzzle=0507 expected='[8, 9]' got='[3, 6]'
+    puzzle=0111 expected='[7, 8]' got='[1, 3, 5, 7]'
+    ... and 95 more
+
+  q3 (100 failures):
+    puzzle=0507 expected='[(0, 6), (1, 2), (2, 7), (3, 1), (4, 4), (5, 0), (7, 3), (8,...' got='[(0, 6), (1, 2), (2, 4), (3, 7), (4, 1), (5, 3), (6, 5), (7,...'
+    puzzle=0111 expected='[(0, 5), (1, 3), (2, 1), (4, 4), (6, 0), (7, 2), (8, 6)]' got='[(0, 6), (1, 3), (2, 1), (3, 5), (4, 4), (5, 0), (6, 2), (7,...'
+    puzzle=0353 expected='[(0, 4), (1, 6), (3, 3), (4, 1), (6, 5), (7, 2), (8, 0)]' got='[(0, 4), (1, 6), (2, 3), (3, 1), (4, 5), (5, 2), (6, 7), (7,...'
+    puzzle=1512 expected='[(0, 4), (2, 7), (3, 3), (4, 1), (5, 8), (6, 5), (7, 0), (8,...' got='[(0, 4), (1, 7), (2, 3), (3, 0), (4, 6), (5, 1), (6, 5), (7,...'
+    puzzle=1860 expected='[(0, 2), (1, 7), (3, 4), (4, 1), (5, 5), (7, 6), (8, 3), (9,...' got='[(0, 1), (1, 6), (2, 3), (3, 0), (4, 4), (5, 7), (6, 2), (7,...'
+    ... and 95 more
+
+  q4 (97 failures):
+    puzzle=0824 expected='[0, 7]' got='[6]'
+    puzzle=1860 expected='[2, 6]' got='[]'
+    puzzle=0111 expected='[3, 5]' got='[]'
+    puzzle=0507 expected='[6, 9]' got='[7]'
+    puzzle=1083 expected='[0, 6]' got='[6]'
+    ... and 92 more
+
+  q5 (100 failures):
+    puzzle=1860 expected='[9, 10]' got='[5]'
+    puzzle=1512 expected='[9, 10]' got='[6, 8]'
+    puzzle=1083 expected='[8, 9]' got='[2, 6, 8]'
+    puzzle=0353 expected='[7, 8]' got='[5, 7]'
+    puzzle=0507 expected='[8, 9]' got='[6, 8]'
+    ... and 95 more
+
+  q6 (100 failures):
+    puzzle=1981 expected="{'empty_cells': [(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0,..." got="{'empty_cells': [(0, 0), (0, 1), (0, 2), (0, 3), (0, 5), (0,..."
+    puzzle=0111 expected="{'empty_cells': [(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0,..." got="{'empty_cells': [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0,..."
+    puzzle=1512 expected="{'empty_cells': [(0, 0), (0, 1), (0, 2), (0, 3), (0, 5), (0,..." got="{'empty_cells': [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0,..."
+    puzzle=0507 expected="{'empty_cells': [(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0,..." got="{'empty_cells': [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0,..."
+    puzzle=1083 expected="{'empty_cells': [(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0,..." got="{'empty_cells': [(0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0,..."
+    ... and 95 more
+
+  q7 (100 failures):
+    puzzle=0824 expected="{'occupied_cells': [(1, 7), (2, 4), (3, 2), (4, 0), (5, 5), ..." got="{'occupied_cells': [(0, 3), (1, 6), (2, 2), (3, 0), (4, 1), ..."
+    puzzle=0353 expected="{'occupied_cells': [(0, 4), (1, 6), (3, 3), (4, 1), (6, 5), ..." got="{'occupied_cells': [(0, 4), (1, 7), (2, 3), (3, 1), (4, 5), ..."
+    puzzle=1568 expected="{'occupied_cells': [(0, 5), (1, 1), (2, 4), (4, 7), (6, 3), ..." got="{'occupied_cells': [(0, 6), (1, 3), (2, 7), (3, 5), (4, 2), ..."
+    puzzle=1083 expected="{'occupied_cells': [(1, 1), (2, 7), (3, 0), (4, 3), (5, 6), ..." got="{'occupied_cells': [(0, 1), (1, 0), (2, 4), (3, 6), (4, 3), ..."
+    puzzle=1981 expected="{'occupied_cells': [(0, 6), (1, 8), (2, 2), (3, 0), (4, 7), ..." got="{'occupied_cells': [(0, 6), (1, 2), (2, 7), (3, 0), (4, 5), ..."
+    ... and 95 more
+
+======================================================================

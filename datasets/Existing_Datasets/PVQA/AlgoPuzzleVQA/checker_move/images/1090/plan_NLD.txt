@@ -1,1 +1,0 @@
-The orange checker c18 jumps over a purple checker from position p19 to land at the empty position p17, with the purple checker in p18. 

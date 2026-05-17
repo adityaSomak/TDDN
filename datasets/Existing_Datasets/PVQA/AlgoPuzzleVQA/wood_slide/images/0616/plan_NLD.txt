@@ -1,1 +1,0 @@
-Move the 1x2 block b3 one step up into empty spaces e1 and e2.

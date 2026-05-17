@@ -1,0 +1,80 @@
+{
+  "model": "llava-hf/llava-v1.6-mistral-7b-hf",
+  "backend": "vllm",
+  "reasoning": null,
+  "maze": {
+    "raw": {
+      "cell": 2.3923076923076922,
+      "wall": 2.376222910216718,
+      "path": 2.397212543554007,
+      "dim": 0.0
+    },
+    "tddn_mask": {
+      "cell": 1.52,
+      "wall": 1.625,
+      "path": 1.4117647058823528,
+      "dim": 0.0
+    }
+  },
+  "nqueens": {
+    "raw": {
+      "cell": 3.589800824175825,
+      "f1": 0.0,
+      "dim": 0.02
+    },
+    "tddn_mask": {
+      "cell": 19.9375,
+      "f1": 3.1333333333333337,
+      "dim": 0.0
+    }
+  },
+  "chess_pieces": {
+    "raw": {
+      "parse_ok": 1.0,
+      "exact": 0.04,
+      "abs_err": 10.06
+    },
+    "tddn_mask": {
+      "parse_ok": 1.0,
+      "exact": 0.02,
+      "abs_err": 10.22
+    }
+  },
+  "chess_empty": {
+    "raw": {
+      "parse_ok": 1.0,
+      "exact": 0.0,
+      "abs_err": 13.58
+    },
+    "tddn_mask": {
+      "parse_ok": 1.0,
+      "exact": 0.0,
+      "abs_err": 11.84
+    }
+  },
+  "chess_black": {
+    "raw": {
+      "cell": 0.0,
+      "f1": 0.0,
+      "dim": 0.0
+    },
+    "tddn_mask": {
+      "cell": 0.0,
+      "f1": 0.0,
+      "dim": 0.0
+    }
+  },
+  "chess_white": {
+    "raw": {
+      "cell": 0.0,
+      "f1": 0.0,
+      "dim": 0.0
+    },
+    "tddn_mask": {
+      "cell": 0.0,
+      "f1": 0.0,
+      "dim": 0.0
+    }
+  },
+  "mode": "tddn_mask"
+}

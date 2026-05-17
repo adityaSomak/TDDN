@@ -1,0 +1,32 @@
+======================================================================
+EVAL REPORT -- wood_slide | gpt-4o-mini (reasoning=default)
+Total: 50  Correct: 27  Accuracy: 54.0%
+======================================================================
+
+--- Per Question Type ---
+Q       Correct  Total   Accuracy
+q1            1      6      16.7%
+q2           16     20      80.0%
+q3            0      4       0.0%
+q4            0      4       0.0%
+q5           10     16      62.5%
+
+--- Per Answer Type ---
+boolean                          10/16     (62.5%)
+coordinate_list                   1/6      (16.7%)
+dimension_list                    0/4      (0.0%)
+number                           16/24     (66.7%)
+
+--- Failure Sample ---
+  pid=0247 q=q1_start expected='[(3, 2), (3, 3)]' got='[(2, 2), (2, 3), (3, 2), (3, 3)]'
+  pid=0247 q=q1_end expected='[(0, 0), (1, 0)]' got='[(0, 1)]'
+  pid=0247 q=q3_start expected="['2x2', '1x1', '1x1', '1x2']" got="['1x2', '2x1', '1x1']"
+  pid=0247 q=q3_end expected="['2x1', '2x1']" got="['1x2', '2x1', '1x1']"
+  pid=0247 q=q4_start expected='4' got='5'
+  pid=0247 q=q4_end expected='2' got='4'
+  pid=0247 q=q5_1x1_end expected='False' got='True'
+  pid=0247 q=q5_1x2_end expected='False' got='True'
+  pid=0247 q=q5_2x1_start expected='False' got='True'
+  pid=0247 q=q5_2x2_start expected='True' got='False'
+  ... and 13 more
+======================================================================
