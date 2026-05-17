@@ -1,2 +1,0 @@
-Place q9 at c_1_9 as c_1_9 is safe in terms of rows, columns, and diagonals before placing q9. 
-Place q10 at c_4_10 as c_4_10 is safe in terms of rows, columns, and diagonals before placing q10. 

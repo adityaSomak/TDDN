@@ -1,0 +1,57 @@
+# Unified 30-class label space for the combined puzzle-perception segmentation
+# dataset. Class ids 0..29 are the values found in every mask PNG under data/.
+#
+# Source-task offsets:
+#     maze   →  0   ( 8 classes,  ids  0.. 7)
+#     chess  →  8   (15 classes,  ids  8..22)
+#     hanoi  → 23   ( 7 classes,  ids 23..29)
+#
+# `weight_ce`   — per-class cross-entropy weight (handles class imbalance).
+# `weight_miou` — per-class weighting for mIoU evaluation.
+# Both are inherited from the per-task definitions in the source datasets.
+#
+# `background` appears twice (chess id 8 and hanoi id 23). The two are distinct
+# classes in this unified namespace because they originate from different
+# source tasks.
+
+classes:
+  # ---- maze (offset 0) ----
+  - {id:  0, name: wall,         source_task: maze,  weight_ce: 12.0, weight_miou: 6.0}
+  - {id:  1, name: path,         source_task: maze,  weight_ce:  0.2, weight_miou: 0.3}
+  - {id:  2, name: start,        source_task: maze,  weight_ce:  6.0, weight_miou: 1.0}
+  - {id:  3, name: dest_a,       source_task: maze,  weight_ce:  6.0, weight_miou: 1.0}
+  - {id:  4, name: dest_b,       source_task: maze,  weight_ce:  6.0, weight_miou: 1.0}
+  - {id:  5, name: dest_c,       source_task: maze,  weight_ce:  6.0, weight_miou: 1.0}
+  - {id:  6, name: dest_d,       source_task: maze,  weight_ce:  6.0, weight_miou: 1.0}
+  - {id:  7, name: dest_e,       source_task: maze,  weight_ce:  6.0, weight_miou: 1.0}
+
+  # ---- chess (offset 8) ----
+  - {id:  8, name: background,   source_task: chess, weight_ce:  0.5, weight_miou: 0.5}
+  - {id:  9, name: white_square, source_task: chess, weight_ce:  0.3, weight_miou: 0.5}
+  - {id: 10, name: black_square, source_task: chess, weight_ce:  0.3, weight_miou: 0.5}
+  - {id: 11, name: white_pawn,   source_task: chess, weight_ce:  2.0, weight_miou: 1.0}
+  - {id: 12, name: white_knight, source_task: chess, weight_ce:  4.0, weight_miou: 1.0}
+  - {id: 13, name: white_bishop, source_task: chess, weight_ce:  4.0, weight_miou: 1.0}
+  - {id: 14, name: white_rook,   source_task: chess, weight_ce:  4.0, weight_miou: 1.0}
+  - {id: 15, name: white_queen,  source_task: chess, weight_ce:  6.0, weight_miou: 1.0}
+  - {id: 16, name: white_king,   source_task: chess, weight_ce:  6.0, weight_miou: 1.0}
+  - {id: 17, name: black_pawn,   source_task: chess, weight_ce:  2.0, weight_miou: 1.0}
+  - {id: 18, name: black_knight, source_task: chess, weight_ce:  4.0, weight_miou: 1.0}
+  - {id: 19, name: black_bishop, source_task: chess, weight_ce:  4.0, weight_miou: 1.0}
+  - {id: 20, name: black_rook,   source_task: chess, weight_ce:  4.0, weight_miou: 1.0}
+  - {id: 21, name: black_queen,  source_task: chess, weight_ce:  6.0, weight_miou: 1.0}
+  - {id: 22, name: black_king,   source_task: chess, weight_ce:  6.0, weight_miou: 1.0}
+
+  # ---- hanoi (offset 23) ----
+  - {id: 23, name: background,   source_task: hanoi, weight_ce:  0.5, weight_miou: 0.5}
+  - {id: 24, name: peg,          source_task: hanoi, weight_ce:  4.0, weight_miou: 1.0}
+  - {id: 25, name: disk_1,       source_task: hanoi, weight_ce:  3.0, weight_miou: 1.0}
+  - {id: 26, name: disk_2,       source_task: hanoi, weight_ce:  3.0, weight_miou: 1.0}
+  - {id: 27, name: disk_3,       source_task: hanoi, weight_ce:  3.0, weight_miou: 1.0}
+  - {id: 28, name: disk_4,       source_task: hanoi, weight_ce:  3.0, weight_miou: 1.0}
+  - {id: 29, name: disk_5,       source_task: hanoi, weight_ce:  3.0, weight_miou: 1.0}
+
+label_offsets:
+  maze:  0
+  chess: 8
+  hanoi: 23
