@@ -1,0 +1,7 @@
+pair,linear_cka,pwcca
+DN_g<->DN_p,0.226,0.846
+DN_g<->CD_p,0.210,0.737
+DN_g<->DDN_g,0.849,0.994
+DN_p<->CD_p,0.220,0.727
+DN_p<->DDN_g,0.464,0.921
+CD_p<->DDN_g,0.476,0.886

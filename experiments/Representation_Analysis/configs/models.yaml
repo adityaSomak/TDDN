@@ -1,0 +1,94 @@
+# Model registry for Representation_Analysis.
+#
+# Each entry maps a kebab-case tag (used in CSV `representation` cells AND in
+# the `qualitative/*/activation-maps/<tag>/` directory layout) to:
+#   - `backbone`: registry name in shared_utils.feature_extraction
+#   - `group`:    one of {baselines, ddn, tdn, tddn} -- controls the
+#                 activation-map output subtree
+#   - `extractor`: kwargs passed to build_extractor (facet, timestep, etc.)
+#   - `transform`: kwargs passed to build_transform (strategy, input_size)
+#   - `fusion`:   for handcraft combos, the list of (backbone, weight) pairs
+
+# Per-model `input_size` is fixed to the highest multiple of the patch size
+# that's <= 1024 (so the patch grid is ~64x64). The final PNG resolution
+# comes from configs/activation_maps.yaml:render.target_size (default 512).
+
+baselines:
+  sd-2.1:
+    backbone: sd
+    group: baselines
+    extractor: {timestep: 261, noise_mode: clean, hook_position: "resnets[2]"}
+    transform: {strategy: square_resize, input_size: 1024}   # patch=16 -> 64x64 grid
+  cd:
+    backbone: cleandift
+    group: baselines
+    extractor: {timestep: 0, noise_mode: clean, hook_position: "resnets[2]"}
+    transform: {strategy: square_resize, input_size: 1024}
+  dinov3:
+    backbone: dinov3-vith16plus
+    group: baselines
+    extractor: {facet: token, block_idx: -1}
+    transform: {strategy: square_resize, input_size: 1024}
+  dinov2-vitb:
+    backbone: dinov2-vitb14
+    group: baselines
+    extractor: {facet: token, block_idx: -1}
+    transform: {strategy: square_resize, input_size: 1022}   # patch=14 -> 73x73 grid
+  dinov2-vitg:
+    backbone: dinov2-vitg14
+    group: baselines
+    extractor: {facet: token, block_idx: -1}
+    transform: {strategy: square_resize, input_size: 1022}
+  clip:
+    backbone: clip-vitl14
+    group: baselines
+    extractor: {}
+    transform: {strategy: square_resize, input_size: 1022}
+
+# Trained alignment models. Their checkpoints must be present at
+# shared_utils/feature_extraction/checkpoints/<ckpt_name>/ckpt/<step>/
+# before they can be extracted.
+trained:
+  tdn:
+    backbone: vith-roberta
+    group: tdn
+    extractor: {}
+    transform: {strategy: square_resize, input_size: 1024}   # patch=16
+    checkpoint: vith_roberta_v3_coco_ft
+    checkpoint_step: 99
+  tddn:
+    backbone: fused-dinov3-cd
+    group: tddn
+    extractor: {return_patches: true}
+    transform: {strategy: square_resize, input_size: 1024}
+    checkpoint: fused_dinov3_cleandift_coco_ft
+    checkpoint_step: [149, 199]                              # averaged
+
+# Handcraft fusions (DiffusedDINO family). Strategy = `fuse_concat`; the
+# tag's leaf dir is `<backbone_a>+<backbone_b>` for human-readable output paths.
+fusion:
+  ddn-cd:
+    group: ddn
+    components:
+      - {backbone: dinov3-vith16plus, weight: 0.5,
+         extractor: {facet: token, block_idx: -1}}
+      - {backbone: cleandift, weight: 0.5,
+         extractor: {timestep: 0, noise_mode: clean, hook_position: "resnets[2]"}}
+    transform: {strategy: square_resize, input_size: 1024}   # patch=16
+    leaf_dir: dinov3+cd     # qualitative/ddn/activation-maps/dinov3+cd/
+
+# Pairs used in CKA / PWCCA similarity computations. Each entry is a
+# (representation_a, representation_b) tuple referring to columns in the
+# per-level feature matrix dict produced by run.py metrics.
+similarity_pairs:
+  global:
+    - [DN_g, DN_p]
+    - [DN_g, CD_p]
+    - [DN_g, DDN_g]
+    - [DN_p, CD_p]
+    - [DN_p, DDN_g]
+    - [CD_p, DDN_g]
+  patch:
+    - [DDN, DN]
+    - [DDN, CD]
+    - [DN, CD]

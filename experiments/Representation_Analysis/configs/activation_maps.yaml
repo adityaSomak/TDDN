@@ -1,0 +1,39 @@
+# Activation-maps qualitative pipeline config.
+#
+# `--image all --model all` from run.py iterates the cross-product of `images`
+# and `models`, writing each output under
+# qualitative/<group>/activation-maps/<leaf>/<image_stem>.png
+# where (group, leaf) come from configs/models.yaml.
+
+# Default render knobs (overridable per-model). The actual per-model
+# `input_size` comes from configs/models.yaml; the value below is only used
+# when --input-size is passed without a per-model context.
+render:
+  input_size: 1024          # default image resolution before patching
+                            # (doubles the patch grid -> sharper output)
+  target_size: 512          # output PNG resolution
+  mode: patches             # `patches` (PCA at patch res) | `interpolated`
+  normalize: percentile     # per-channel normalization for RGB output
+  interp: bilinear
+
+# Image set for the `--image all` sweep. Paths are relative to
+# qualitative/samples/. Three puzzle exemplars (matches the legacy
+# pca_viz/{maze,chess,hanoi} reference figures).
+images:
+  - maze.png
+  - chess_v2.png
+  - hanoi.png
+
+# Models to render activation maps for. Keys match `configs/models.yaml`.
+# Trained variants are listed for completeness; the runner skips them if the
+# checkpoint directory is absent.
+models:
+  - sd-2.1
+  - cd
+  - dinov3
+  - dinov2-vitb
+  - dinov2-vitg
+  - clip
+  - ddn-cd
+  - tdn
+  - tddn

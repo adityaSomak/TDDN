@@ -1,0 +1,31 @@
+# Representation_Analysis quantitative pipeline config.
+#
+# All data paths resolve against `shared_utils.paths` constants:
+#   coco_val_dir   = DATASETS_ROOT / "Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/val2014"
+#   features_dir   = FEATURES_ROOT
+# Override with EXPERIMENTS_DATASETS_ROOT / EXPERIMENTS_FEATURES_ROOT.
+
+# ── Sampling ─────────────────────────────────────────────────────────────────
+n_samples: 2000           # COCO val2014 images analyzed (subset fixed by coco_sample_ids.csv)
+seed: 42
+
+# ── Feature extraction ───────────────────────────────────────────────────────
+img_size: 512             # input resolution for every backbone
+
+# ── Spatial alignment ────────────────────────────────────────────────────────
+spatial_size: 32          # common grid all features are bilinear-resampled to
+                          # (32×32 = 1024 patches per image)
+n_patches_subsample: 100  # patches randomly sampled per image for patch-level
+                          # analysis → 2000 × 100 = 200,000 total patch rows
+
+# ── PCA reduction for diffusion backbones (cd, sd-2.1) ───────────────────────
+# Each layer is TruncatedSVD-reduced to pca_dim, then L2-normalized and
+# concatenated. The basis is fit ONCE on the global (mean-pooled) features and
+# reused for the patch-level analysis (`PCAReducer.transform` after
+# `fit_transform`). No basis is saved to disk; the fit happens inside the run.
+pca_reduction: true
+pca_dim: 512
+
+# ── Metric hyperparameters ───────────────────────────────────────────────────
+var_threshold: 0.99       # SVD preconditioning floor for SVCCA / PWCCA
+uniformity_subsample: 10000  # patch-level subsample size for uniformity()

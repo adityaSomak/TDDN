@@ -1,0 +1,4 @@
+pair,linear_cka,pwcca
+DDN<->DN,0.585,0.897
+DDN<->CD,0.961,0.999
+DN<->CD,0.353,0.336

@@ -13,3 +13,13 @@ __pycache__/
 
 # Eval outputs (run locally; not versioned)
 **/eval_results_low_detail/
+
+# Representation_Analysis: trained-model checkpoints (~3.9 GB)
+experiments/shared_utils/feature_extraction/checkpoints/**/ckpt/
+
+# Feature cache for `run.py metrics --cache` runs (~14 GB)
+.features_cache/
+
+# COCO val2014 — place under datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/val2014
+datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/val2014
+datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/val2014/
