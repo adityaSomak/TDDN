@@ -37,164 +37,179 @@ _QUANT_PATCH = _HERE / "quantitative" / "patch"
 # ─── plots: render figures from the committed result CSVs. ────────────────
 
 
-_QUALITY_LABEL_MAP = {
-    "DN_g":  r"DN$_{g}$",
-    "DN_p":  r"DN$_{p}$",
-    "CD_p":  r"CD$_{p}$",
-    "DDN_g": r"DDN$_{g}$",
-    "DN":  "DN",
-    "CD":  "CD",
-    "DDN": "DDN",
+# Plot labels keyed by the canonical CSV `representation` / `pair` strings.
+GLOBAL_LABEL = {
+    "dino(cls)":   r"DN$_g$",
+    "dino(mean)":  r"DN$_{\bar{p}}$",
+    "cd(2+5+8)":   r"CD$_{\bar{p}}$",
+    "sd(2+5+8)":   r"SD$_{\bar{p}}$",
+    "clip(image)": r"CLIP$_g$",
+    "ddn_g":       r"DDN",
+    "fused":       r"TDDN",
+    "vith":        r"TDN",
 }
 
+PATCH_LABEL = {
+    "dino_p":          r"DN$_p$",
+    "cd_p":            r"CD$_p$",
+    "sd_p":            r"SD$_p$",
+    "clip_p":          r"CLIP$_p$",
+    "fused_p":         r"DDN$_p$",
+    "fused_trained_p": r"TDDN$_p$",
+    "vith_p":          r"TDN$_p$",
+}
 
-def _pair_to_label(pair: str) -> str:
-    """Format ``A<->B`` as the LaTeX bidirectional arrow used in the figures."""
-    a, b = pair.split("<->")
-    return rf"{_QUALITY_LABEL_MAP.get(a, a)}$\leftrightarrow${_QUALITY_LABEL_MAP.get(b, b)}"
+GLOBAL_PAIR_LABEL = {
+    "dino(cls) ↔ dino(mean)":  r"DN$_g$ : DN$_{\bar{p}}$",
+    "dino(cls) ↔ cd(2+5+8)":   r"DN$_g$ : CD$_{\bar{p}}$",
+    "dino(cls) ↔ DDN_g":       r"DN$_g$ : DDN",
+    "dino(mean) ↔ cd(2+5+8)":  r"DN$_{\bar{p}}$ : CD$_{\bar{p}}$",
+    "dino(mean) ↔ DDN_g":      r"DN$_{\bar{p}}$ : DDN",
+    "cd(2+5+8) ↔ DDN_g":       r"CD$_{\bar{p}}$ : DDN",
+    "fused ↔ dino(cls)":       r"TDDN : DN$_g$",
+    "fused ↔ dino(mean)":      r"TDDN : DN$_{\bar{p}}$",
+    "fused ↔ cd(2+5+8)":       r"TDDN : CD$_{\bar{p}}$",
+    "vith ↔ dino(cls)":        r"TDN : DN$_g$",
+    "vith ↔ dino(mean)":       r"TDN : DN$_{\bar{p}}$",
+}
+
+PATCH_PAIR_LABEL = {
+    "dino_p ↔ fused_p":         r"DN$_p$ : DDN$_p$",
+    "dino_p ↔ fused_trained_p": r"DN$_p$ : TDDN$_p$",
+    "dino_p ↔ vith_p":          r"DN$_p$ : TDN$_p$",
+    "cd_p ↔ fused_p":           r"CD$_p$ : DDN$_p$",
+    "cd_p ↔ fused_trained_p":   r"CD$_p$ : TDDN$_p$",
+    "cd_p ↔ vith_p":            r"CD$_p$ : TDN$_p$",
+}
+
+# Bar fill colour by representation family (matches the published palette).
+FAMILY_COLOR = {
+    "DN":   "#1f77b4",
+    "CD":   "#ff7f0e",
+    "SD":   "#d62728",
+    "CLIP": "#bcbd22",
+    "TDDN": "#2ca02c",
+    "TDN":  "#9467bd",
+    "DDN":  "#e377c2",
+}
+
+# Row ordering used by both global and patch quality plots.
+GLOBAL_ORDER = ["dino(cls)", "dino(mean)", "cd(2+5+8)", "sd(2+5+8)",
+                "clip(image)", "ddn_g", "fused", "vith"]
+PATCH_ORDER = ["dino_p", "cd_p", "sd_p", "clip_p",
+               "fused_p", "fused_trained_p", "vith_p"]
+
+
+def _family_of(name: str) -> str:
+    """Map a CSV `representation` token to a FAMILY_COLOR key."""
+    if name in ("fused", "fused_trained_p"):  return "TDDN"
+    if name in ("vith",  "vith_p"):           return "TDN"
+    if name in ("fused_p", "ddn_g"):          return "DDN"
+    if name.startswith("dino"):               return "DN"
+    if name.startswith("cd"):                 return "CD"
+    if name.startswith("sd"):                 return "SD"
+    if name.startswith("clip"):               return "CLIP"
+    raise ValueError(f"unknown representation: {name!r}")
 
 
 def _apply_serif_style(mpl_module) -> None:
     mpl_module.rcParams.update({
-        "font.family":        "serif",
-        "font.serif":         ["Times New Roman", "DejaVu Serif"],
-        "font.size":          13,
-        "axes.linewidth":     0.8,
-        "axes.spines.top":    False,
-        "axes.spines.right":  False,
-        "xtick.major.width":  0.8,
-        "ytick.major.width":  0.8,
-        "xtick.direction":    "out",
-        "ytick.direction":    "out",
-        "pdf.fonttype":       42,
-        "ps.fonttype":        42,
+        "font.family":       "serif",
+        "font.size":         16,
+        "axes.titlesize":    16,
+        "axes.labelsize":    18,
+        "xtick.labelsize":   18,
+        "ytick.labelsize":   18,
+        "axes.spines.top":   False,
+        "axes.spines.right": False,
+        "axes.grid":         True,
+        "axes.axisbelow":    True,
+        "grid.linestyle":    "--",
+        "grid.linewidth":    0.8,
+        "grid.alpha":        0.55,
+        "axes.linewidth":    1.0,
+        "pdf.fonttype":      42,
+        "ps.fonttype":       42,
     })
 
 
-def _plot_quality_bar(values, labels, ylabel, out_stem, value_fmt=".3f"):
-    """Single-metric quality bar plot (uniformity or effective rank)."""
+def _plot_quality_panel(values, labels, colors, metric, out_stem):
+    """One-metric quality bar plot — uniformity or effective_rank."""
     import matplotlib.pyplot as plt
+    from matplotlib.transforms import ScaledTranslation
 
-    figsize = (3.8, 2.8)
-    bar_w = 0.8
-    cmap = plt.get_cmap("Blues")
-    tick_fs = 14
-    axis_label_fs = 15
-    value_fs = 14
-
-    vmin, vmax = min(values), max(values)
-    if vmax == vmin:
-        colors = [cmap(0.70)] * len(values)
+    n = len(labels)
+    fig_w = max(7.0, 0.95 * n + 1.5)
+    fig, ax = plt.subplots(figsize=(fig_w, 4.7))
+    ax.bar(labels, values, color=colors, width=0.7, zorder=2)
+    if metric == "uniformity":
+        ax.set_ylabel("Uniformity (log)", fontsize=24)
+        ax.set_ylim(top=0.0, bottom=-5)
     else:
-        colors = [cmap(0.40 + 0.55 * (v - vmin) / (vmax - vmin)) for v in values]
-
-    fig, ax = plt.subplots(figsize=figsize)
-    x = np.arange(len(values))
-    bars = ax.bar(x, values, width=bar_w, color=colors,
-                  edgecolor="white", linewidth=0.5)
-
-    ax.set_xticks(x)
-    ax.set_xticklabels(labels, fontsize=tick_fs)
-    ax.set_ylabel(ylabel, fontsize=axis_label_fs)
-
-    pos_only = all(v >= 0 for v in values)
-    span = max(values) - min(values)
-    short_bar_thresh = 0.18 * span if span > 0 else 0
-
-    for bar, val in zip(bars, values):
-        if val < 0:
-            if abs(val) >= short_bar_thresh:
-                ax.text(bar.get_x() + bar.get_width() / 2, val / 2,
-                        f"{val:{value_fmt}}", ha="center", va="center",
-                        fontsize=value_fs, color="black")
-            else:
-                ax.text(bar.get_x() + bar.get_width() / 2, val - 0.02 * span,
-                        f"{val:{value_fmt}}", ha="center", va="top",
-                        fontsize=value_fs, color="black")
-        else:
-            ax.text(bar.get_x() + bar.get_width() / 2, val + 0.02 * span,
-                    f"{val:{value_fmt}}", ha="center", va="bottom",
-                    fontsize=value_fs)
-
-    if not pos_only:
-        ax.axhline(0, color="black", linewidth=0.6, linestyle="--", alpha=0.4)
-    else:
-        ax.set_ylim(0, max(values) * 1.18)
-
-    ax.tick_params(axis="y", labelsize=tick_fs)
-    ax.yaxis.set_tick_params(width=0.6)
-    ax.xaxis.set_tick_params(width=0)
-
-    fig.subplots_adjust(left=0.22, right=0.96, top=0.95, bottom=0.18)
-    fig.savefig(f"{out_stem}.pdf", dpi=300)
-    fig.savefig(f"{out_stem}.png", dpi=300)
+        ax.set_ylabel("Effective Rank", fontsize=24)
+        ax.set_ylim(bottom=0, top=600)
+    ax.set_xticks(np.arange(n))
+    ax.set_xticklabels(labels, fontsize=24, rotation=45, ha="right",
+                       rotation_mode="anchor")
+    shift_pt = 8 if metric == "effective_rank" else 20
+    offset = ScaledTranslation(shift_pt / 72, 0, fig.dpi_scale_trans)
+    for lab in ax.get_xticklabels():
+        lab.set_transform(lab.get_transform() + offset)
+    ax.tick_params(axis="y", labelsize=24)
+    ax.grid(axis="y", linestyle="--", linewidth=0.8, alpha=0.55)
+    ax.grid(axis="x", visible=False)
+    plt.tight_layout()
+    fig.savefig(f"{out_stem}.png", dpi=300, bbox_inches="tight")
+    fig.savefig(f"{out_stem}.pdf", dpi=300, bbox_inches="tight")
     plt.close(fig)
     print(f"saved -> {out_stem}.pdf / .png")
 
 
-def _plot_similarity_bars(linear_cka, pwcca, pair_labels, out_stem):
-    """Grouped CKA + PWCCA bars per representation pair."""
+def _plot_similarity_bars(pairs, linear_cka, pwcca, label_map, out_stem):
+    """Grouped CKA + PWCCA bars (oxblood hatch + navy solid)."""
     import matplotlib.pyplot as plt
-    import matplotlib.patches as mpatches
+    from matplotlib.transforms import ScaledTranslation
 
-    cmap = plt.get_cmap("Blues")
+    labels = [label_map[p] for p in pairs]
+    color_cka, color_pwcca = "#8b3a3a", "#1f3a5f"
 
-    def heat(values, vmin=0.0, vmax=1.0, lo=0.20, hi=0.95):
-        return [cmap(lo + (hi - lo) * (v - vmin) / (vmax - vmin)) for v in values]
-
-    tick_fs = 11
-    axis_label_fs = 12
-    value_fs = 12
-    legend_fs = 13
-    figsize = (6.8, 3.4)
-    bar_w = 0.42
-
-    fig, ax = plt.subplots(figsize=figsize)
-    x = np.arange(len(pair_labels))
-
-    bars_cka = ax.bar(x - bar_w / 2, linear_cka, width=bar_w,
-                      color=heat(linear_cka), edgecolor="white", linewidth=0.6,
-                      hatch="//", label="Linear CKA")
-    bars_pwcca = ax.bar(x + bar_w / 2, pwcca, width=bar_w,
-                        color=heat(pwcca), edgecolor="white", linewidth=0.6,
-                        label="PWCCA")
+    n = len(pairs)
+    x = np.arange(n)
+    width = 0.40
+    fig, ax = plt.subplots(figsize=(max(8.0, 0.85 * n + 1.5), 5.0))
+    ax.bar(x - width / 2, linear_cka, width, color=color_cka,
+           hatch="///", edgecolor="white", linewidth=0.0,
+           label="Linear CKA", zorder=2)
+    ax.bar(x + width / 2, pwcca, width, color=color_pwcca,
+           label="PWCCA", zorder=2)
 
     ax.set_xticks(x)
-    ax.set_xticklabels([""] * len(pair_labels))
-    label_x_shift = 0.35
-    label_y = -0.07
-    for xi, txt in zip(x, pair_labels):
-        ax.text(xi + label_x_shift, label_y, txt,
-                fontsize=tick_fs, rotation=20, ha="right", va="top",
-                rotation_mode="anchor")
-    ax.set_ylabel("Similarity", fontsize=axis_label_fs)
-    ax.set_ylim(0, 1.25)
-    ax.tick_params(axis="y", labelsize=tick_fs)
-    ax.yaxis.set_tick_params(width=0.6)
-    ax.xaxis.set_tick_params(width=0)
-
-    for bars, vals in [(bars_cka, linear_cka), (bars_pwcca, pwcca)]:
-        for bar, val in zip(bars, vals):
-            ax.text(bar.get_x() + bar.get_width() / 2, val + 0.02,
-                    f"{val:.2f}", ha="center", va="bottom",
-                    fontsize=value_fs)
-
-    legend_handles = [
-        mpatches.Patch(facecolor=cmap(0.55), edgecolor="white",
-                       hatch="//", label="Linear CKA"),
-        mpatches.Patch(facecolor=cmap(0.55), edgecolor="white",
-                       label="PWCCA"),
-    ]
-    ax.legend(handles=legend_handles, fontsize=legend_fs, frameon=False,
-              loc="upper center", bbox_to_anchor=(0.5, 1.18),
-              ncol=2, handlelength=1.4, handleheight=1.0,
-              columnspacing=1.5)
-
-    fig.subplots_adjust(left=0.13, right=0.98, top=0.85, bottom=0.30)
-    fig.savefig(f"{out_stem}.pdf", dpi=300, bbox_inches="tight", pad_inches=0.05)
-    fig.savefig(f"{out_stem}.png", dpi=300, bbox_inches="tight", pad_inches=0.05)
+    ax.set_xticklabels(labels, fontsize=20, rotation=45, ha="right",
+                       rotation_mode="anchor")
+    offset = ScaledTranslation(20 / 72, 0, fig.dpi_scale_trans)
+    for lab in ax.get_xticklabels():
+        lab.set_transform(lab.get_transform() + offset)
+    ax.tick_params(axis="y", labelsize=20)
+    ax.set_ylabel("Similarity", fontsize=20)
+    ax.set_ylim(0, 1.0)
+    ax.grid(axis="y", linestyle="--", linewidth=0.8, alpha=0.55)
+    ax.grid(axis="x", visible=False)
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, 1.22),
+              ncol=2, frameon=False, fontsize=20)
+    plt.tight_layout()
+    fig.savefig(f"{out_stem}.png", dpi=300, bbox_inches="tight")
+    fig.savefig(f"{out_stem}.pdf", dpi=300, bbox_inches="tight")
     plt.close(fig)
     print(f"saved -> {out_stem}.pdf / .png")
+
+
+def _order_and_label(df, order, label_map):
+    """Reindex `df` by ``order`` and produce (labels, family-colours, df) tuples."""
+    df = df.set_index("representation").reindex(order).reset_index().dropna(
+        subset=["representation"])
+    labels = [label_map[r] for r in df["representation"]]
+    colors = [FAMILY_COLOR[_family_of(r)] for r in df["representation"]]
+    return df, labels, colors
 
 
 def cmd_plots(args) -> None:
@@ -202,48 +217,42 @@ def cmd_plots(args) -> None:
     import matplotlib
     _apply_serif_style(matplotlib)
 
-    want_global = args.global_ or not (args.global_ or args.patch)
-    want_patch = args.patch or not (args.global_ or args.patch)
+    want_global  = args.global_ or not (args.global_ or args.patch)
+    want_patch   = args.patch   or not (args.global_ or args.patch)
     want_quality = args.quality or not (args.quality or args.similarity)
-    want_sim = args.similarity or not (args.quality or args.similarity)
+    want_sim     = args.similarity or not (args.quality or args.similarity)
 
-    if want_global:
-        gq = pd.read_csv(_QUANT_GLOBAL / "results" / "global_quality.csv")
-        labels = [_QUALITY_LABEL_MAP.get(r, r) for r in gq["representation"]]
-        if want_quality:
-            _plot_quality_bar(
-                gq["uniformity"].tolist(), labels, "Uniformity (log)",
-                str(_QUANT_GLOBAL / "plots" / "global_uniformity"),
-                value_fmt=".2f",
-            )
-            _plot_quality_bar(
-                gq["effective_rank"].tolist(), labels, "Effective Rank",
-                str(_QUANT_GLOBAL / "plots" / "global_effective_rank"),
-                value_fmt=".1f",
-            )
-        if want_sim:
-            gs = pd.read_csv(_QUANT_GLOBAL / "results" / "global_similarity.csv")
-            _plot_similarity_bars(
-                gs["linear_cka"].tolist(),
-                gs["pwcca"].tolist(),
-                [_pair_to_label(p) for p in gs["pair"]],
-                str(_QUANT_GLOBAL / "plots" / "global_similarity_bars"),
-            )
+    if want_global and want_quality:
+        df, labels, colors = _order_and_label(
+            pd.read_csv(_QUANT_GLOBAL / "results" / "global_quality.csv"),
+            GLOBAL_ORDER, GLOBAL_LABEL)
+        _plot_quality_panel(df["uniformity"].values, labels, colors, "uniformity",
+                            str(_QUANT_GLOBAL / "plots" / "global_uniformity"))
+        _plot_quality_panel(df["effective_rank"].values, labels, colors, "effective_rank",
+                            str(_QUANT_GLOBAL / "plots" / "global_effective_rank"))
 
-    if want_patch:
-        pq = pd.read_csv(_QUANT_PATCH / "results" / "patch_quality.csv")
-        labels = [_QUALITY_LABEL_MAP.get(r, r) for r in pq["representation"]]
-        if want_quality:
-            _plot_quality_bar(
-                pq["uniformity"].tolist(), labels, "Uniformity (log)",
-                str(_QUANT_PATCH / "plots" / "patch_uniformity"),
-                value_fmt=".2f",
-            )
-            _plot_quality_bar(
-                pq["effective_rank"].tolist(), labels, "Effective Rank",
-                str(_QUANT_PATCH / "plots" / "patch_effective_rank"),
-                value_fmt=".1f",
-            )
+    if want_global and want_sim:
+        df = pd.read_csv(_QUANT_GLOBAL / "results" / "global_similarity.csv")
+        _plot_similarity_bars(df["pair"].tolist(),
+                              df["linear_cka"].values, df["pwcca"].values,
+                              GLOBAL_PAIR_LABEL,
+                              str(_QUANT_GLOBAL / "plots" / "global_similarity_bars"))
+
+    if want_patch and want_quality:
+        df, labels, colors = _order_and_label(
+            pd.read_csv(_QUANT_PATCH / "results" / "patch_quality.csv"),
+            PATCH_ORDER, PATCH_LABEL)
+        _plot_quality_panel(df["uniformity"].values, labels, colors, "uniformity",
+                            str(_QUANT_PATCH / "plots" / "patch_uniformity"))
+        _plot_quality_panel(df["effective_rank"].values, labels, colors, "effective_rank",
+                            str(_QUANT_PATCH / "plots" / "patch_effective_rank"))
+
+    if want_patch and want_sim:
+        df = pd.read_csv(_QUANT_PATCH / "results" / "patch_similarity.csv")
+        _plot_similarity_bars(df["pair"].tolist(),
+                              df["linear_cka"].values, df["pwcca"].values,
+                              PATCH_PAIR_LABEL,
+                              str(_QUANT_PATCH / "plots" / "patch_similarity_bars"))
 
 
 # ─── activation-maps: dispatch render_one per configs/models.yaml ────────────
