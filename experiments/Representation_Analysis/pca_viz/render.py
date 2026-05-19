@@ -217,6 +217,7 @@ def render_one(
 
 
 def main() -> None:
+    """CLI entry: parse arguments and dispatch to render_one()."""
     p = argparse.ArgumentParser(description=__doc__,
                                 formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--image", required=True, type=Path)

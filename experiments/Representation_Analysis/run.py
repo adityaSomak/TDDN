@@ -82,7 +82,7 @@ PATCH_PAIR_LABEL = {
     "cd_p ↔ vith_p":            r"CD$_p$ : TDN$_p$",
 }
 
-# Bar fill colour by representation family (matches the published palette).
+# Bar fill colour by representation family.
 FAMILY_COLOR = {
     "DN":   "#1f77b4",
     "CD":   "#ff7f0e",
@@ -113,6 +113,7 @@ def _family_of(name: str) -> str:
 
 
 def _apply_serif_style(mpl_module) -> None:
+    """Set Matplotlib rcParams for paper-style serif figures with dashed gridlines."""
     mpl_module.rcParams.update({
         "font.family":       "serif",
         "font.size":         16,
@@ -322,6 +323,7 @@ def _render_one(model_tag: str, image: Path, mcfg: dict, render_kwargs: dict) ->
 
 
 def cmd_activation_maps(args) -> None:
+    """Render PCA(3) -> RGB activation maps for one or all (image, model) pairs."""
     mcfg = _load_models_config()
     acfg = _load_activation_maps_config()
     # `input_size=None` lets each model's transform.input_size be the default.
@@ -391,6 +393,7 @@ def cmd_metrics(args) -> None:
 
 
 def build_parser() -> argparse.ArgumentParser:
+    """Top-level argparse with three subcommands: activation-maps, metrics, plots."""
     p = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter,

@@ -223,7 +223,6 @@ def per_image_pca_rgb(
                              bilinear-upsample the small RGB to `target_size`.
     `mode="interpolated"`  — bilinear-upsample the *features* to `target_size`
                              first, then fit PCA at the dense resolution.
-                             Visibly different output (legacy `_interp` PNGs).
 
     `normalize="minmax"`    — per-channel min/max over (H, W) → [0, 1].
     `normalize="percentile"`— per-channel 2-98 percentile clip → [0, 1].
