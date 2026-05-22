@@ -1,0 +1,5 @@
+{
+  "model": "tdn",
+  "dataset": "ade20k",
+  "miou": 7.4
+}

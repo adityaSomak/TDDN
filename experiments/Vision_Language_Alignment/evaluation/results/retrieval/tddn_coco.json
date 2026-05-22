@@ -1,0 +1,6 @@
+{
+  "model": "tddn",
+  "dataset": "coco",
+  "i2t_r1": 36.1,
+  "t2i_r1": 24.0
+}

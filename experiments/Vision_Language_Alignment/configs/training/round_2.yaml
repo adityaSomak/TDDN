@@ -1,0 +1,33 @@
+# Round 2 — COCO-only fine-tune (resumes from round_1 best ckpt).
+
+optim:
+  lr: 1.0e-4
+  weight_decay: 1.0e-4
+  batch_size: 64
+  warmup_iterations: 50          # overridden per-variant via models.yaml:<tag>.round_2
+  max_iterations: 500            # overridden per-variant
+  grad_cache_multiplier: 32
+
+loss:
+  structure_lambda: 10.0
+  structure_temperature: 0.05
+  structure_levels: 1
+  structure_warmup_steps: 0
+  structure_centering: mean
+  structure_distance: cosine
+  structure_weighting: none       # match the saved configs exactly
+  structure_margin: 0.0
+  structure_center_first: false
+
+trainer:
+  use_fsdp: true
+  use_ac: true
+  do_compile: true                # torch.compile on the trainable heads
+  precision: bf16-mixed
+  log_every_n_steps: 10
+
+data:
+  coco_root: datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/train2014
+  coco_ann_file: datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/annotations/captions_train2014.json
+  laion_shards: ""               # COCO-only
+  use_extended_prompts: true

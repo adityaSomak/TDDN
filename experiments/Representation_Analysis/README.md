@@ -3,8 +3,8 @@
 Tools for analyzing vision-feature representations from pretrained and trained
 backbones. Two complementary views:
 
-- **Quantitative** — CKA / PWCCA / SVCCA similarity + uniformity and effective
-  rank quality, computed on a fixed 2000-image COCO val2014 subset.
+- **Quantitative** — CKA + PWCCA similarity, uniformity and effective-rank
+  quality, computed on a fixed 2000-image COCO val2014 subset.
 - **Qualitative** — PCA(3) → RGB activation maps per backbone, optionally fused
   across two backbones.
 
@@ -29,11 +29,11 @@ Representation_Analysis/
 
 ## Setup
 
+The repo-wide [`requirements.txt`](../../requirements.txt) at the
+top-level supplies every dependency this experiment needs. Set the
+HuggingFace token before the first run for gated weights:
+
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-pip install -e <path>/dinov3        # required for DINOv3 ViT building blocks
 export HF_TOKEN=<your_token>         # gated DINOv3 / RoBERTa weights
 ```
 

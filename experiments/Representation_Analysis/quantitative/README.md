@@ -5,7 +5,7 @@ Two metric families on a fixed 2000-image COCO val2014 subset
 
 | Family       | Metrics                                | Module                  |
 |---|---|---|
-| Similarity   | `linear_cka`, `pwcca`, `svcca`         | `metrics/similarity.py` |
+| Similarity   | `linear_cka`, `pwcca`                  | `metrics/similarity.py` |
 | Quality      | `uniformity`, `effective_rank`         | `metrics/quality.py`    |
 
 ## Layout

@@ -1,0 +1,6 @@
+{
+  "model": "tddn",
+  "dataset": "cifar100",
+  "mode": "zero_shot_cupl",
+  "top1": 75.3
+}

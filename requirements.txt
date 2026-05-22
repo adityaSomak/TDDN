@@ -1,0 +1,53 @@
+# DiffusedDINOv1 — main environment.
+#
+# Single venv shared by every experiment under ``experiments/`` except
+# the vLLM-server side of ``Puzzle_Understanding`` (which has heavy CUDA
+# dependencies — see ``requirements_vllm.txt`` for that).
+#
+# Install:
+#     python -m venv .venv
+#     source .venv/bin/activate
+#     pip install -r requirements.txt
+#     pip install -e <path>/dinov3        # Meta AI DINOv3 reference impl
+#
+# Gated weights (DINOv3, RoBERTa-large) need a HuggingFace token before
+# the first run:
+#     export HF_TOKEN=<your_huggingface_token>
+
+
+# ── Core numerics ────────────────────────────────────────────────────
+numpy>=1.26
+scipy>=1.11
+scikit-learn>=1.3
+pandas>=2.0
+pyyaml>=6.0
+tqdm>=4.66
+
+
+# ── Vision ───────────────────────────────────────────────────────────
+Pillow>=10.0
+matplotlib>=3.7
+
+
+# ── Deep learning ────────────────────────────────────────────────────
+# torch >= 2.4 is required for FSDP2 (`torch.distributed._composable.fsdp`)
+# used by the Vision_Language_Alignment training driver.
+torch>=2.4
+torchvision>=0.19
+
+
+# ── Backbones via HuggingFace + diffusion ────────────────────────────
+transformers>=4.45
+accelerate>=0.30
+diffusers>=0.27
+huggingface-hub>=0.25
+
+
+# ── Dataset wrappers ─────────────────────────────────────────────────
+pycocotools>=2.0            # COCO captions (VLA training + retrieval eval)
+datasets>=2.18              # HF ``datasets`` for the ImageNet val split
+
+
+# ── VLM eval clients (Puzzle_Understanding closed- / open-source) ────
+openai>=1.0
+aiohttp>=3.9

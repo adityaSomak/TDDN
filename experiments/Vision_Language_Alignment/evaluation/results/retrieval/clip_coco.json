@@ -1,0 +1,6 @@
+{
+  "model": "clip",
+  "dataset": "coco",
+  "i2t_r1": 35.5,
+  "t2i_r1": 18.3
+}

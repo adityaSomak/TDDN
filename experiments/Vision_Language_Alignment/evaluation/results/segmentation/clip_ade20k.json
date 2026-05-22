@@ -1,0 +1,5 @@
+{
+  "model": "clip",
+  "dataset": "ade20k",
+  "miou": 6.0
+}

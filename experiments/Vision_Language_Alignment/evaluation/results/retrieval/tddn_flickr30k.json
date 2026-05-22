@@ -1,0 +1,6 @@
+{
+  "model": "tddn",
+  "dataset": "flickr30k",
+  "i2t_r1": 86.1,
+  "t2i_r1": 71.6
+}

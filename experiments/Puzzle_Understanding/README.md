@@ -1,7 +1,7 @@
 # Puzzle Understanding — VLM evaluation
 
-Vision-language model evaluations on the PVQA datasets shipped under
-`code_mirror_v2/datasets/`. Two eval families:
+Vision-language model evaluations on the PVQA datasets under
+[`datasets/`](../../datasets/). Two eval families:
 
 1. **Full eval** — Q1..QN structured questions over four AlgoPuzzleVQA tasks
    (`checker_move`, `maze_solve`, `nqueens`, `wood_slide`).
@@ -14,8 +14,6 @@ Vision-language model evaluations on the PVQA datasets shipped under
 ```
 Puzzle_Understanding/
 ├── README.md
-├── requirements_eval.txt           # eval-runner dependencies
-├── requirements_vllm.txt           # vLLM-server dependencies
 ├── run_full_eval.py                # Q1..QN runner + --analyze reporter
 ├── run_seg_eval.py                 # raw/oracle/tddn runner + --analyze reporter
 ├── utils.py                        # OpenAI + vLLM async dispatch, image encoding
@@ -29,19 +27,21 @@ Puzzle_Understanding/
 
 ## Environments
 
-Two separate venvs are recommended — the eval runner has a light dep list,
-vLLM has a heavy CUDA dependency tree.
+Two separate venvs — the eval runner uses the repo-wide
+[`requirements.txt`](../../requirements.txt); the vLLM server has a
+heavy CUDA dependency tree and uses
+[`requirements_vllm.txt`](../../requirements_vllm.txt).
 
 ```bash
 # eval runner (OpenAI calls, parsing, analysis)
 python -m venv .eval_env
 source .eval_env/bin/activate
-pip install -r requirements_eval.txt
+pip install -r ../../requirements.txt
 
 # vLLM server (only needed for open-source models)
 python -m venv .vllm_env
 source .vllm_env/bin/activate
-pip install -r requirements_vllm.txt
+pip install -r ../../requirements_vllm.txt
 ```
 
 For OpenAI runs, export the API key:

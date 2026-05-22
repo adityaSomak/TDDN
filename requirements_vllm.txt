@@ -1,0 +1,22 @@
+# vLLM-server environment.
+#
+# Install into a SEPARATE venv from the main ``requirements.txt`` —
+# vLLM has a heavy CUDA dependency tree that you don't want polluting
+# the eval-runner / training env.
+#
+# Used by ``experiments/Puzzle_Understanding/scripts/launch_vllm.sh``
+# to spawn local OpenAI-compatible servers for open-source VLMs. The
+# launch script expects ``python`` to resolve to this venv's interpreter
+# — either activate it, or pass
+# ``VLLM_PY=/path/to/vllm_env/bin/python scripts/launch_vllm.sh ...``.
+#
+# Install:
+#     python -m venv .vllm_env
+#     source .vllm_env/bin/activate
+#     pip install -r requirements_vllm.txt
+
+vllm>=0.7
+transformers>=4.45
+accelerate>=0.30
+torch>=2.4
+huggingface-hub>=0.25

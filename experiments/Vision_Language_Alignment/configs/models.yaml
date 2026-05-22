@@ -1,0 +1,56 @@
+# Model registry for vision-language alignment evaluation.
+#
+# Each entry specifies the backbone tag (resolved by
+# `shared_utils.feature_extraction.build_extractor`), the text encoder,
+# and the preprocessing transform. Architecture knobs live under
+# `arch:`; per-round iteration overrides live under `round_<n>:`.
+
+baselines:
+  clip:
+    backbone: clip-vitl14
+    text_encoder: clip-vitl14
+    transform: {strategy: imagenet_center_crop, input_size: 336}
+
+trained:
+  tdn:
+    backbone: vith-roberta
+    text_encoder: roberta-large
+    transform: {strategy: imagenet_center_crop, input_size: 336}
+    checkpoint: vith_roberta_v3_coco_ft
+    checkpoint_step: 99
+    arch:
+      embed_dim: 2560
+      vision_num_head_blocks: 2
+      text_num_head_blocks: 2
+      text_layer_idx: 24
+      text_head_blocks_drop_path: 0.1
+      use_rope_in_head: true
+      use_linear_projection: false
+    round_2: {max_iterations: 500, warmup_iterations: 50}
+
+  tddn:
+    backbone: fused-dinov3-cd
+    text_encoder: roberta-large
+    transform: {strategy: imagenet_center_crop, input_size: 336}
+    checkpoint: fused_dinov3_cleandift_coco_ft
+    checkpoint_step: [149, 199]       # averaged
+    arch:
+      embed_dim: 2560
+      vision_num_head_blocks: 2
+      text_num_head_blocks: 2
+      text_layer_idx: 24
+      text_head_blocks_drop_path: 0.1
+      use_rope_in_head: true
+      use_linear_projection: false
+      use_fused_encoder: true
+      cleandift_proj_dim: 512
+      cleandift_common_grid: 21
+    round_2: {max_iterations: 200, warmup_iterations: 20}
+
+defaults:
+  classification:
+    tip_alphas: [0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 7.5, 10.0]
+    tip_k_default: 16
+    tip_k_sweep: [1, 2, 4, 8, 16]
+  retrieval:
+    k_list: [1, 5, 10]

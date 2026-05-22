@@ -368,25 +368,137 @@ def cmd_activation_maps(args) -> None:
 
 
 def cmd_metrics(args) -> None:
-    """Compute CKA + quality metrics and write the result CSVs.
+    """Extract features for the configured models, compute CKA + quality
+    metrics, and write the result CSVs under
+    ``quantitative/{global,patch}/results/``.
 
-    Live feature extraction is not yet wired in this subcommand. The
-    committed CSVs under ``quantitative/{global,patch}/results/`` reproduce
-    the published numbers; ``python run.py plots`` regenerates the figures
-    from them without invoking this path.
+    Pipeline:
+
+      1. Load `configs/metrics.yaml` + `configs/models.yaml` +
+         `configs/coco_sample_ids.csv`.
+      2. For each model in the extraction set, call
+         ``metrics.extract.extract_features`` to populate
+         ``$EXPERIMENTS_FEATURES_ROOT/<layer>/val/<stem>.npy``.
+         (Idempotent: stems already on disk are skipped.)
+      3. Call ``metrics.orchestrate.compute_global`` /
+         ``compute_patch`` to build the published representations and
+         compute uniformity / effective-rank / linear-CKA / PWCCA.
+      4. Write the four output CSVs.
+
+    Flags select scope:
+      ``--global`` / ``--patch``           which pipelines to run
+      ``--similarity`` / ``--quality``     which metric families to emit
+                                            (default: both when scope is on)
     """
-    cfg = yaml.safe_load((_CONFIGS / "metrics.yaml").read_text())
-    sample_ids = pd.read_csv(_CONFIGS / "coco_sample_ids.csv")["image_stem"].tolist()
-    print(f"[metrics] config: n_samples={cfg['n_samples']}, pca_dim={cfg['pca_dim']}, "
-          f"spatial_size={cfg['spatial_size']}")
-    print(f"[metrics] sample ids: {len(sample_ids)} (first: {sample_ids[0]})")
-    print(f"[metrics] features cache: {FEATURES_ROOT}  exists={FEATURES_ROOT.exists()}")
+    import logging
 
-    raise SystemExit(
-        "[metrics] live extraction is not yet implemented; edit the CSVs under "
-        "quantitative/{global,patch}/results/ and re-run `python run.py plots` "
-        "to refresh the figures."
-    )
+    from metrics.extract import extract_features
+    from metrics.orchestrate import compute_global, compute_patch
+
+    logging.basicConfig(level=logging.INFO,
+                        format="%(asctime)s %(name)s %(message)s")
+
+    cfg = yaml.safe_load((_CONFIGS / "metrics.yaml").read_text())
+    models_cfg = yaml.safe_load((_CONFIGS / "models.yaml").read_text())
+    sample_ids = pd.read_csv(_CONFIGS / "coco_sample_ids.csv")["image_stem"].tolist()
+    if args.limit is not None:
+        sample_ids = sample_ids[: args.limit]
+
+    if not (args.global_ or args.patch):
+        raise SystemExit("[metrics] specify at least --global or --patch")
+    if not (args.similarity or args.quality):
+        # Default: emit both metric families.
+        args.similarity = args.quality = True
+
+    coco_dir = DATASETS_ROOT / "Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/val2014"
+    if not coco_dir.is_dir():
+        raise SystemExit(f"[metrics] COCO val2014 not found at {coco_dir}")
+
+    print(f"[metrics] n_samples={len(sample_ids)} pca_dim={cfg['pca_dim']} "
+          f"spatial_size={cfg['spatial_size']}")
+    print(f"[metrics] features cache: {FEATURES_ROOT}")
+
+    # ── Extract features for every model we need on disk ─────────────────
+    # ``ddn-cd`` is composed from dinov3 + cd later, so it isn't extracted
+    # standalone here.
+    extract_tags = ["dinov3", "cd", "sd-2.1", "clip", "tdn", "tddn"]
+    for tag in extract_tags:
+        for group_key in ("baselines", "trained"):
+            group = models_cfg.get(group_key, {}) or {}
+            if tag in group:
+                extract_features(
+                    tag=tag,
+                    model_entry=group[tag],
+                    image_stems=sample_ids,
+                    coco_dir=coco_dir,
+                    features_root=FEATURES_ROOT,
+                    device="cuda",
+                )
+                break
+        else:
+            raise SystemExit(f"[metrics] model tag {tag!r} not found in models.yaml")
+
+    # ── Compose representations + compute metrics ─────────────────────────
+    quality_subsample_global = None                # use full N=2000 rows
+    quality_subsample_patch = int(cfg.get("uniformity_subsample", 10000))
+
+    def _resolve_out(scope: str, kind: str) -> Path:
+        """Choose the destination CSV path; respect --out-root override."""
+        if args.out_root is not None:
+            return args.out_root / f"{scope}_{kind}.csv"
+        parent = _QUANT_GLOBAL if scope == "global" else _QUANT_PATCH
+        return parent / "results" / f"{scope}_{kind}.csv"
+
+    if args.global_:
+        qg, sg, cd_reducers, sd_reducers = compute_global(
+            FEATURES_ROOT, sample_ids,
+            pca_dim=int(cfg["pca_dim"]),
+            target=int(cfg["spatial_size"]),
+            uniformity_subsample=quality_subsample_global,
+        )
+        if args.quality:
+            out = _resolve_out("global", "quality")
+            out.parent.mkdir(parents=True, exist_ok=True)
+            qg.to_csv(out, index=False)
+            print(f"[metrics] wrote {out}")
+        if args.similarity:
+            out = _resolve_out("global", "similarity")
+            out.parent.mkdir(parents=True, exist_ok=True)
+            sg.to_csv(out, index=False)
+            print(f"[metrics] wrote {out}")
+    else:
+        cd_reducers = sd_reducers = None
+
+    if args.patch:
+        if cd_reducers is None or sd_reducers is None:
+            # Patch reps need PCA bases fit on the global features for
+            # consistency with the published pipeline. Build them even
+            # when --patch is asked for alone.
+            _, _, cd_reducers, sd_reducers = compute_global(
+                FEATURES_ROOT, sample_ids,
+                pca_dim=int(cfg["pca_dim"]),
+                target=int(cfg["spatial_size"]),
+                uniformity_subsample=quality_subsample_global,
+            )
+        qp, sp = compute_patch(
+            FEATURES_ROOT, sample_ids,
+            cd_reducers=cd_reducers, sd_reducers=sd_reducers,
+            n_subsample=int(cfg["n_patches_subsample"]),
+            pca_dim=int(cfg["pca_dim"]),
+            target=int(cfg["spatial_size"]),
+            uniformity_subsample=quality_subsample_patch,
+            seed=int(cfg.get("seed", 42)),
+        )
+        if args.quality:
+            out = _resolve_out("patch", "quality")
+            out.parent.mkdir(parents=True, exist_ok=True)
+            qp.to_csv(out, index=False)
+            print(f"[metrics] wrote {out}")
+        if args.similarity:
+            out = _resolve_out("patch", "similarity")
+            out.parent.mkdir(parents=True, exist_ok=True)
+            sp.to_csv(out, index=False)
+            print(f"[metrics] wrote {out}")
 
 
 # ─── CLI entry point ────────────────────────────────────────────────────────
@@ -441,6 +553,11 @@ def build_parser() -> argparse.ArgumentParser:
                     help="Persist extracted features to $EXPERIMENTS_FEATURES_ROOT.")
     me.add_argument("--limit", type=int, default=None,
                     help="Cap the number of COCO images analyzed (debug).")
+    me.add_argument("--out-root", type=Path, default=None,
+                    help="Optional override for the output root. When set, "
+                         "writes go to ``<out-root>/{global,patch}_{quality,"
+                         "similarity}.csv`` instead of clobbering the "
+                         "committed paper-canonical CSVs.")
     me.set_defaults(func=cmd_metrics)
 
     pl = sub.add_parser("plots",

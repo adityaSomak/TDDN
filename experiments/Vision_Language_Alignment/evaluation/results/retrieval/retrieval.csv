@@ -1,0 +1,7 @@
+model,dataset,i2t_r1,t2i_r1
+clip,coco,35.50,18.30
+tddn,coco,36.10,24.00
+tdn,coco,37.10,24.10
+clip,flickr30k,88.10,71.50
+tddn,flickr30k,86.10,71.60
+tdn,flickr30k,86.00,72.80

@@ -1,0 +1,7 @@
+model,dataset,miou
+clip,ade20k,6.00
+tddn,ade20k,10.96
+tdn,ade20k,7.40
+clip,puzzle,4.15
+tddn,puzzle,16.77
+tdn,puzzle,8.19

@@ -35,6 +35,5 @@ Key args: `--model`, `--per-class-train`, `--val-subset`, `--k`,
 ## Results
 
 - [`evaluation/results/imagenet_knn.csv`](evaluation/results/imagenet_knn.csv) —
-  headline table (one row per model).
-- `evaluation/results/detail/<model_tag>.json` — full per-model metrics
-  when produced.
+  headline table with columns
+  `model, top1, top5, dim, k, n_train, n_val` (one row per model).

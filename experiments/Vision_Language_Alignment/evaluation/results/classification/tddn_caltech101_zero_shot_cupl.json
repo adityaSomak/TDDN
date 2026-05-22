@@ -1,0 +1,6 @@
+{
+  "model": "tddn",
+  "dataset": "caltech101",
+  "mode": "zero_shot_cupl",
+  "top1": 77.7
+}

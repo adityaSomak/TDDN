@@ -24,5 +24,5 @@ Key args: `--model`, `--n-per-cat`, `--categories`, `--limit`,
 - [`evaluation/results/keypoint_matching.csv`](evaluation/results/keypoint_matching.csv) —
   headline table (one row per model).
 - `evaluation/results/<model_tag>.json` — per-category PCK breakdown.
-- `evaluation/results/layers/*.json` — CD/SD per-layer and DINOv3 facet
-  ablations.
+- `evaluation/results/ablations/*.json` — CD-vs-SD per-layer breakdown
+  and DINOv3 facet sweep.

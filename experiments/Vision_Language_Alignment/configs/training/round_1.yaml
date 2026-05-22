@@ -1,0 +1,33 @@
+# Round 1 — LAION + COCO contrastive pretrain.
+
+optim:
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  batch_size: 64
+  warmup_iterations: 500
+  max_iterations: 5000
+  grad_cache_multiplier: 16
+
+loss:
+  structure_lambda: 10.0
+  structure_temperature: 0.05
+  structure_levels: 1
+  structure_warmup_steps: 500
+  structure_centering: mean
+  structure_distance: cosine
+  structure_weighting: none       # match the saved configs exactly
+  structure_margin: 0.0
+  structure_center_first: false
+
+trainer:
+  use_fsdp: true
+  use_ac: true                    # activation checkpointing
+  do_compile: true                # torch.compile on the trainable heads
+  precision: bf16-mixed
+  log_every_n_steps: 50
+
+data:
+  coco_root: datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/train2014
+  coco_ann_file: datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/annotations/captions_train2014.json
+  laion_shards: datasets/Existing_Datasets/Vision_Language_Alignment/LAION/laion_main
+  use_extended_prompts: true
