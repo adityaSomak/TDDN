@@ -1,0 +1,12 @@
+model,mIoU,pixel_acc
+cd,79.20,
+clip,71.33,
+ddn,81.15,
+dinov2-vitb,75.79,
+dinov2-vitg,78.80,
+dinov3,76.18,
+sd+dinov2-vitb,76.05,
+sd+dinov2-vitg,78.70,
+sd-2.1,74.77,
+tddn,74.70,
+tdn,68.89,

@@ -1,0 +1,65 @@
+# Model registry for imagenet_knn.
+#
+# Tags are kept identical across Segmentation / Keypoint_Matching /
+# imagenet_knn so the paper-table comparisons line up one-to-one.
+
+baselines:
+  dinov2-vitb:
+    backbone: dinov2-vitb14
+    extractor: {facet: token, block_idx: -1}
+    transform: {strategy: imagenet_center_crop, input_size: 336}
+    pool: cls
+  dinov2-vitg:
+    backbone: dinov2-vitg14
+    extractor: {facet: token, block_idx: -1}
+    transform: {strategy: imagenet_center_crop, input_size: 336}
+    pool: cls
+  sd-2.1:
+    backbone: sd
+    extractor: {timestep: 261, noise_mode: clean, hook_position: "resnets[2]"}
+    transform: {strategy: imagenet_center_crop, input_size: 224}
+    pool: per_layer_mean
+  dinov3:
+    backbone: dinov3-vith16plus
+    extractor: {facet: token, block_idx: -1}
+    transform: {strategy: imagenet_center_crop, input_size: 224}
+    pool: cls_plus_patch_mean
+  cd:
+    backbone: cleandift
+    extractor: {timestep: 0, noise_mode: clean, hook_position: "resnets[2]"}
+    transform: {strategy: imagenet_center_crop, input_size: 224}
+    pool: per_layer_mean
+  clip:
+    backbone: clip-vitl14
+    extractor: {}
+    transform: {strategy: imagenet_center_crop, input_size: 336}
+    pool: cls
+
+fusion:
+  sd+dinov2-vitb:
+    components: [{tag: sd-2.1}, {tag: dinov2-vitb}]
+  sd+dinov2-vitg:
+    components: [{tag: sd-2.1}, {tag: dinov2-vitg}]
+  ddn:
+    components: [{tag: dinov3}, {tag: cd}]
+
+trained:
+  tdn:
+    backbone: vith-roberta
+    extractor: {}
+    transform: {strategy: imagenet_center_crop, input_size: 224}
+    pool: global
+    checkpoint: vith_roberta_v3_coco_ft
+    checkpoint_step: 99
+  tddn:
+    backbone: fused-dinov3-cd
+    extractor: {return_patches: false}
+    transform: {strategy: imagenet_center_crop, input_size: 224}
+    pool: global
+    checkpoint: fused_dinov3_cleandift_coco_ft
+    checkpoint_step: [149, 199]
+
+defaults:
+  k: 20
+  per_class_train: 100
+  val_subset: null

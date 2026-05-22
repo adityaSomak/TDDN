@@ -17,6 +17,7 @@ factories. Trained-model code is vendored under ``text_alignment/``.
 from .registry import MODEL_REGISTRY, RegistryEntry, build_extractor
 from .preprocessing import build_transform, load_image
 from .fusion import fuse_concat, fuse_concat_global
+from .pooling import pool_to_vector
 from .pca_reduction import (
     fit_global_pca,
     apply_pca,
@@ -31,6 +32,7 @@ __all__ = [
     "MODEL_REGISTRY", "RegistryEntry", "build_extractor",
     "build_transform", "load_image",
     "fuse_concat", "fuse_concat_global",
+    "pool_to_vector",
     "fit_global_pca", "apply_pca", "hierarchical_co_pca",
     "per_image_pca_layer_reduce", "per_image_pca_rgb",
     "raw_concat_layers",

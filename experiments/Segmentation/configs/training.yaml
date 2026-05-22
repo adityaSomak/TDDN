@@ -1,0 +1,32 @@
+# Shared training hyperparameters across all model_tags.
+
+loss:
+  type: weighted_ce_dice
+  dice_weight: 0.3
+  ignore_index: 255
+
+optim:
+  lr: 1.0e-3
+  weight_decay: 1.0e-4
+  epochs: 30
+  batch_size: 16
+  scheduler: cosine
+  warmup_epochs: 1
+
+trainer:
+  precision: bf16-mixed
+  val_check_interval: 0.5
+  log_every_n_steps: 20
+  num_workers: 4
+
+# Per-layer Global PCA fit (applied to diffusion backbones with a
+# `pca:` entry in models.yaml). Fit once on a balanced training
+# subsample before the first training step.
+pca:
+  n_samples: 200
+  seed: 42
+
+# Per-class weights are read from
+# datasets/Puzzle_Perception/Segmentation/classes.yaml
+# (weight_ce for the loss, weight_miou for the validation metric).
+class_weights_from: classes.yaml

@@ -1,0 +1,80 @@
+# Model registry for Keypoint_Matching.
+#
+# Each entry maps a kebab-case `model_tag` to the backbone in
+# shared_utils.feature_extraction plus the extraction recipe. Tags are
+# kept identical across Segmentation / Keypoint_Matching / imagenet_knn
+# so the paper-table comparisons line up one-to-one.
+#
+# Conventions used below:
+#   - `backbone`      registry name in shared_utils.feature_extraction.
+#   - `extractor`     kwargs forwarded to build_extractor.
+#   - `transform`     preprocessing strategy + square canvas size.
+#   - `co_pca`        per-layer co-PCA dim for diffusion backbones.
+#   - `components`    handcraft fusion of two existing tags (concat-L2).
+#   - `loader_kwargs` extra kwargs threaded into the backbone loader.
+#   - `checkpoint`    trained-head checkpoint name + step (for tdn/tddn).
+
+baselines:
+  dinov2-vitb:
+    backbone: dinov2-vitb14
+    extractor: {facet: value, block_idx: 11}
+    transform: {strategy: aspect_pad, input_size: 840}
+  dinov2-vitg:
+    backbone: dinov2-vitg14
+    extractor: {facet: value, block_idx: 11}
+    transform: {strategy: aspect_pad, input_size: 840}
+  sd-2.1:
+    backbone: sd
+    extractor: {timestep: 100, noise_mode: noisy, hook_position: "resnets[1]"}
+    transform: {strategy: aspect_pad, input_size: 960}
+    co_pca: {n_components_per_layer: 512}
+  dinov3:
+    backbone: dinov3-vith16plus
+    extractor: {facet: value, block_idx: -1}
+    transform: {strategy: aspect_pad, input_size: 960}
+  cd:
+    backbone: cleandift
+    extractor: {timestep: 261, noise_mode: clean, hook_position: "resnets[1]"}
+    transform: {strategy: aspect_pad, input_size: 960}
+    co_pca: {n_components_per_layer: 512}
+  clip:
+    backbone: clip-vitl14
+    extractor: {}
+    transform: {strategy: aspect_pad, input_size: 840}
+
+fusion:
+  sd+dinov2-vitb:
+    components:
+      - {tag: sd-2.1, weight: 0.5}
+      - {tag: dinov2-vitb, weight: 0.5}
+    transform: {strategy: aspect_pad, input_size: 840}
+  sd+dinov2-vitg:
+    components:
+      - {tag: sd-2.1, weight: 0.5}
+      - {tag: dinov2-vitg, weight: 0.5}
+    transform: {strategy: aspect_pad, input_size: 840}
+  ddn:
+    components:
+      - {tag: dinov3, weight: 0.5}
+      - {tag: cd, weight: 0.5}
+    transform: {strategy: aspect_pad, input_size: 960}
+
+trained:
+  tdn:
+    backbone: vith-roberta
+    extractor: {return_patches: true}
+    transform: {strategy: aspect_pad, input_size: 960}
+    checkpoint: vith_roberta_v3_coco_ft
+    checkpoint_step: 99
+  tddn:
+    backbone: fused-dinov3-cd
+    extractor: {return_patches: true}
+    loader_kwargs: {common_grid_override: 60}
+    transform: {strategy: aspect_pad, input_size: 960}
+    checkpoint: fused_dinov3_cleandift_coco_ft
+    checkpoint_step: [149, 199]
+
+defaults:
+  split: test
+  alphas: [0.10, 0.05, 0.01]
+  layer_ablation_n_per_cat: 20

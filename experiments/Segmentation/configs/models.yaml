@@ -1,0 +1,71 @@
+# Model registry for Segmentation.
+#
+# Tags are kept identical across Segmentation / Keypoint_Matching /
+# imagenet_knn so the paper-table comparisons line up one-to-one. All
+# entries become trainable linear heads on top of frozen features
+# (`run_train.py`); the head is the only learned component.
+
+baselines:
+  dinov2-vitb:
+    backbone: dinov2-vitb14
+    extractor: {facet: token, block_idx: -1}
+    transform: {strategy: square_resize, input_size: 448}
+  dinov2-vitg:
+    backbone: dinov2-vitg14
+    extractor: {facet: token, block_idx: -1}
+    transform: {strategy: square_resize, input_size: 448}
+  sd-2.1:
+    backbone: sd
+    extractor: {timestep: 261, noise_mode: clean, hook_position: "resnets[2]", layers: [2, 5, 8]}
+    transform: {strategy: square_resize, input_size: 512}
+    pca: {n_components_per_layer: 512}
+  dinov3:
+    backbone: dinov3-vith16plus
+    extractor: {facet: token, block_idx: -1}
+    transform: {strategy: square_resize, input_size: 512}
+  cd:
+    backbone: cleandift
+    extractor: {timestep: 0, noise_mode: clean, hook_position: "resnets[2]", layers: [2, 5, 8]}
+    transform: {strategy: square_resize, input_size: 512}
+    pca: {n_components_per_layer: 512}
+  clip:
+    backbone: clip-vitl14
+    extractor: {}
+    transform: {strategy: square_resize, input_size: 448}
+
+fusion:
+  sd+dinov2-vitb:
+    components:
+      - {tag: sd-2.1, weight: 1.0}
+      - {tag: dinov2-vitb, weight: 1.0}
+    transform: {strategy: square_resize, input_size: 448}
+  sd+dinov2-vitg:
+    components:
+      - {tag: sd-2.1, weight: 1.0}
+      - {tag: dinov2-vitg, weight: 1.0}
+    transform: {strategy: square_resize, input_size: 448}
+  ddn:
+    components:
+      - {tag: dinov3, weight: 1.0}
+      - {tag: cd, weight: 1.0}
+    transform: {strategy: square_resize, input_size: 512}
+
+trained:
+  tdn:
+    backbone: vith-roberta
+    extractor: {return_patches: true}
+    transform: {strategy: square_resize, input_size: 512}
+    checkpoint: vith_roberta_v3_coco_ft
+    checkpoint_step: 99
+  tddn:
+    backbone: fused-dinov3-cd
+    extractor: {return_patches: true}
+    transform: {strategy: square_resize, input_size: 512}
+    checkpoint: fused_dinov3_cleandift_coco_ft
+    checkpoint_step: [149, 199]
+
+# Head configuration shared across model_tags (overridable per-tag).
+default_head:
+  kind: linear         # `linear` for a 1×1 conv head; `mlp` for [256, 256] hidden
+  hidden_dims: []
+  output_size: 512     # bilinear-upsample logits to this square resolution

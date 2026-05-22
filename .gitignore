@@ -23,3 +23,20 @@ experiments/shared_utils/feature_extraction/checkpoints/**/ckpt/
 # COCO val2014 — place under datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/val2014
 datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/val2014
 datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/val2014/
+
+# Dataset symlinks (dev mode; real data lives outside the repo)
+datasets/Existing_Datasets/Keypoint_Matching/SPair-71K/spair-71k
+datasets/Existing_Datasets/Classification/ImageNet-1K/imagenet_hf
+
+# Segmentation: trained head checkpoints + tensorboard logs (gitignored)
+experiments/Segmentation/training/checkpoints/
+experiments/Segmentation/training/logs/
+
+# imagenet_knn: cached pooled feature memmaps (per-backbone, fp16)
+experiments/imagenet_knn/features/
+
+# Puzzle_Perception segmentation dataset (downloaded by download_datasets.py)
+datasets/Puzzle_Perception/Segmentation/data/
+
+# One-off helper scripts (run locally; not part of the released code)
+scripts/

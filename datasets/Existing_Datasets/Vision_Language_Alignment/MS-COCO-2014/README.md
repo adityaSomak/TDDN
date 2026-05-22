@@ -25,12 +25,6 @@ unzip val2014.zip -d <this dir>
 # → val2014/COCO_val2014_*.jpg
 ```
 
-Or symlink an existing local copy:
-
-```bash
-ln -s /path/to/your/coco/val2014 val2014
-```
-
 ## Resolution
 
 The path resolves as
