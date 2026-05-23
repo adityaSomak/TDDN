@@ -36,7 +36,7 @@ def _require_env(name: str) -> Path:
 
 
 def load_alignment_model(
-    device: str = "cuda:0",
+    device: str = "cuda",
     common_grid: int | None = 64,
 ) -> Any:
     """Build the alignment model, weight-average checkpoints, place on `device`.

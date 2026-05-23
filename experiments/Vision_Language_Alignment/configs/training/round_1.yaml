@@ -29,5 +29,5 @@ trainer:
 data:
   coco_root: datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/train2014
   coco_ann_file: datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/annotations/captions_train2014.json
-  laion_shards: datasets/Existing_Datasets/Vision_Language_Alignment/LAION/laion_main
+  laion_shards: datasets/Existing_Datasets/Vision_Language_Alignment/Recaptioned_LAION/data
   use_extended_prompts: true

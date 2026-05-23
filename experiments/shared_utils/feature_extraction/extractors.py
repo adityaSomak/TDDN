@@ -30,7 +30,7 @@ import torch.nn.functional as F
 from .loaders import ModelMeta
 
 # Default diffusion layer hook positions per task lineage (see audit).
-#   - "resnets[2]"  : imagenet_knn / segmentation / pca_viz (3rd ResBlock)
+#   - "resnets[2]"  : ImageNet_Classification / segmentation / pca_viz (3rd ResBlock)
 #   - "resnets[1]"  : SPair-correspondence (2nd sub-layer; attentions[1] for
 #                     CrossAttn up_blocks)
 _DEFAULT_DIFFUSION_HOOK = "resnets[2]"
@@ -229,7 +229,7 @@ class DiffusionExtractor:
     the per-task choices.
 
     `hook_position` selects which sub-module of each `up_blocks[i]` is
-    hooked. Three of the four tasks (imagenet_knn / segmentation / pca_viz)
+    hooked. Three of the four tasks (ImageNet_Classification / segmentation / pca_viz)
     hook the third ResBlock (`resnets[2]`); SPair correspondence hooks
     `resnets[1]` (or `attentions[1]` if the up_block has cross-attention).
     """
@@ -275,7 +275,7 @@ class DiffusionExtractor:
         up_idx = layer_idx // 3
         block = self.pipe.unet.up_blocks[up_idx]
         if self.hook_position == "resnets[2]":
-            # 3rd ResBlock. Used by imagenet_knn / segmentation / pca_viz.
+            # 3rd ResBlock. Used by ImageNet_Classification / segmentation / pca_viz.
             return block.resnets[2]
         # resnets[1] — SPair correspondence path; falls back to attentions[1]
         # when the up_block has cross-attention.

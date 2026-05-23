@@ -1,36 +1,61 @@
 # DiffusedDINOv1
 
-A study of **vision encoders that fuse self-supervised and diffusion
-features**. The central hypothesis: by combining the dense semantic
-structure of DINOv3 with the spatial / texture cues that fall out of
-Stable Diffusion's UNet (via the CleanDIFT reformulation), we can
-build vision encoders that beat either source alone on *both*
-recognition (k-NN, classification) and localization (segmentation,
-keypoint matching) — and that also align cleanly with a frozen
-RoBERTa text encoder.
+Solving structured reasoning tasks over images (such as image puzzle
+solving) requires reasoning over fine-grained visual perception
+abilities — which seems missing from current state-of-the-art
+Vision-Language Models (VLMs). In fact, VLMs using CLIP-based ViT
+backbones seem to sacrifice fine-grained visual details to capture
+high-level semantic understanding. We empirically observe that
+failure of these ViT backbones propagates to downstream tasks when
+attempting to solve visual puzzles. Therefore, we propose a novel
+visual perception module (**DiffusedDINO**) that integrates ViT
+(DINOv3) and Diffusion (CleanDIFT) representations to achieve a
+superior fine-coarse tradeoff, suitable for downstream visual
+reasoning tasks. We perform detailed analysis of the effectiveness
+of this fused representation. Representation-quality analysis along
+with performance on image perception tasks show informativeness and
+discriminative properties of this representation. We specifically
+benchmark effectiveness in the semantic-segmentation task using a
+novel puzzle-based segmentation dataset (namely **Puzzle
+Perception**). Next, we show that traditional image-text alignment
+techniques are sufficient to maintain effectiveness in multimodal
+(vision-language) tasks such as image-text retrieval. Lastly, we
+show that segmentation masks predicted using **DiffusedDINO** can
+assist various VLMs to detect objects of various abstract shapes and
+sizes, often with considerable improvements.
 
-The repo evaluates three model families across one shared registry:
+## What's in this repository
 
-- **Baselines** — DINOv3, DINOv2, CLIP, Stable Diffusion 2.1, CleanDIFT.
-- **Handcraft fusion** — `ddn`: L2-normalized concatenation of frozen
-  DINOv3 patches with CleanDIFT layer features (no training).
-- **Trained alignment** — `tdn` (DINOv3-H+ vision + RoBERTa-large text
-  + two trained head blocks per encoder) and `tddn` (the same trained
-  heads on top of a fused DINOv3 + CleanDIFT vision encoder). Both are
-  trained with a CLIP-style symmetric InfoNCE loss plus a
-  structure-preservation regularizer (Jensen-Shannon on softmaxed
-  similarity matrices) on LAION + COCO captions.
+The paper's three model tags map to the codebase as follows:
+
+- **`ddn` = DiffusedDINO** — the proposed visual perception module.
+  L2-normalized concatenation of frozen DINOv3 patches with frozen
+  CleanDIFT layer features; no training.
+- **`tdn` = text-aligned DINOv3** — DINOv3-H+ vision + RoBERTa-large
+  text + two trained alignment-head blocks per encoder. Baseline
+  showing how pure-DINOv3 alignment performs without the diffusion
+  fusion.
+- **`tddn` = text-aligned DiffusedDINO** — the same trained alignment
+  heads on top of the `ddn` (DiffusedDINO) fused vision encoder. The
+  vision-language-aligned version of DiffusedDINO.
+
+Both `tdn` and `tddn` are trained with a CLIP-style symmetric
+InfoNCE loss plus a structure-preservation regularizer (Jensen-
+Shannon on softmaxed similarity matrices) on LAION + COCO captions.
+The remaining tags (`dinov3`, `dinov2-vitb`, `dinov2-vitg`, `clip`,
+`sd-2.1`, `cd`, `sd+dinov2-vitb`, `sd+dinov2-vitg`) are unmodified
+baselines wired through the same registry.
 
 Six independent evaluation tracks under [`experiments/`](experiments/)
-measure these encoders against complementary criteria:
+benchmark these encoders against complementary criteria:
 
 | Track | Tests | Headline metric |
 |---|---|---|
 | [Representation_Analysis](experiments/Representation_Analysis/) | intrinsic feature quality + cross-encoder similarity | CKA / PWCCA + uniformity / effective-rank |
 | [Segmentation](experiments/Segmentation/) | linear-probe dense prediction (frozen backbone, trained head) | weighted mIoU on Puzzle-Perception (30 classes) |
 | [Keypoint_Matching](experiments/Keypoint_Matching/) | fine-grained spatial correspondence | PCK@{0.1, 0.05, 0.01} on SPair-71K |
-| [imagenet_knn](experiments/imagenet_knn/) | global-feature semantic separability | top-1 / top-5 k-NN (k=20) on ImageNet-1K |
-| [Vision_Language_Alignment](experiments/Vision_Language_Alignment/) | end-to-end vision-language usefulness | top-1 (zero-shot / CuPL / TIP-Adapter) + Recall@1 + zero-shot open-vocab mIoU |
+| [ImageNet_Classification](experiments/ImageNet_Classification/) | global-feature semantic separability | top-1 / top-5 k-NN (k=20) on ImageNet-1K |
+| [Vision_Language_Alignment](experiments/Vision_Language_Alignment/) | end-to-end vision-language alignement and evaluation | top-1 (zero-shot / CuPL / TIP-Adapter) + Recall@1 + zero-shot open-vocab mIoU |
 | [Puzzle_Understanding](experiments/Puzzle_Understanding/) | do TDDN segmentation masks help downstream VLMs reason about algorithmic puzzles? | per-task accuracy across GPT-5.x / Qwen2.5-VL / InternVL3 / ... |
 
 Each `experiments/<name>/README.md` documents how to run its
@@ -78,7 +103,7 @@ DiffusedDINOv1/
     │   ├── configs/                       # models.yaml (11 tags)
     │   └── evaluation/{src,results,results/ablations}/
     │
-    ├── imagenet_knn/                      # k-NN (k=20) classification on ImageNet-1K from image-encoder features. Headline: top-1 accuracy.
+    ├── ImageNet_Classification/                      # k-NN (k=20) classification on ImageNet-1K from image-encoder features. Headline: top-1 accuracy.
     │   ├── README.md
     │   ├── run_eval.py
     │   ├── configs/                       # models.yaml (11 tags)
@@ -120,40 +145,38 @@ for the two-env install recipe.
 
 ## Environment variables
 
-A template `.env` lives at the repo root (gitignored). Fill in your
-values and export them to the current shell:
+Create a `.env` at the repo root with the variables below, then export
+them to the current shell:
 
 ```bash
-# edit .env — set HF_TOKEN (and OPENAI_API_KEY if you'll use OpenAI VLMs)
 set -a; source .env; set +a
 ```
 
-`.env` is not auto-loaded — every script reads from `os.environ`
-directly. The variables it can set:
+`.env` is gitignored and not auto-loaded — every script reads from
+`os.environ` directly.
 
-| Variable | Required for | Default |
-|---|---|---|
-| `HF_TOKEN` | every experiment that loads DINOv3 or RoBERTa-large (i.e. all but `Puzzle_Understanding`) | — |
-| `OPENAI_API_KEY` | `Puzzle_Understanding/run_*_eval.py --backend openai` | — |
-| `EXPERIMENTS_DATASETS_ROOT` | optional override of [`shared_utils.paths.DATASETS_ROOT`](experiments/shared_utils/paths.py) | repo-root `datasets/` |
-| `EXPERIMENTS_CHECKPOINTS_ROOT` | optional override of `CHECKPOINTS_ROOT` | `experiments/shared_utils/feature_extraction/checkpoints/` |
-| `EXPERIMENTS_FEATURES_ROOT` | optional override of `FEATURES_ROOT` (where the `Representation_Analysis` metrics CLI caches per-image extracted features) | repo-root `.features_cache/` |
-| `VLLM_PY` | optional path to the vLLM venv's Python interpreter — only used by `Puzzle_Understanding/scripts/launch_vllm.sh` | first `python` on `PATH` |
+**Required**
+- `HF_TOKEN` — gated DINOv3 / RoBERTa-large weights; needed for every
+  experiment except `Puzzle_Understanding`.
+- `OPENAI_API_KEY` — only for `Puzzle_Understanding/run_*_eval.py
+  --backend openai`.
 
-## Shared assets
+**Optional**
+- `VLLM_PY` — path to the vLLM venv's Python interpreter, used by
+  `Puzzle_Understanding/scripts/launch_vllm.sh`. Defaults to the
+  first `python` on `PATH`.
 
-- **Datasets** live under [`datasets/`](datasets/) by default; redirect
-  via `EXPERIMENTS_DATASETS_ROOT` to keep large trees outside the repo.
-- **Backbone checkpoints** live under
-  [`experiments/shared_utils/feature_extraction/checkpoints/`](experiments/shared_utils/feature_extraction/);
-  per-experiment READMEs list which ones each experiment needs.
+If you need to keep datasets / checkpoints / the metrics feature
+cache outside the repo tree, three `EXPERIMENTS_*_ROOT` overrides
+exist — see
+[`shared_utils/paths.py`](experiments/shared_utils/paths.py).
 
 ## Per-experiment entry points
 
 - [`experiments/Representation_Analysis/`](experiments/Representation_Analysis/README.md)
 - [`experiments/Segmentation/`](experiments/Segmentation/README.md)
 - [`experiments/Keypoint_Matching/`](experiments/Keypoint_Matching/README.md)
-- [`experiments/imagenet_knn/`](experiments/imagenet_knn/README.md)
+- [`experiments/ImageNet_Classification/`](experiments/ImageNet_Classification/README.md)
 - [`experiments/Vision_Language_Alignment/`](experiments/Vision_Language_Alignment/README.md)
 - [`experiments/Puzzle_Understanding/`](experiments/Puzzle_Understanding/README.md)
 - [`experiments/shared_utils/feature_extraction/`](experiments/shared_utils/feature_extraction/README.md)

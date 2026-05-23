@@ -81,19 +81,17 @@ _SEG_DATASETS = ("ade20k", "puzzle")
 _CLASS_MODES = ("zero_shot", "cupl", "tip")
 
 _DATASET_ROOTS = {
-    # Torchvision's CIFAR100 / Caltech101 expect the dataset dir to be
-    # one level below the supplied ``root``.
-    "cifar100":    "datasets/Existing_Datasets/Classification/CIFAR-100/cifar100",
-    "caltech101":  "datasets/Existing_Datasets/Classification/Caltech-101/caltech101",
-    # Food101 / GTSRB resolve a nested ``<root>/food-101/`` /
-    # ``<root>/gtsrb/GTSRB/`` directory layout, so we point at the
-    # symlink's parent.
+    # Torchvision's CIFAR100 / Caltech101 / Food101 / GTSRB descend into
+    # their own subdir under the supplied ``root`` (e.g. CIFAR100 expects
+    # ``<root>/cifar-100-python/``), so we pass the parent.
+    "cifar100":    "datasets/Existing_Datasets/Classification/CIFAR-100",
+    "caltech101":  "datasets/Existing_Datasets/Classification/Caltech-101",
     "food101":     "datasets/Existing_Datasets/Classification/Food-101",
     "gtsrb":       "datasets/Existing_Datasets/Classification/GTSRB",
     "imagenet1k":  "datasets/Existing_Datasets/Classification/ImageNet-1K/imagenet_hf",
-    "flickr30k":   "datasets/Existing_Datasets/Retrieval/Flickr30K/flickr30k",
+    "flickr30k":   "datasets/Existing_Datasets/Retrieval/Flickr30K",
     "coco":        "datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/val2014",
-    "ade20k":      "datasets/Existing_Datasets/Segmentation/ADE20K/ade20k",
+    "ade20k":      "datasets/Existing_Datasets/Segmentation/ADE20K",
     "puzzle":      "datasets/Puzzle_Perception/Segmentation/data",
 }
 

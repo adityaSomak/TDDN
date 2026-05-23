@@ -1,6 +1,6 @@
 """Runtime fusion — bilinear-align + L2-normalize + weighted concat.
 
-The standard recipe across SPair, imagenet_knn, and pca_viz when combining
+The standard recipe across SPair, ImageNet_Classification, and pca_viz when combining
 features from two backbones. The trained `fused-dinov3-cd` model is a
 separate path (not runtime fusion).
 """
@@ -51,10 +51,10 @@ def fuse_concat_global(
     normalize: bool = True,
     final_normalize: bool = True,
 ) -> torch.Tensor:
-    """Weighted concat of per-image vectors (B, D_i). Used by imagenet_knn.
+    """Weighted concat of per-image vectors (B, D_i). Used by ImageNet_Classification.
 
     Each input is L2-normalized along its feature dim before being weighted;
-    the concatenated output is L2-normalized once more (imagenet_knn convention).
+    the concatenated output is L2-normalized once more (ImageNet_Classification convention).
     """
     if len(feats) != len(weights):
         raise ValueError(f"len(feats)={len(feats)} != len(weights)={len(weights)}")

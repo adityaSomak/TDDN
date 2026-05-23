@@ -20,22 +20,23 @@ experiments/shared_utils/feature_extraction/checkpoints/**/ckpt/
 # Feature cache for `run.py metrics --cache` runs (~14 GB)
 .features_cache/
 
-# COCO val2014 — place under datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/val2014
-datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/val2014
+# Downloaded dataset payloads (populated by datasets/download_datasets.py;
+# don't commit the data, just the .gitkeep + drop-point READMEs).
+datasets/Existing_Datasets/Classification/CIFAR-100/cifar-100-python/
+datasets/Existing_Datasets/Classification/CIFAR-100/cifar-100-python.tar.gz
+datasets/Existing_Datasets/Classification/Caltech-101/caltech101/
+datasets/Existing_Datasets/Classification/Food-101/food-101/
+datasets/Existing_Datasets/Classification/Food-101/food-101.tar.gz
+datasets/Existing_Datasets/Classification/GTSRB/gtsrb/
+datasets/Existing_Datasets/Classification/ImageNet-1K/imagenet_hf/
+datasets/Existing_Datasets/Keypoint_Matching/SPair-71K/SPair-71k/
+datasets/Existing_Datasets/Retrieval/Flickr30K/*
+!datasets/Existing_Datasets/Retrieval/Flickr30K/.gitkeep
+datasets/Existing_Datasets/Segmentation/ADE20K/ADEChallengeData2016/
+datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/train2014/
 datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/val2014/
-
-# Dataset symlinks (dev mode; real data lives outside the repo)
-datasets/Existing_Datasets/Keypoint_Matching/SPair-71K/spair-71k
-datasets/Existing_Datasets/Classification/ImageNet-1K/imagenet_hf
-datasets/Existing_Datasets/Classification/CIFAR-100/cifar100
-datasets/Existing_Datasets/Classification/Caltech-101/caltech101
-datasets/Existing_Datasets/Classification/Food-101/food-101
-datasets/Existing_Datasets/Classification/GTSRB/gtsrb
-datasets/Existing_Datasets/Retrieval/Flickr30K/flickr30k
-datasets/Existing_Datasets/Segmentation/ADE20K/ade20k
-datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/train2014
-datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/annotations
-datasets/Existing_Datasets/Vision_Language_Alignment/LAION/laion_main
+datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/annotations/
+datasets/Existing_Datasets/Vision_Language_Alignment/Recaptioned_LAION/data/
 
 # Vision_Language_Alignment: trained alignment-head checkpoints + tensorboard logs
 experiments/Vision_Language_Alignment/training/checkpoints/
@@ -45,8 +46,8 @@ experiments/Vision_Language_Alignment/training/logs/
 experiments/Segmentation/training/checkpoints/
 experiments/Segmentation/training/logs/
 
-# imagenet_knn: cached pooled feature memmaps (per-backbone, fp16)
-experiments/imagenet_knn/features/
+# ImageNet_Classification: cached pooled feature memmaps (per-backbone, fp16)
+experiments/ImageNet_Classification/features/
 
 # Puzzle_Perception segmentation dataset (downloaded by download_datasets.py)
 datasets/Puzzle_Perception/Segmentation/data/

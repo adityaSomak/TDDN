@@ -2,7 +2,7 @@
 #
 # Each entry maps a kebab-case `model_tag` to the backbone in
 # shared_utils.feature_extraction plus the extraction recipe. Tags are
-# kept identical across Segmentation / Keypoint_Matching / imagenet_knn
+# kept identical across Segmentation / Keypoint_Matching / ImageNet_Classification
 # so the paper-table comparisons line up one-to-one.
 #
 # Conventions used below:

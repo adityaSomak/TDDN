@@ -129,6 +129,10 @@ def main() -> None:
     p.add_argument("--max-epochs", type=int, default=None,
                    help="Override training.yaml:optim.epochs (smoke testing).")
     p.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
+    p.add_argument("--devices", default=1,
+                   help="Lightning ``Trainer(devices=...)``. Default 1 (single GPU). "
+                        "Pass an int (e.g. ``4``) for DDP across N GPUs, or "
+                        "``auto`` to use every visible GPU.")
     args = p.parse_args()
 
     all_cfg, training_cfg = _load_configs()
@@ -197,7 +201,7 @@ def main() -> None:
             monitor="val/miou", mode="max", save_top_k=1, save_last=True,
         )],
         accelerator="gpu" if torch.cuda.is_available() else "cpu",
-        devices=1,
+        devices=(int(args.devices) if str(args.devices).isdigit() else args.devices),
     )
     trainer.fit(module, train_loader, val_loader)
 

@@ -130,6 +130,23 @@ torchrun --nproc_per_node=N python run_train.py --variant tddn --round 2 \
 `python run_train.py ...` invocation exits immediately with a launcher
 hint.
 
+**Effective contrastive batch scales with GPU count.** At each
+iteration the loss sees `batch_size × grad_cache_multiplier ×
+world_size` (image, caption) pairs:
+
+| Round | 1 GPU | 4 GPUs (published) | 8 GPUs |
+|---|---:|---:|---:|
+| 1 (`batch=64`, `grad_cache=16`) | 1,024 | **4,096** | 8,192 |
+| 2 (`batch=64`, `grad_cache=32`) | 2,048 | **8,192** | 16,384 |
+
+The published checkpoints were trained at 4 GPUs. If you train on
+fewer GPUs and want to keep the same effective batch (contrastive
+quality is batch-size-sensitive), bump
+`gradient_cache.grad_cache_multiplier` in
+[`configs/training/round_{1,2}.yaml`](configs/training/)
+proportionally — e.g. 1 GPU + round-1 with `grad_cache_multiplier=64`
+reproduces the 4-GPU effective batch of 4,096.
+
 Checkpoints land at
 `<out_root>/checkpoints/<variant>-round<n>/ckpt/<step>/` as DCP shards
 (`.metadata` + `__<rank>_0.distcp` per rank) — the same on-disk format

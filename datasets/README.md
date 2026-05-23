@@ -25,7 +25,7 @@ datasets/
 │   ├── Segmentation/
 │   │   └── ADE20K/
 │   ├── Vision_Language_Alignment/
-│   │   ├── LAION-5B/
+│   │   ├── Recaptioned_LAION/
 │   │   └── MS-COCO-2014/
 │   └── PVQA/
 │       ├── AlgoPuzzleVQA/
@@ -37,12 +37,13 @@ datasets/
 
 ## Requirements
 
-```bash
-pip install torch torchvision datasets
-```
-
-Some datasets need additional tools (`curl`, `tar`, `unzip`) that ship with
-most Unix systems.
+The repo-wide [`requirements.txt`](../requirements.txt) at the project
+root supplies every Python dependency this script needs (`torch`,
+`torchvision`, `datasets`, `huggingface_hub`, `pycocotools`, …).
+The only system tool that must be on `PATH` is `curl` (used for direct
+HTTP fetches of COCO / ADE20K / SPair); archive extraction goes through
+the Python stdlib (`zipfile`, `tarfile`), so `unzip` / `tar` are not
+required.
 
 ## Downloads
 
@@ -68,12 +69,12 @@ python download_datasets.py --dataset cifar100 --force
 | Caltech-101        | `Existing_Datasets/Classification/Caltech-101/`      | torchvision                                                                                  |
 | Food-101           | `Existing_Datasets/Classification/Food-101/`         | torchvision                                                                                  |
 | GTSRB              | `Existing_Datasets/Classification/GTSRB/`            | torchvision                                                                                  |
-| ImageNet-1K        | `Existing_Datasets/Classification/ImageNet-1K/`      | [`ILSVRC/imagenet-1k`](https://huggingface.co/datasets/ILSVRC/imagenet-1k) (gated)           |
+| ImageNet-1K        | `Existing_Datasets/Classification/ImageNet-1K/imagenet_hf/` | [`ILSVRC/imagenet-1k`](https://huggingface.co/datasets/ILSVRC/imagenet-1k) (gated)     |
 | SPair-71K          | `Existing_Datasets/Keypoint_Matching/SPair-71K/`     | [postech.ac.kr](https://cvlab.postech.ac.kr/research/SPair-71k/)                             |
 | Flickr30K          | `Existing_Datasets/Retrieval/Flickr30K/`             | [`nlphuji/flickr30k`](https://huggingface.co/datasets/nlphuji/flickr30k)                     |
 | ADE20K             | `Existing_Datasets/Segmentation/ADE20K/`             | [data.csail.mit.edu](http://data.csail.mit.edu/places/ADEchallenge/)                         |
 | MS-COCO-2014       | `Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/` | [images.cocodataset.org](http://images.cocodataset.org/)                              |
-| Recaptioned LAION  | `Existing_Datasets/Vision_Language_Alignment/LAION-5B/data/` | [`PuzzleBench/Recaptioned_LAION`](https://huggingface.co/datasets/PuzzleBench/Recaptioned_LAION) (508k samples, ~72 GB, 30 webdataset shards) |
+| Recaptioned LAION  | `Existing_Datasets/Vision_Language_Alignment/Recaptioned_LAION/data/` | [`PuzzleBench/Recaptioned_LAION`](https://huggingface.co/datasets/PuzzleBench/Recaptioned_LAION) (508k samples, ~72 GB; the downloader extracts 30 webdataset shards into a flat `images/` dir + filename-keyed `metadata.csv`) |
 | Puzzle-Perception  | `Puzzle_Perception/Segmentation/data/`               | [`PuzzleBench/Puzzle_Perception`](https://huggingface.co/datasets/PuzzleBench/Puzzle_Perception) (combined 30-class segmentation) |
 
 ### Authentication
@@ -87,14 +88,15 @@ export HF_TOKEN=hf_...
 
 Request access at the dataset page before downloading.
 
-## PVQA: AlgoPuzzleVQA
+## PVQA
 
-This repository ships the PVQA splits used in our evaluations.
+This repository ships the PVQA splits used in our evaluations,
+committed under `Existing_Datasets/PVQA/`.
 
 ### `AlgoPuzzleVQA/`
 
-Six algorithmic puzzle tasks — `checker_move`, `maze_solve`, `nqueens`,
-`tower_of_hanoi`, `water_jugs`, `wood_slide` — each shaped as:
+Four algorithmic puzzle tasks — `checker_move`, `maze_solve`,
+`nqueens`, `wood_slide` — each shaped as:
 
 ```
 <task>/
@@ -109,9 +111,6 @@ Six algorithmic puzzle tasks — `checker_move`, `maze_solve`, `nqueens`,
     ├── problem.pddl
     └── *.jpg               # rendered puzzle images
 ```
-
-The upstream benchmark is described in
-[AlgoPuzzleVQA](https://github.com/declare-lab/LLM-PuzzleTest/tree/master/AlgoPuzzleVQA).
 
 ### `AlgoPuzzleVQA_star/`
 
@@ -159,7 +158,6 @@ See [`Puzzle_Perception/README.md`](Puzzle_Perception/README.md) for usage.
 
 ## License
 
-Each public dataset retains its original license; see the upstream page
-linked in the table. PVQA assets follow the license of the AlgoPuzzleVQA
-project. Code in this directory is released under the repository's root
-license.
+Each public dataset retains its original license; see the upstream
+page linked in the downloads table. Code in this directory is released
+under the repository's root license.

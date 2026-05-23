@@ -2,46 +2,68 @@
 
 Custom data for the puzzle-perception research track. Two subtrees:
 
-| Subtree | Purpose |
-|---|---|
-| [`Segmentation/`](Segmentation/) | Combined per-pixel segmentation dataset over three puzzle domains (chess, maze, tower-of-hanoi) under a single 30-class label space. |
-| [`PVQA/test/chess/`](PVQA/test/chess/) | Chess samples used in the visual-question-answering evaluation, paired with oracle and TDDN segmentation overlays. |
+| Subtree | Purpose | Storage |
+|---|---|---|
+| [`PVQA/test/chess/`](PVQA/test/chess/) | Chess samples for the VLM seg-eval, with paired oracle / TDDN segmentation overlays. | **shipped in the repo** (~1k files committed) — no download step |
+| [`Segmentation/`](Segmentation/) | Combined per-pixel segmentation dataset over three puzzle domains (chess, maze, tower-of-hanoi) under a single 30-class label space. | **schema only** in the repo (`classes.yaml` + `dataset.py`); the image/mask data is fetched from HuggingFace via `download_datasets.py` |
 
 ## Layout
 
 ```
 Puzzle_Perception/
-├── README.md
-├── PVQA/
+├── README.md                              # this file
+│
+├── PVQA/                                  # shipped in the repo
 │   └── test/
 │       └── chess/
 │           ├── data/
-│           │   ├── text_repr.json           # GT board representations (269 entries)
-│           │   ├── images/<ID>.png          # 269 chess board images
-│           │   └── masks/<ID>.png           # 269 ground-truth segmentation masks
+│           │   ├── text_repr.json         # GT board representations (269 entries)
+│           │   ├── images/<ID>.png        # 269 chess board images
+│           │   └── masks/<ID>.png         # 269 ground-truth segmentation masks
 │           └── seg_data/
 │               ├── oracle_mask/<ID>_overlay.jpg   # ground-truth halo overlays
 │               └── tddn_mask/<ID>_overlay.jpg     # TDDN tip-adapter predicted overlays
+│
 └── Segmentation/
-    ├── classes.yaml                          # 30 unified classes
-    ├── dataset.py                            # PuzzleSegmentationDataset
-    └── data/                                 # populated by ../../download_datasets.py
+    ├── classes.yaml                       # shipped — 30 unified classes
+    ├── dataset.py                         # shipped — PuzzleSegmentationDataset
+    └── data/                              # downloaded — populated by ../download_datasets.py
         ├── manifest.csv
         └── {train,val,test}/{images,masks}/<task>_<id>.png
 ```
 
-## Requirements
+The repo-wide [`requirements.txt`](../../requirements.txt) supplies the
+deps you need to load either subtree.
+
+## PVQA — chess seg-eval samples
+
+The 269-puzzle chess evaluation subset ships pre-populated under
+[`PVQA/test/chess/`](PVQA/test/chess/). No download step. The IDs are
+the intersection of the upstream oracle-mask and TDDN-mask overlay sets
+(each puzzle has both overlays available).
+
+Per-puzzle contents:
+
+| File | Meaning |
+|---|---|
+| `data/images/<ID>.png` | source chess board image (512×512) |
+| `data/masks/<ID>.png` | ground-truth per-pixel segmentation (values 0–14, **chess-local** ids — these are the upstream masks, *not* remapped to the unified 30-class space) |
+| `data/text_repr.json` | textual board representation + piece counts |
+| `seg_data/oracle_mask/<ID>_overlay.jpg` | ground-truth segmentation halo overlay |
+| `seg_data/tddn_mask/<ID>_overlay.jpg` | predicted TDDN tip-adapter overlay |
+
+The VLM seg-eval prompts that query these overlays (`raw` /
+`oracle_mask` / `tddn_mask` variants) live under
+[`experiments/Puzzle_Understanding/`](../../experiments/Puzzle_Understanding/),
+not in this dataset folder.
+
+## Segmentation — 30-class unified label space
+
+Only the schema files (`classes.yaml`, `dataset.py`) ship in the repo;
+the image/mask splits are fetched from HuggingFace:
 
 ```bash
-pip install torch Pillow PyYAML huggingface-hub numpy
-```
-
-## Segmentation
-
-### Quick start
-
-```bash
-# From the datasets/ root: fetch the pre-built dataset from HuggingFace
+# from the datasets/ root
 python download_datasets.py --dataset puzzle_perception
 ```
 
@@ -63,7 +85,7 @@ print(ds.classes.names()[:5])
 # ['wall', 'path', 'start', 'dest_a', 'dest_b']
 ```
 
-The PyTorch `Dataset` exposes the class metadata via a `Classes` helper:
+The `Dataset` exposes class metadata via a `Classes` helper:
 `ds.classes.ce_weights()`, `ds.classes.miou_weights()`,
 `ds.classes.ids_for_task("chess")`, etc.
 
@@ -79,15 +101,15 @@ Masks are 8-bit PNGs with values `0..29`. The mapping is defined in
 | hanoi  | 23..29   |  7 |
 
 Every sample's filename encodes its source task
-(`chess_000000.png`, `maze_00012.png`, `hanoi_00042.png`), and the same
+(`chess_000000.png`, `maze_00012.png`, `hanoi_00042.png`); the same
 information is also recorded per-row in `data/manifest.csv` and (after
 HuggingFace upload) as the `source_task` feature column.
 
 ### Default subset sizes
 
 The published dataset is a deterministically-sampled subset of the raw
-sources rather than the full set, matching the segmentation-probe training
-recipe. Per source task:
+sources rather than the full set, matching the segmentation-probe
+training recipe. Per source task:
 
 | Split | Samples per task | Total |
 |---|---:|---:|
@@ -97,33 +119,12 @@ recipe. Per source task:
 
 Sampling uses a fixed seed (`42`), so the subset is reproducible.
 
-## PVQA: chess
-
-The 269-puzzle chess evaluation subset is shipped pre-populated in
-[`PVQA/test/chess/`](PVQA/test/chess/) — no download step is required. The
-IDs are the intersection of the upstream oracle-mask and TDDN-mask overlay
-sets (each puzzle has both overlays available).
-
-Per-puzzle contents:
-
-| File | Meaning |
-|---|---|
-| `data/images/<ID>.png`               | source chess board image (512×512) |
-| `data/masks/<ID>.png`                | ground-truth per-pixel segmentation (values 0–14, **chess-local** ids — these are the upstream masks, **not** remapped to the unified 30-class space) |
-| `data/text_repr.json`                | textual board representation + piece counts |
-| `seg_data/oracle_mask/<ID>_overlay.jpg` | ground-truth segmentation halo overlay |
-| `seg_data/tddn_mask/<ID>_overlay.jpg`   | predicted TDDN tip-adapter overlay |
-
-The seg-eval prompts used to query VLMs against these overlays
-(`raw` / `oracle_mask` / `tddn_mask` variants) live in the experiments
-section, not in this dataset folder.
-
 ## Provenance
 
-- **Segmentation source datasets** — the three raw datasets (`chess_dataset`,
-  `natural_maze_dataset`, `hanoi_dataset`) were generated by the authors and
-  combined into a single 30-class corpus for this release.
-- **PVQA chess overlays** — `oracle_mask/` is derived deterministically from
-  the ground-truth segmentation masks; `tddn_mask/` is produced by the
-  TDDN tip-adapter pipeline. See the AlgoPuzzleVQA_star mask-generation
-  scripts for the algorithms.
+- **Segmentation source datasets** — the three raw datasets
+  (`chess_dataset`, `natural_maze_dataset`, `hanoi_dataset`) were
+  generated by the authors and combined into a single 30-class corpus
+  for this release.
+- **PVQA chess overlays** — `oracle_mask/` is derived deterministically
+  from the ground-truth segmentation masks; `tddn_mask/` is produced by
+  the TDDN tip-adapter pipeline.

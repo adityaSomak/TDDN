@@ -31,7 +31,7 @@ from src.overlays.tddn_loader import load_alignment_model
 from src.overlays.tddn_prompts import tddn_prompts
 
 
-DEVICE = "cuda:0"
+DEVICE = "cuda"
 IMG_SIZE = 1024
 PATCH_SIZE = 16
 PATCH_GRID = IMG_SIZE // PATCH_SIZE   # 64

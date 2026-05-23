@@ -5,9 +5,11 @@ Vision-language model evaluations on the PVQA datasets under
 
 1. **Full eval** — Q1..QN structured questions over four AlgoPuzzleVQA tasks
    (`checker_move`, `maze_solve`, `nqueens`, `wood_slide`).
-2. **Seg eval** — "reconstruct the board" prompts over `maze`, `nqueens`,
-   and `chess`, with three image-input modes: `raw`, `oracle_mask`,
-   `tddn_mask`.
+2. **Seg eval** — "reconstruct the board" prompts over `maze`,
+   `nqueens`, and chess (split into `chess_count` + `chess_grid` for
+   running; `chess` is a label only the `--analyze` reporter
+   understands as the aggregate), with three image-input modes:
+   `raw`, `oracle_mask`, `tddn_mask`.
 
 ## Layout
 
@@ -113,6 +115,18 @@ python run_seg_eval.py --analyze
 # Optionally render LaTeX rows for paper-style tables
 python run_seg_eval.py --analyze --latex
 ```
+
+### Other flags
+
+Both runners share an extended flag set beyond the examples above:
+
+| Flag | Default | Where | Meaning |
+|---|---|---|---|
+| `--ports` | `8001 8002 8003 8004` | both | vLLM server ports (one server → one port; pass as many as you launched) |
+| `--concurrency` | `32` (full) / `20` (seg) | both | max in-flight async requests per worker |
+| `--limit` | _none_ | both | cap the number of records per run; useful for smoke tests |
+| `--by-question` | `False` | full | break the analyzer's accuracy table down per-question (Q1, Q2, ...) instead of just overall |
+| `--model-filter` | _none_ | both | space-separated substring(s); analyzer only reports models whose name contains any of them |
 
 ## What gets evaluated
 

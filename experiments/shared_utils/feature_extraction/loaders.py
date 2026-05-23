@@ -59,7 +59,7 @@ def load_dinov3(
     """Load DINOv3 ViT-B/16 or ViT-H/16+ from HuggingFace.
 
     Default dtype is bfloat16. **Do not use fp16** — DINOv3 is numerically
-    unstable in fp16 (matrix products underflow); imagenet_knn discovered
+    unstable in fp16 (matrix products underflow); ImageNet_Classification discovered
     this the hard way. fp32 and bf16 are both fine.
     """
     if variant not in _DINOV3_IDS:

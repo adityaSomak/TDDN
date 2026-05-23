@@ -1,4 +1,4 @@
-"""imagenet_knn entry point — k-NN classification on ImageNet-1K.
+"""ImageNet_Classification entry point — k-NN classification on ImageNet-1K.
 
 Extracts a single pooled, L2-normalized vector per image with the
 ``shared_utils.feature_extraction`` backbone registry, then runs cosine
@@ -69,7 +69,7 @@ HFImageNet = _load_imagenet_dataset_module().HFImageNet
 _HERE = _THIS.parent
 _CONFIG = _HERE / "configs" / "models.yaml"
 _RESULTS_DIR = _HERE / "evaluation" / "results"
-_RESULTS_CSV = _RESULTS_DIR / "imagenet_knn.csv"
+_RESULTS_CSV = _RESULTS_DIR / "imagenet_classification.csv"
 _FEATURE_CACHE = _HERE / "features"
 
 _CSV_COLUMNS = ("model", "top1", "top5", "dim", "k", "n_train", "n_val")

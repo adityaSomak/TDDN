@@ -1,7 +1,7 @@
 # Model registry for Segmentation.
 #
 # Tags are kept identical across Segmentation / Keypoint_Matching /
-# imagenet_knn so the paper-table comparisons line up one-to-one. All
+# ImageNet_Classification so the paper-table comparisons line up one-to-one. All
 # entries become trainable linear heads on top of frozen features
 # (`run_train.py`); the head is the only learned component.
 

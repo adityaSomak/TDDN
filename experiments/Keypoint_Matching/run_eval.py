@@ -58,7 +58,7 @@ _RESULTS_CSV = _HERE / "evaluation" / "results" / "keypoint_matching.csv"
 _RESULTS_DIR = _HERE / "evaluation" / "results"
 _LAYERS_DIR = _HERE / "evaluation" / "results" / "layers"
 _SPAIR_ROOT_DEFAULT = (
-    DATASETS_ROOT / "Existing_Datasets" / "Keypoint_Matching" / "SPair-71K" / "spair-71k"
+    DATASETS_ROOT / "Existing_Datasets" / "Keypoint_Matching" / "SPair-71K" / "SPair-71k"
 )
 
 _CSV_COLUMNS = ("model", "resolution", "pck@0.1", "pck@0.05", "pck@0.01")

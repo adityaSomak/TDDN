@@ -11,7 +11,7 @@
     flat patch features → per-channel min-max (or 2-98 percentile) → RGB.
     Used by both `patches` and `interpolated` rendering modes.
 
-imagenet_knn imports nothing from this module — it never PCA-reduces the
+ImageNet_Classification imports nothing from this module — it never PCA-reduces the
 diffusion features (`run_knn.py:57`).
 """
 from __future__ import annotations

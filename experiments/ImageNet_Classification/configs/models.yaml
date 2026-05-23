@@ -1,7 +1,7 @@
-# Model registry for imagenet_knn.
+# Model registry for ImageNet_Classification.
 #
 # Tags are kept identical across Segmentation / Keypoint_Matching /
-# imagenet_knn so the paper-table comparisons line up one-to-one.
+# ImageNet_Classification so the paper-table comparisons line up one-to-one.
 
 baselines:
   dinov2-vitb:

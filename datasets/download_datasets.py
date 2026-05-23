@@ -18,7 +18,7 @@ Supported datasets
     flickr30k             -> Existing_Datasets/Retrieval/Flickr30K/
     ade20k                -> Existing_Datasets/Segmentation/ADE20K/
     coco                  -> Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/
-    recaptioned_laion     -> Existing_Datasets/Vision_Language_Alignment/LAION-5B/data/
+    recaptioned_laion     -> Existing_Datasets/Vision_Language_Alignment/Recaptioned_LAION/data/
     puzzle_perception     -> Puzzle_Perception/Segmentation/data/
 
 Usage
@@ -40,11 +40,13 @@ access token in the ``HF_TOKEN`` environment variable.
 from __future__ import annotations
 
 import argparse
+import csv
 import os
 import shutil
 import subprocess
 import sys
 import tarfile
+import zipfile
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent
@@ -78,12 +80,17 @@ def _run(cmd: list[str]) -> None:
 
 
 def _curl_extract(target: Path, url: str, archive_name: str, kind: str) -> None:
+    """Download via ``curl`` then extract with Python stdlib (no
+    ``unzip`` system dependency).
+    """
     archive = target / archive_name
     _run(["curl", "-L", "--fail", "-o", str(archive), url])
     if kind == "tar.gz":
-        _run(["tar", "-xzf", str(archive), "-C", str(target)])
+        with tarfile.open(archive, "r:gz") as tf:
+            tf.extractall(target)
     elif kind == "zip":
-        _run(["unzip", "-q", str(archive), "-d", str(target)])
+        with zipfile.ZipFile(archive) as zf:
+            zf.extractall(target)
     else:
         raise ValueError(f"unknown archive kind: {kind}")
     archive.unlink()
@@ -119,6 +126,10 @@ def _dl_gtsrb(target: Path) -> None:
 
 
 def _dl_imagenet(target: Path) -> None:
+    """Cache ImageNet-1K to ``<target>/imagenet_hf/`` so the consumer
+    ``HFImageNet`` (in ``datasets/Existing_Datasets/Classification/ImageNet-1K/dataset.py``)
+    finds it at its default location.
+    """
     token = os.environ.get("HF_TOKEN")
     if not token:
         sys.exit(
@@ -130,12 +141,14 @@ def _dl_imagenet(target: Path) -> None:
         from datasets import load_dataset  # type: ignore
     except ImportError:
         sys.exit("imagenet: pip install datasets")
+    cache_dir = target / "imagenet_hf"
+    cache_dir.mkdir(parents=True, exist_ok=True)
     for split in ("train", "validation"):
         _log("dl", f"HF load_dataset ILSVRC/imagenet-1k split={split}")
         load_dataset(
             "ILSVRC/imagenet-1k",
             split=split,
-            cache_dir=str(target),
+            cache_dir=str(cache_dir),
             token=token,
         )
 
@@ -150,24 +163,49 @@ def _dl_spair(target: Path) -> None:
 
 
 def _dl_flickr30k(target: Path) -> None:
-    try:
-        from datasets import load_dataset  # type: ignore
-    except ImportError:
-        sys.exit("flickr30k: pip install datasets")
-    _log("dl", "HF load_dataset nlphuji/flickr30k")
-    token = os.environ.get("HF_TOKEN")
-    try:
-        load_dataset(
-            "nlphuji/flickr30k",
-            cache_dir=str(target),
-            token=token,
-        )
-    except Exception as e:  # noqa: BLE001
-        sys.exit(
-            f"flickr30k: HuggingFace fetch failed ({e}). The dataset may "
-            "require accepting terms — visit "
-            "https://huggingface.co/datasets/nlphuji/flickr30k and set HF_TOKEN."
-        )
+    """Fetch the Flickr30K bundle (4.4 GB zip + 30K-row CSV) from
+    ``nlphuji/flickr30k``, extract the images into ``flickr30k-images/``,
+    and rewrite the annotations into the legacy ``results_20130124.token``
+    format the VLA retrieval loader expects.
+
+    Final on-disk layout::
+
+        <target>/
+        ├── flickr30k-images/<id>.jpg     # 31,783 flat JPGs
+        ├── results_20130124.token        # <id>.jpg#k<TAB><caption>
+        ├── flickr_annotations_30k.csv    # original HF annotations (kept for reference)
+        └── README.md
+    """
+    import json
+
+    _hf_snapshot(target, "nlphuji/flickr30k")
+
+    # Extract the image zip into ``flickr30k-images/`` (zip's internal layout).
+    zip_path = target / "flickr30k-images.zip"
+    if zip_path.is_file():
+        print(f"[extract] {zip_path.name}")
+        with zipfile.ZipFile(zip_path) as zf:
+            zf.extractall(target)
+        zip_path.unlink()
+
+    # Convert the HF CSV (one row per image, ``raw`` column with a
+    # JSON-encoded 5-caption list) into the legacy token format the
+    # loader keys off of (``<image>#k<TAB><caption>`` per row, 5 rows
+    # per image).
+    src_csv = target / "flickr_annotations_30k.csv"
+    token_path = target / "results_20130124.token"
+    if src_csv.is_file() and not token_path.is_file():
+        with open(src_csv, newline="") as fi, open(token_path, "w") as fo:
+            for row in csv.DictReader(fi):
+                for i, cap in enumerate(json.loads(row["raw"])):
+                    cap = cap.replace("\t", " ").replace("\n", " ")
+                    fo.write(f"{row['filename']}#{i}\t{cap}\n")
+        print(f"[token] wrote {token_path}")
+
+    # Skip the unused HF loader script.
+    py_loader = target / "flickr30k.py"
+    if py_loader.is_file():
+        py_loader.unlink()
 
 
 def _dl_ade20k(target: Path) -> None:
@@ -201,12 +239,52 @@ def _hf_snapshot(target: Path, repo_id: str) -> None:
 
 
 def _dl_recaptioned_laion(target: Path) -> None:
-    """Fetch the Recaptioned LAION webdataset shards from HuggingFace.
+    """Fetch the Recaptioned LAION webdataset shards from HuggingFace,
+    extract them into a flat ``images/`` directory, and rewrite
+    ``metadata.csv`` so the text-alignment training loader
+    (``LaionFolder``) can consume it directly.
 
-    Shards are kept as-is (not extracted) so they can be streamed by the
-    ``webdataset`` library or by the text-alignment training pipeline.
+    On disk after this finishes::
+
+        <target>/
+        ├── metadata.csv     # columns: filename, image_id, url, caption
+        ├── images/<id>.jpg  # 508,039 flat JPGs (per ``image_id``)
+        └── README.md
+
+    Each shard is extracted then deleted before the next is opened, so
+    peak disk usage stays roughly equal to the 72 GB snapshot rather
+    than 2× while extracting. The per-image ``.txt`` files inside the
+    shards are skipped (captions live in ``metadata.csv``).
     """
     _hf_snapshot(target, "PuzzleBench/Recaptioned_LAION")
+
+    images_dir = target / "images"
+    images_dir.mkdir(exist_ok=True)
+
+    shards = sorted(target.glob("shards-*.tar"))
+    for tar_path in shards:
+        print(f"[extract] {tar_path.name}")
+        with tarfile.open(tar_path) as tf:
+            for member in tf.getmembers():
+                if member.isfile() and member.name.endswith(".jpg"):
+                    tf.extract(member, images_dir)
+        tar_path.unlink()
+
+    # Rewrite metadata.csv with a leading ``filename`` column so
+    # LaionFolder can look up images by ``row["filename"]``. Existing
+    # columns (image_id, url, caption) are preserved for traceability.
+    csv_path = target / "metadata.csv"
+    if csv_path.exists():
+        with open(csv_path, newline="") as fi:
+            rows = list(csv.DictReader(fi))
+        with open(csv_path, "w", newline="") as fo:
+            writer = csv.DictWriter(
+                fo, fieldnames=["filename"] + list(rows[0].keys()),
+            )
+            writer.writeheader()
+            for r in rows:
+                writer.writerow({"filename": f"{r['image_id']}.jpg", **r})
+        print(f"[csv] rewrote {csv_path} ({len(rows)} rows) with leading filename column")
 
 
 def _dl_puzzle_perception(target: Path) -> None:
@@ -241,7 +319,7 @@ DATASETS: dict[str, dict] = {
     "flickr30k":         {"target": "Existing_Datasets/Retrieval/Flickr30K",                 "fn": _dl_flickr30k},
     "ade20k":            {"target": "Existing_Datasets/Segmentation/ADE20K",                 "fn": _dl_ade20k},
     "coco":              {"target": "Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014", "fn": _dl_coco},
-    "recaptioned_laion": {"target": "Existing_Datasets/Vision_Language_Alignment/LAION-5B/data", "fn": _dl_recaptioned_laion},
+    "recaptioned_laion": {"target": "Existing_Datasets/Vision_Language_Alignment/Recaptioned_LAION/data", "fn": _dl_recaptioned_laion},
     "puzzle_perception": {"target": "Puzzle_Perception/Segmentation/data",                   "fn": _dl_puzzle_perception},
 }
 
