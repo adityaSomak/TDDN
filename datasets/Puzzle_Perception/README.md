@@ -10,8 +10,8 @@ Custom data for the puzzle-perception research track. Two subtrees:
 The older 269-sample chess seg-eval set that used to live at `PVQA/test/chess/` is no
 longer committed; it moved to [`../_local/chess_seg269/`](../_local/README.md), which is
 gitignored and must be supplied locally. It is still needed by the
-`Puzzle_Understanding` chess seg track, the VLA chess-localization track and CRG chess
-board regeneration — but not by CRG evaluation.
+`Puzzle_Understanding` chess seg track and by CRG chess board regeneration — but not
+by CRG evaluation.
 
 ## Layout
 

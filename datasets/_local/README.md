@@ -27,7 +27,6 @@ _local/
 | Capability | Reads |
 |---|---|
 | `Puzzle_Understanding` chess seg-eval (`--tasks chess_count chess_grid`) | `data/images/`, `data/text_repr.json`, `seg_data/<mode>/` |
-| `Vision_Language_Alignment` chess localization | `data/images/`, `data/text_repr.json` |
 | CRG chess board **regeneration** (`run_generate.py`) | `data/images/`, `data/masks/` — piece sprites and board colour themes are extracted from the real boards |
 | CRG `--redetect` for chess | `data/images/`, `data/masks/` — the TDDN Tip-Adapter support cache is built from real GT masks |
 
