@@ -46,7 +46,7 @@ The remaining tags (`dinov3`, `dinov2-vitb`, `dinov2-vitg`, `clip`,
 `sd-2.1`, `cd`, `sd+dinov2-vitb`, `sd+dinov2-vitg`) are unmodified
 baselines wired through the same registry.
 
-Six independent evaluation tracks under [`experiments/`](experiments/)
+Seven independent evaluation tracks under [`experiments/`](experiments/)
 benchmark these encoders against complementary criteria:
 
 | Track | Tests | Headline metric |
@@ -57,6 +57,7 @@ benchmark these encoders against complementary criteria:
 | [ImageNet_Classification](experiments/ImageNet_Classification/) | global-feature semantic separability | top-1 / top-5 k-NN (k=20) on ImageNet-1K |
 | [Vision_Language_Alignment](experiments/Vision_Language_Alignment/) | end-to-end vision-language alignement and evaluation | top-1 (zero-shot / CuPL / TIP-Adapter) + Recall@1 + zero-shot open-vocab mIoU |
 | [Puzzle_Understanding](experiments/Puzzle_Understanding/) | do TDDN segmentation masks help downstream VLMs reason about algorithmic puzzles? | per-task accuracy across GPT-5.x / Qwen2.5-VL / InternVL3 / ... |
+| [CRG](experiments/CRG/) | can TDDN-predicted regions replace GT regions in a decode-side intervention on a *frozen* VLM? | Δ question accuracy vs. the raw image, macro over questions (8 VLMs × 2 puzzles) |
 
 Each `experiments/<name>/README.md` documents how to run its
 evaluation; this top-level README handles shared setup and conventions.
@@ -117,13 +118,20 @@ DiffusedDINOv1/
     │   ├── evaluation/                    # prompts (class names + 80 OpenAI templates + CuPL JSONs) + src/ (classifier, retrieval, segmentation, TIP-Adapter) + results/ (paper-canonical CSVs + per-run JSONs)
     │   └── training/                      # data, losses, FSDP setup, checkpoint I/O, training loop
     │
-    └── Puzzle_Understanding/              # VLM evaluation on AlgoPuzzleVQA tasks (full Q1..QN + seg-eval grid reconstruction)
+    ├── Puzzle_Understanding/              # VLM evaluation on AlgoPuzzleVQA tasks (full Q1..QN + seg-eval grid reconstruction)
+    │   ├── README.md
+    │   ├── run_full_eval.py
+    │   ├── run_seg_eval.py
+    │   ├── prompts/                       # per-task prompt registries
+    │   ├── scripts/                       # launch_vllm.sh for open-source VLMs
+    │   └── results/{full_eval,seg_eval}/
+    │
+    └── CRG/                               # Contrastive Region Guidance: do TDDN-predicted regions improve a frozen VLM's perception at decode time?
         ├── README.md
-        ├── run_full_eval.py
-        ├── run_seg_eval.py
-        ├── prompts/                       # per-task prompt registries
-        ├── scripts/                       # launch_vllm.sh for open-source VLMs
-        └── results/{full_eval,seg_eval}/
+        ├── run_eval.py                    # eval + --aggregate / --validate-* / --redetect
+        ├── run_generate.py                # mint a NEW chess board set (rare, destructive)
+        ├── configs/models.yaml            # the 8 probed VLMs + defaults (alpha, arms, TDDN tuning)
+        └── evaluation/                    # src/ (data, negatives, CRG decode, per-task evals, aggregate, TDDN) + results/ (paper table + per-model per-question JSONs + qualitative figures)
 ```
 
 ## Setup
@@ -165,11 +173,15 @@ set -a; source .env; set +a
 - `VLLM_PY` — path to the vLLM venv's Python interpreter, used by
   `Puzzle_Understanding/scripts/launch_vllm.sh`. Defaults to the
   first `python` on `PATH`.
+- `DINOV3_ROOT` — path to the Meta DINOv3 source tree. Needed only when
+  `dinov3` is not `pip install -e`'d: by the `mask_generation` overlays
+  and by `CRG/run_eval.py --redetect`.
 
 If you need to keep datasets / checkpoints / the metrics feature
-cache outside the repo tree, three `EXPERIMENTS_*_ROOT` overrides
-exist — see
-[`shared_utils/paths.py`](experiments/shared_utils/paths.py).
+cache outside the repo tree, four `EXPERIMENTS_*_ROOT` overrides
+exist — including `EXPERIMENTS_LOCAL_DATA_ROOT` for the
+locally-supplied data in [`datasets/_local/`](datasets/_local/README.md).
+See [`shared_utils/paths.py`](experiments/shared_utils/paths.py).
 
 ## Per-experiment entry points
 
@@ -179,4 +191,5 @@ exist — see
 - [`experiments/ImageNet_Classification/`](experiments/ImageNet_Classification/README.md)
 - [`experiments/Vision_Language_Alignment/`](experiments/Vision_Language_Alignment/README.md)
 - [`experiments/Puzzle_Understanding/`](experiments/Puzzle_Understanding/README.md)
+- [`experiments/CRG/`](experiments/CRG/README.md)
 - [`experiments/shared_utils/feature_extraction/`](experiments/shared_utils/feature_extraction/README.md)

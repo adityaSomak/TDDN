@@ -83,10 +83,11 @@ alignment model and producing the checkpoint directory.
 ## Chess
 
 The original pipeline also produces chess overlays, but the chess data is
-not part of `AlgoPuzzleVQA_star/`. To regenerate chess masks, set the
-`CHESS_DATASET` env var to a chess-dataset root (containing `images/`,
-`masks/`, `text_repr.json`) and add `chess` to `PUZZLES`:
+not part of `AlgoPuzzleVQA_star/` — and it is not committed anywhere in the
+repo either (see [`datasets/_local/README.md`](../../../../_local/README.md)).
+Supply it locally, then point `CHESS_DATASET` at that root (it must contain
+`images/`, `masks/`, `text_repr.json`) and add `chess` to `PUZZLES`:
 
 ```bash
-CHESS_DATASET=/path/to/chess_dataset/test PUZZLES="chess" ./build_oracle_masks.sh
+CHESS_DATASET=../../../../_local/chess_seg269/data PUZZLES="chess" ./build_oracle_masks.sh
 ```

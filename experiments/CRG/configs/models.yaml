@@ -1,0 +1,146 @@
+# Model registry for CRG (Contrastive Region Guidance).
+#
+# Unlike the encoder experiments, the tags here are *frozen VLMs being probed*, not
+# backbones from shared_utils.feature_extraction. Each entry pins the HF id, the decode
+# engine, and the launch flags the model needed on 2x48GB.
+#
+# Conventions
+#   hf_id       HuggingFace repo id passed to AutoModelForImageTextToText.
+#   display     row label in evaluation/results/crg_table.tex and crg.csv.
+#   engine      crg    -> evaluation/src/decode_engine.py (single-forward logit read)
+#               lavida -> evaluation/src/lavida_engine.py (iterative generate; SEPARATE env)
+#   family      qwen   -> images extracted via qwen_vl_utils.process_vision_info
+#               hf     -> PIL images passed straight to the processor
+#               Declared, not sniffed from the id, because it selects a real code path.
+#   no_think    reasoning-default template: pass enable_thinking=False so the FIRST
+#               generated token is the answer, which the single-forward decode requires.
+#   batch_size  per-task batch that fit; --batch-size overrides.
+#   max_memory  per-GPU GiB caps -> device_map='auto' split; omit for a single GPU.
+#   load_4bit   bitsandbytes nf4 (vision tower / connector / lm_head kept unquantized).
+#   paper_row   row order in crg_table.tex; omit for models registered but not published.
+#
+# Precedence at runtime: CLI flag > per-model value > defaults.
+
+autoregressive:
+  qwen2.5-vl-7b:
+    hf_id: Qwen/Qwen2.5-VL-7B-Instruct
+    display: Qwen2.5-VL-7B-Instruct
+    engine: crg
+    family: qwen
+    no_think: false            # not a reasoning-default model
+    batch_size: {nqueens: 16, chess: 8}
+    paper_row: 1
+
+  internvl3-8b:
+    hf_id: OpenGVLab/InternVL3-8B-hf
+    display: InternVL-3-8B
+    engine: crg
+    family: hf
+    no_think: true
+    batch_size: {nqueens: 8, chess: 8}
+    max_memory: {0: 42, 1: 42}
+    paper_row: 2
+
+  gemma-4-12b:
+    hf_id: google/gemma-4-12b-it
+    display: Gemma-4-12B-it
+    engine: crg
+    family: hf
+    no_think: true
+    batch_size: {nqueens: 4, chess: 4}
+    max_memory: {0: 42, 1: 42}
+    paper_row: 3
+
+  gemma-4-26b-a4b:
+    hf_id: google/gemma-4-26B-A4B-it
+    display: Gemma-4-26B-A4B-it
+    engine: crg
+    family: hf
+    no_think: true
+    batch_size: {nqueens: 4, chess: 4}
+    max_memory: {0: 42, 1: 42}
+    paper_row: 4
+
+  gemma-3-27b:
+    hf_id: google/gemma-3-27b-it
+    display: Gemma-3-27B
+    engine: crg
+    family: hf
+    no_think: true
+    batch_size: {nqueens: 4, chess: 4}
+    max_memory: {0: 42, 1: 42}
+    paper_row: 5
+
+  qwen3.6-27b:
+    hf_id: Qwen/Qwen3.6-27B
+    display: Qwen3.6-27B
+    engine: crg
+    family: qwen
+    no_think: true
+    batch_size: {nqueens: 4, chess: 4}
+    max_memory: {0: 42, 1: 42}
+    paper_row: 6
+
+  # Below the rule in crg_table.tex: already near ceiling, little headroom for CRG.
+  gemma-4-31b:
+    hf_id: google/gemma-4-31B-it
+    display: Gemma-4-31B-it
+    engine: crg
+    family: hf
+    no_think: true
+    batch_size: {nqueens: 4, chess: 4}
+    max_memory: {0: 42, 1: 42}
+    paper_row: 7
+
+  qwen3.6-35b-a3b:
+    hf_id: Qwen/Qwen3.6-35B-A3B
+    display: Qwen3.6-35B-A3B
+    engine: crg
+    family: qwen
+    no_think: true
+    batch_size: {nqueens: 4, chess: 4}
+    max_memory: {0: 42, 1: 42}
+    paper_row: 8
+
+  # Registered but deliberately not in the paper table (no paper_row): an earlier
+  # N-Queens-only run, kept because CRG moves it essentially not at all — Δ_o and Δ_t
+  # are both ~0 on accuracy, which is the "no headroom to exploit, and nothing to
+  # localize either" end of the story. Never run on chess.
+  llava-v1.6-vicuna-7b:
+    hf_id: llava-hf/llava-v1.6-vicuna-7b-hf
+    display: LLaVA-1.6-Vicuna-7B
+    engine: crg
+    family: hf
+    no_think: false
+    batch_size: {nqueens: 8, chess: 4}
+
+# A LaViDa-LLaDA diffusion-LM baseline was also run once; its results are retained at
+# evaluation/results/{chess,nqueens}/lavida-llada.json but it is deliberately NOT
+# registered here and no longer has a code path. LaViDa's `llava` package pins
+# transformers==4.50.3 / torch==2.6.0, which cannot coexist with the transformers>=5
+# that Gemma-4 and Qwen3.6 require, so supporting it meant a second conda env.
+# Reviving it means re-adding an engine module and accepting that split again.
+
+defaults:
+  alpha: 1.0                   # CRG strength: (1 + alpha) * pos - alpha * neg
+  arms: [raw, oracle, tddn]
+  seeds: [0]                   # N-Queens determinism check; region choice cannot vary
+  batch_size: {nqueens: 8, chess: 4}
+
+  tddn:
+    # Only read by --redetect / --validate-tddn; plain eval uses the committed
+    # tddn_detections.json and never loads the encoder.
+    checkpoint: fused_dinov3_cleandift_coco_ft
+    checkpoint_step: [149, 199]   # the repo-canonical TDDN average
+    grid: 64                      # patch grid -> 1024 px forward (64 * 16)
+    tip_alpha: 2.0
+    tip_beta: 5.5
+    # Support boards for the Tip-Adapter cache, pinned as literals so they cannot
+    # drift when the board ordering changes.
+    #   chess:   10 real boards from the legacy segmentation set, separate from the
+    #            800 synthetic CRG boards and excluded from --validate-tddn's scored set.
+    #   nqueens: 10 of the same 100 boards the eval scores.
+    chess_support_pids: ["000625", "000626", "000627", "000628", "000629",
+                         "000630", "000631", "000632", "000633", "000634"]
+    nqueens_support_pids: ["1083", "1089", "1118", "1179", "1182",
+                           "1233", "1244", "1273", "1289", "1290"]

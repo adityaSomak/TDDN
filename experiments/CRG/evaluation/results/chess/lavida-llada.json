@@ -1,0 +1,61 @@
+{
+  "model": "lavida-llada-v1.0-instruct",
+  "per_question": {
+    "q5": {
+      "cat": "geometric",
+      "raw": {
+        "acc": 0.5
+      },
+      "n": 100
+    },
+    "q6": {
+      "cat": "geometric",
+      "raw": {
+        "acc": 0.5
+      },
+      "n": 100
+    },
+    "q1": {
+      "cat": "localization",
+      "raw": {
+        "acc": 0.26
+      },
+      "n": 100
+    },
+    "q2": {
+      "cat": "localization",
+      "raw": {
+        "acc": 0.25
+      },
+      "n": 100
+    },
+    "q3": {
+      "cat": "localization",
+      "raw": {
+        "acc": 0.52
+      },
+      "n": 100
+    },
+    "q4": {
+      "cat": "relation",
+      "raw": {
+        "acc": 0.56
+      },
+      "n": 100
+    },
+    "q7": {
+      "cat": "tactical",
+      "raw": {
+        "acc": 0.5
+      },
+      "n": 100
+    },
+    "q8": {
+      "cat": "existence",
+      "raw": {
+        "acc": 0.39
+      },
+      "n": 100
+    }
+  }
+}

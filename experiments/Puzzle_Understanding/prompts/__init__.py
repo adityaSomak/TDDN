@@ -24,7 +24,9 @@ Path constants
                     the EXPERIMENTS_DATASETS_ROOT env var)
     ALGO_FULL       AlgoPuzzleVQA full-eval tree
     ALGO_STAR       AlgoPuzzleVQA_star seg-eval tree (maze + nqueens)
-    CHESS_PVQA      Puzzle_Perception chess seg-eval tree
+    CHESS_SEG269    the 269-sample chess seg-eval tree. NOT committed — it must be
+                    supplied locally under datasets/_local/ (overridable via the
+                    EXPERIMENTS_LOCAL_DATA_ROOT env var); see datasets/_local/README.md
 """
 
 from __future__ import annotations
@@ -61,9 +63,14 @@ DATASETS_ROOT = Path(os.environ.get(
     Path(__file__).resolve().parents[3] / "datasets",
 ))
 
+LOCAL_DATA_ROOT = Path(os.environ.get(
+    "EXPERIMENTS_LOCAL_DATA_ROOT",
+    DATASETS_ROOT / "_local",
+))
+
 ALGO_FULL = DATASETS_ROOT / "Existing_Datasets" / "PVQA" / "AlgoPuzzleVQA"
 ALGO_STAR = DATASETS_ROOT / "Existing_Datasets" / "PVQA" / "AlgoPuzzleVQA_star"
-CHESS_PVQA = DATASETS_ROOT / "Puzzle_Perception" / "PVQA" / "test" / "chess"
+CHESS_SEG269 = LOCAL_DATA_ROOT / "chess_seg269"
 
 
 # ---------- prompt config assembly -------------------------------------------

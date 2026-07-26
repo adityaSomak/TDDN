@@ -11,6 +11,12 @@ Vision-language model evaluations on the PVQA datasets under
    understands as the aggregate), with three image-input modes:
    `raw`, `oracle_mask`, `tddn_mask`.
 
+Related: [`experiments/CRG/`](../CRG/README.md) probes the same N-Queens and chess
+boards with a **decode-side** intervention (contrastive region guidance) instead of an
+overlay-prompt one. Its `raw` arm is deliberately prompt-compatible with the `raw` mode
+here — `SYSTEM_PROMPT_RECALL` in [`prompts/nqueens.py`](prompts/nqueens.py) is shared
+verbatim — so the two experiments' baselines are comparable.
+
 ## Layout
 
 ```
@@ -138,11 +144,18 @@ Both runners share an extended flag set beyond the examples above:
 | Wood Slide   | Full | Q1–Q5  | 2,200  | `datasets/Existing_Datasets/PVQA/AlgoPuzzleVQA/wood_slide/`   |
 | Maze         | Seg  | grid reconstruction | 100  | `datasets/Existing_Datasets/PVQA/AlgoPuzzleVQA_star/maze/`    |
 | N-Queens     | Seg  | grid reconstruction | 100  | `datasets/Existing_Datasets/PVQA/AlgoPuzzleVQA_star/nqueens/` |
-| Chess        | Seg  | piece-count + grid  | 269  | `datasets/Puzzle_Perception/PVQA/test/chess/`                |
+| Chess        | Seg  | piece-count + grid  | 269  | `datasets/_local/chess_seg269/` — **not committed**, see below |
 
 Question banks are in the `prompts/<task>.py` modules; the seg-eval
 overlays live alongside each task's `seg_data/` directory under
 `datasets/`.
+
+The **chess** seg row is the exception: its 269 boards, masks and overlays are no
+longer shipped in the repo. Supply them under `datasets/_local/chess_seg269/` (or point
+`EXPERIMENTS_LOCAL_DATA_ROOT` elsewhere) — see
+[`datasets/_local/README.md`](../../datasets/_local/README.md). `--tasks chess_count`
+and `chess_grid` fail with an explicit message if the tree is absent; the maze and
+nqueens tracks are unaffected.
 
 ## Output layout
 

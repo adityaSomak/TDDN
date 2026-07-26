@@ -1,0 +1,319 @@
+{
+  "model": "OpenGVLab/InternVL3-8B-hf",
+  "alpha": 1.0,
+  "no_think": true,
+  "n_boards": 100,
+  "seeds": [
+    0
+  ],
+  "arms": [
+    "raw",
+    "oracle",
+    "tddn"
+  ],
+  "per_question": {
+    "q1": {
+      "binary": true,
+      "raw": {
+        "auroc": 0.8559,
+        "auroc_ci": [
+          0.783,
+          0.918
+        ],
+        "acc": 0.58,
+        "acc_ci": [
+          0.48,
+          0.67
+        ]
+      },
+      "oracle": {
+        "auroc": 0.7139,
+        "auroc_ci": [
+          0.606,
+          0.812
+        ],
+        "d_auroc": -0.1421,
+        "d_auroc_ci": [
+          -0.216,
+          -0.076
+        ],
+        "acc": 0.66,
+        "acc_ci": [
+          0.56,
+          0.75
+        ],
+        "d_acc": 0.08,
+        "d_acc_ci": [
+          -0.05,
+          0.2
+        ]
+      },
+      "tddn": {
+        "auroc": 0.7271,
+        "auroc_ci": [
+          0.626,
+          0.821
+        ],
+        "d_auroc": -0.1289,
+        "d_auroc_ci": [
+          -0.207,
+          -0.062
+        ],
+        "acc": 0.63,
+        "acc_ci": [
+          0.53,
+          0.72
+        ],
+        "d_acc": 0.05,
+        "d_acc_ci": [
+          -0.07,
+          0.15
+        ]
+      }
+    },
+    "q2": {
+      "binary": true,
+      "raw": {
+        "auroc": 0.5419,
+        "auroc_ci": [
+          0.429,
+          0.661
+        ],
+        "acc": 0.64,
+        "acc_ci": [
+          0.54,
+          0.74
+        ]
+      },
+      "oracle": {
+        "auroc": 0.6089,
+        "auroc_ci": [
+          0.49,
+          0.719
+        ],
+        "d_auroc": 0.0671,
+        "d_auroc_ci": [
+          -0.001,
+          0.138
+        ],
+        "acc": 0.64,
+        "acc_ci": [
+          0.54,
+          0.74
+        ],
+        "d_acc": 0.0,
+        "d_acc_ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "tddn": {
+        "auroc": 0.5417,
+        "auroc_ci": [
+          0.431,
+          0.657
+        ],
+        "d_auroc": -0.0002,
+        "d_auroc_ci": [
+          -0.084,
+          0.08
+        ],
+        "acc": 0.64,
+        "acc_ci": [
+          0.54,
+          0.74
+        ],
+        "d_acc": 0.0,
+        "d_acc_ci": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "q3": {
+      "binary": true,
+      "raw": {
+        "auroc": 0.6723,
+        "auroc_ci": [
+          0.576,
+          0.767
+        ],
+        "acc": 0.48,
+        "acc_ci": [
+          0.38,
+          0.58
+        ]
+      },
+      "oracle": {
+        "auroc": 0.4365,
+        "auroc_ci": [
+          0.326,
+          0.548
+        ],
+        "d_auroc": -0.2358,
+        "d_auroc_ci": [
+          -0.334,
+          -0.141
+        ],
+        "acc": 0.48,
+        "acc_ci": [
+          0.38,
+          0.58
+        ],
+        "d_acc": 0.0,
+        "d_acc_ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "tddn": {
+        "auroc": 0.4499,
+        "auroc_ci": [
+          0.342,
+          0.562
+        ],
+        "d_auroc": -0.2224,
+        "d_auroc_ci": [
+          -0.319,
+          -0.121
+        ],
+        "acc": 0.48,
+        "acc_ci": [
+          0.38,
+          0.58
+        ],
+        "d_acc": 0.0,
+        "d_acc_ci": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "q4": {
+      "binary": false,
+      "raw": {
+        "auroc": 0.7199,
+        "auroc_ci": [
+          0.657,
+          0.785
+        ],
+        "acc": 0.29,
+        "acc_ci": [
+          0.2,
+          0.38
+        ]
+      },
+      "oracle": {
+        "auroc": 0.56,
+        "auroc_ci": [
+          0.476,
+          0.649
+        ],
+        "d_auroc": -0.1599,
+        "d_auroc_ci": [
+          -0.219,
+          -0.104
+        ],
+        "acc": 0.29,
+        "acc_ci": [
+          0.2,
+          0.38
+        ],
+        "d_acc": 0.0,
+        "d_acc_ci": [
+          0.0,
+          0.0
+        ]
+      },
+      "tddn": {
+        "auroc": 0.5737,
+        "auroc_ci": [
+          0.492,
+          0.659
+        ],
+        "d_auroc": -0.1461,
+        "d_auroc_ci": [
+          -0.205,
+          -0.093
+        ],
+        "acc": 0.29,
+        "acc_ci": [
+          0.2,
+          0.38
+        ],
+        "d_acc": 0.0,
+        "d_acc_ci": [
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "combined": {
+    "raw": {
+      "auroc": 0.6975,
+      "auroc_ci": [
+        0.652,
+        0.747
+      ],
+      "acc": 0.4975,
+      "acc_ci": [
+        0.457,
+        0.537
+      ]
+    },
+    "oracle": {
+      "auroc": 0.5798,
+      "auroc_ci": [
+        0.522,
+        0.636
+      ],
+      "d_auroc": -0.1177,
+      "d_auroc_ci": [
+        -0.157,
+        -0.079
+      ],
+      "acc": 0.5175,
+      "acc_ci": [
+        0.475,
+        0.557
+      ],
+      "d_acc": 0.02,
+      "d_acc_ci": [
+        -0.012,
+        0.05
+      ]
+    },
+    "tddn": {
+      "auroc": 0.5731,
+      "auroc_ci": [
+        0.513,
+        0.627
+      ],
+      "d_auroc": -0.1244,
+      "d_auroc_ci": [
+        -0.166,
+        -0.086
+      ],
+      "acc": 0.51,
+      "acc_ci": [
+        0.467,
+        0.547
+      ],
+      "d_acc": 0.0125,
+      "d_acc_ci": [
+        -0.017,
+        0.037
+      ]
+    }
+  },
+  "seed_jitter_combined": {
+    "raw_auroc": 0.0,
+    "raw_acc": 0.0,
+    "oracle_auroc": 0.0,
+    "oracle_acc": 0.0,
+    "tddn_auroc": 0.0,
+    "tddn_acc": 0.0
+  },
+  "imported_from": "_archive/Contrastive_Region_Guidance/outputs/final_InternVL3-8B-hf.json"
+}

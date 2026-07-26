@@ -1,0 +1,55 @@
+# N-Queens CRG questions — 4 coordinate-free, extreme-referenced perception probes,
+# each asked of all 100 boards.
+#
+# Questions are deliberately coordinate-free ("the leftmost queen", not "the queen at
+# row 4"): the model must locate the referenced piece before it can answer, which is
+# what makes region guidance able to help at all.
+#
+# The rule fields below are how `answer` and `ablate_cells` in answers.csv were
+# DERIVED from each board grid. They are kept here as the machine-readable provenance
+# of those columns, and the dataset validator re-derives from them and asserts the CSV
+# matches — the CSV is authoritative at eval time, these fields are the audit trail.
+#
+#   rule   half  -> is the coord in the first or second half of the axis   (binary)
+#          third -> first / middle / last third                           (3-way)
+#          rel   -> is roles[0]'s coord before or after roles[1]'s         (binary)
+#   axis   row | col   which coordinate of the referenced cell is tested
+#   role   which extreme queen the question refers to (top/bot/left/right);
+#          `roles` instead of `role` when rule is `rel`, and the negative blacks
+#          every cell named — so q3 ablates two queens, the others one.
+#
+# Boards are NOT uniformly 8x8: sizes run 8x8..11x11 (5/18/30/47 boards), which is why
+# answers.csv carries explicit board_rows/board_cols.
+#
+# NOTE: every top-level key here is treated as a question id by the loaders — do not
+# add a `_meta:` or `version:` block.
+
+q1:  # legacy result files call this `sup_v`
+  text: "Is the leftmost queen in the top half or the bottom half of the board?"
+  options: [top, bottom]
+  rule: half
+  role: left
+  axis: row
+
+q2:  # legacy `sup_h`
+  text: "Is the topmost queen in the left half or the right half of the board?"
+  options: [left, right]
+  rule: half
+  role: top
+  axis: col
+
+q3:  # legacy `rel_v`
+  text: "Is the leftmost queen above or below the rightmost queen?"
+  options: [above, below]
+  rule: rel
+  roles: [left, right]
+  axis: row
+
+# The only 3-way question: scored by accuracy and macro one-vs-rest AUROC, where the
+# three binary questions above use P(option 0) directly.
+q4:  # legacy `sup_v3`
+  text: "Is the leftmost queen in the top, middle, or bottom third of the board?"
+  options: [top, middle, bottom]
+  rule: third
+  role: left
+  axis: row

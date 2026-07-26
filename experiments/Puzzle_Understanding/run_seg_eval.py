@@ -29,7 +29,7 @@ import aiohttp
 from tqdm.asyncio import tqdm_asyncio
 
 import utils
-from prompts import ALGO_STAR, CHESS_PVQA, seg_eval_prompt
+from prompts import ALGO_STAR, CHESS_SEG269, seg_eval_prompt
 
 
 RESULTS_DIR = Path(__file__).resolve().parent / "results" / "seg_eval"
@@ -130,8 +130,8 @@ MAZE_DATA = ALGO_STAR / "maze" / "data"
 NQ_DATA = ALGO_STAR / "nqueens" / "data"
 MAZE_SEG = ALGO_STAR / "maze" / "seg_data"
 NQ_SEG = ALGO_STAR / "nqueens" / "seg_data"
-CHESS_DATA = CHESS_PVQA / "data"
-CHESS_SEG = CHESS_PVQA / "seg_data"
+CHESS_DATA = CHESS_SEG269 / "data"
+CHESS_SEG = CHESS_SEG269 / "seg_data"
 
 
 SIMPLE_TASKS = {
@@ -216,6 +216,15 @@ def load_gts(args) -> dict:
             for row in csv.DictReader(f):
                 gts["nqueens"][row["image_path"].split("/")[1]] = row["text-representation_start-position"].strip()
     if "chess_count" in args.tasks or "chess_grid" in args.tasks:
+        # The chess seg set is not committed. Without this check a missing tree yields
+        # zero chess tasks and the run still reports success, which reads as "the model
+        # scored nothing" rather than "the data was never there".
+        if not (CHESS_DATA / "text_repr.json").exists():
+            raise SystemExit(
+                f"the chess seg-eval data is missing: {CHESS_DATA}\n"
+                f"It is not committed — supply it under {CHESS_SEG269} (or point\n"
+                "EXPERIMENTS_LOCAL_DATA_ROOT elsewhere); see datasets/_local/README.md.\n"
+                "The maze and nqueens tasks do not need it.")
         for entry in json.loads((CHESS_DATA / "text_repr.json").read_text()):
             pid = Path(entry["filename"]).stem
             gts["chess"][pid] = {

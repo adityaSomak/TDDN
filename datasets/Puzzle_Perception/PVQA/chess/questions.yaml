@@ -1,0 +1,98 @@
+# Chess CRG questions — 8 perception probes over 100 generated boards each.
+#
+# This file is BOTH specs in one:
+#   eval       text, options, ablate_pieces, extreme, category
+#   generation slug, generator, params   (consumed by run_generate.py)
+#
+# Per-board answers and the GT cells the oracle negative blacks live in
+# answers.csv; the negatives themselves are built in memory at eval time and are
+# never shipped.
+#
+# Fields
+#   options         the answer space; answers.csv stores the 0-based INDEX into it
+#   ablate_pieces   piece classes whose cells the TDDN negative blacks
+#   extreme         [kind, piece] => superlative question: black only the single
+#                   extreme detected instance, mirroring the oracle's one-cell ablation
+#   slug            image_id prefix, `{slug}_{NNN}`. Load-bearing: the committed board
+#                   ids and every archived per-board result record key on it, so a
+#                   regenerated set must reuse it verbatim.
+#
+# NOTE: every top-level key here is treated as a question id by the loaders — do not
+# add a `_meta:` or `version:` block.
+
+q1:
+  category: localization
+  text: "Which quarter of the board is the white queen in? A=top-left B=top-right C=bottom-left D=bottom-right."
+  options: [A, B, C, D]
+  ablate_pieces: [w_queen]
+  slug: quad_w_queen
+  generator: quad
+  params: {piece: w_queen}
+
+q2:
+  category: localization
+  text: "Which quarter of the board is the white bishop in? A=top-left B=top-right C=bottom-left D=bottom-right."
+  options: [A, B, C, D]
+  ablate_pieces: [w_bishop]
+  slug: quad_w_bishop
+  generator: quad
+  params: {piece: w_bishop}
+
+q3:
+  category: localization
+  text: "Is the leftmost white pawn in the top half or the bottom half of the board?"
+  options: [top, bottom]
+  ablate_pieces: [w_pawn]
+  extreme: [leftmost, w_pawn]
+  slug: psup_w
+  generator: psup
+  params: {color: w}
+
+q4:
+  category: relation
+  text: "Is the white king above or below the black knight?"
+  options: [above, below]
+  ablate_pieces: [w_king, b_knight]
+  slug: relv_wK_bN
+  generator: relv
+  params: {A: w_king, B: b_knight}
+
+q5:
+  category: geometric
+  text: "Are the white rook and the black king in the same row or the same column?"
+  options: ["Yes", "No"]
+  ablate_pieces: [w_rook, b_king]
+  slug: align_wR_bK
+  generator: align
+  params: {A: w_rook, B: b_king}
+
+q6:
+  category: geometric
+  text: "Are the white king and the black king on adjacent (touching) squares?"
+  options: ["Yes", "No"]
+  ablate_pieces: [w_king, b_king]
+  slug: adj_wK_bK
+  generator: adjacent
+  params: {A: w_king, B: b_king}
+
+q7:
+  category: tactical
+  text: "Is the white queen on the same rank, file, or diagonal as the black king?"
+  options: ["Yes", "No"]
+  ablate_pieces: [w_queen]
+  slug: queen_line
+  generator: queen_line
+  params: {}
+
+# The only question with a "No" ground truth that removes the queried piece entirely:
+# on those boards there is no white queen, so ablate_cells is [] and the oracle
+# negative equals the positive (CRG degenerates to the raw logits). 50 of the 100
+# boards here are such cases — intended, not a data defect.
+q8:
+  category: existence
+  text: "Is there a white queen on the board?"
+  options: ["Yes", "No"]
+  ablate_pieces: [w_queen]
+  slug: exists_wQ
+  generator: exists
+  params: {piece: w_queen}

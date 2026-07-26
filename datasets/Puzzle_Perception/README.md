@@ -4,8 +4,14 @@ Custom data for the puzzle-perception research track. Two subtrees:
 
 | Subtree | Purpose | Storage |
 |---|---|---|
-| [`PVQA/test/chess/`](PVQA/test/chess/) | Chess samples for the VLM seg-eval, with paired oracle / TDDN segmentation overlays. | **shipped in the repo** (~1k files committed) — no download step |
+| [`PVQA/`](PVQA/) | Multiple-choice perception probes over chess and N-Queens boards, for the CRG experiment: board images, question specs, answer CSVs and cached TDDN detections. | **shipped in the repo** (~86 MB, 900 boards + 1,200 QA rows) — no download step |
 | [`Segmentation/`](Segmentation/) | Combined per-pixel segmentation dataset over three puzzle domains (chess, maze, tower-of-hanoi) under a single 30-class label space. | **schema only** in the repo (`classes.yaml` + `dataset.py`); the image/mask data is fetched from HuggingFace via `download_datasets.py` |
+
+The older 269-sample chess seg-eval set that used to live at `PVQA/test/chess/` is no
+longer committed; it moved to [`../_local/chess_seg269/`](../_local/README.md), which is
+gitignored and must be supplied locally. It is still needed by the
+`Puzzle_Understanding` chess seg track, the VLA chess-localization track and CRG chess
+board regeneration — but not by CRG evaluation.
 
 ## Layout
 
@@ -13,16 +19,17 @@ Custom data for the puzzle-perception research track. Two subtrees:
 Puzzle_Perception/
 ├── README.md                              # this file
 │
-├── PVQA/                                  # shipped in the repo
-│   └── test/
-│       └── chess/
-│           ├── data/
-│           │   ├── text_repr.json         # GT board representations (269 entries)
-│           │   ├── images/<ID>.png        # 269 chess board images
-│           │   └── masks/<ID>.png         # 269 ground-truth segmentation masks
-│           └── seg_data/
-│               ├── oracle_mask/<ID>_overlay.jpg   # ground-truth halo overlays
-│               └── tddn_mask/<ID>_overlay.jpg     # TDDN tip-adapter predicted overlays
+├── PVQA/                                  # shipped in the repo — see PVQA/README.md
+│   ├── chess/
+│   │   ├── questions.yaml                 # 8 probes (eval spec + generation spec)
+│   │   ├── answers.csv                    # 800 rows
+│   │   ├── tddn_detections.json           # cached TDDN 8x8 class maps
+│   │   └── images/<image_id>.png          # 800 generated boards, 512x512
+│   └── nqueens/
+│       ├── questions.yaml                 # 4 probes
+│       ├── answers.csv                    # 400 rows (100 boards x 4 questions)
+│       ├── tddn_detections.json           # cached TDDN queen boxes
+│       └── images/<image_id>.jpg          # 100 source boards
 │
 └── Segmentation/
     ├── classes.yaml                       # shipped — 30 unified classes
@@ -35,27 +42,22 @@ Puzzle_Perception/
 The repo-wide [`requirements.txt`](../../requirements.txt) supplies the
 deps you need to load either subtree.
 
-## PVQA — chess seg-eval samples
+## PVQA — CRG perception probes
 
-The 269-puzzle chess evaluation subset ships pre-populated under
-[`PVQA/test/chess/`](PVQA/test/chess/). No download step. The IDs are
-the intersection of the upstream oracle-mask and TDDN-mask overlay sets
-(each puzzle has both overlays available).
+Board images, question specs, answer CSVs and cached TDDN detections for the two CRG
+tasks, all committed. See the [dataset card](PVQA/README.md) for the CSV/YAML schemas,
+the naming convention and the validation command.
 
-Per-puzzle contents:
+| Task | Boards | Board size | Questions | Rows |
+|---|---|---|---|---|
+| `chess` | 800 generated | 8×8, 512 px | 8 (`q1`–`q8`), 100 boards each | 800 |
+| `nqueens` | 100 from AlgoPuzzleVQA* | 8×8 – 11×11 | 4 (`q1`–`q4`), all boards each | 400 |
 
-| File | Meaning |
-|---|---|
-| `data/images/<ID>.png` | source chess board image (512×512) |
-| `data/masks/<ID>.png` | ground-truth per-pixel segmentation (values 0–14, **chess-local** ids — these are the upstream masks, *not* remapped to the unified 30-class space) |
-| `data/text_repr.json` | textual board representation + piece counts |
-| `seg_data/oracle_mask/<ID>_overlay.jpg` | ground-truth segmentation halo overlay |
-| `seg_data/tddn_mask/<ID>_overlay.jpg` | predicted TDDN tip-adapter overlay |
-
-The VLM seg-eval prompts that query these overlays (`raw` /
-`oracle_mask` / `tddn_mask` variants) live under
-[`experiments/Puzzle_Understanding/`](../../experiments/Puzzle_Understanding/),
-not in this dataset folder.
+CRG negatives (the region-blacked images) are **not** shipped — they are rebuilt in
+memory at eval time from the board plus either the GT `ablate_cells` or the cached
+detections. Only the detections are stored, which is what lets the predicted-region arm
+be reproduced without a GPU. The eval itself lives under
+[`experiments/CRG/`](../../experiments/CRG/README.md).
 
 ## Segmentation — 30-class unified label space
 
