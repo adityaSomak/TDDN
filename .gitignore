@@ -54,3 +54,21 @@ datasets/Puzzle_Perception/Segmentation/data/
 
 # One-off helper scripts (run locally; not part of the released code)
 scripts/
+
+# Locally-supplied / superseded heavy data (~520 MB). Never committed — only the
+# drop-point README and .gitkeep are tracked. Holds the legacy 269-sample chess
+# seg-eval set (real boards, per-pixel masks, overlay jpgs, text_repr.json), still
+# needed by the Puzzle_Understanding chess seg track, the VLA chess-localization
+# track and CRG chess board regeneration; plus the archived pre-restructure CRG
+# scratch tree. Relocate with EXPERIMENTS_LOCAL_DATA_ROOT.
+datasets/_local/*
+!datasets/_local/README.md
+!datasets/_local/.gitkeep
+
+# CRG experiment: run logs and scratch runs only. The dataset (board images +
+# questions.yaml + answers.csv + cached TDDN detections) is committed under
+# datasets/Puzzle_Perception/PVQA/{chess,nqueens}/, and so are the per-model
+# per-question result JSONs. Runs without --publish land in results/*/_live/.
+experiments/CRG/evaluation/results/**/*.log
+experiments/CRG/evaluation/results/*/_live/*
+!experiments/CRG/evaluation/results/*/_live/.gitkeep
