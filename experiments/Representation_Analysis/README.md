@@ -22,9 +22,14 @@ Representation_Analysis/
 │   ├── tdn/activation-maps/        # trained DINOv3 + RoBERTa
 │   ├── tddn/activation-maps/       # trained DINOv3 + CleanDIFT + RoBERTa
 │   └── ddn/activation-maps/        # handcraft DINOv3 + CleanDIFT
-└── quantitative/{global,patch}/
-    ├── results/                    # *.csv (committed)
-    └── plots/                      # *.{pdf,png} (committed)
+└── quantitative/
+    ├── {global,patch}/
+    │   ├── results/                # *.csv (committed)
+    │   └── plots/                  # *.{pdf,png} (committed)
+    ├── alignment/                  # Wang & Isola alignment (patch + global settings).
+    │   └── run_alignment.py        # standalone driver, not a run.py subcommand: --smoke/--full
+    └── cross_prediction/           # DINOv3<->CleanDIFT cross-prediction (RidgeCV R²).
+        └── run_cross_prediction.py # standalone driver, not a run.py subcommand: --smoke/--full
 ```
 
 ## Setup
@@ -79,8 +84,8 @@ See `configs/models.yaml` for extractor and preprocessing kwargs.
 
 ```
 shared_utils/feature_extraction/checkpoints/
-├── vith_roberta_v3_coco_ft/ckpt/99/
-└── fused_dinov3_cleandift_coco_ft/ckpt/{149,199}/
+├── vith_roberta_v3_coco_ft/ckpt/tdn/
+└── fused_dinov3_cleandift_coco_ft/ckpt/tddn/
 ```
 
 The `.distcp` shards are gitignored (~3.9 GB); place them yourself before

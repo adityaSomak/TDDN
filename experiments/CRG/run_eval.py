@@ -35,10 +35,7 @@ TASKS = ("nqueens", "chess")
 def load_registry() -> tuple[dict, dict]:
     """(models, defaults) from configs/models.yaml, groups flattened."""
     spec = yaml.safe_load(config.MODELS_YAML.read_text())
-    models: dict = {}
-    for group in ("autoregressive", "diffusion"):
-        models.update(spec.get(group) or {})
-    return models, spec["defaults"]
+    return dict(spec.get("autoregressive") or {}), spec["defaults"]
 
 
 def _parse_max_memory(spec) -> dict | None:

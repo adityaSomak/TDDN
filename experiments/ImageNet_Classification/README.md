@@ -19,8 +19,8 @@ Place the ImageNet-1K HuggingFace Arrow cache at
 Trained-head tags need their checkpoints under
 `experiments/shared_utils/feature_extraction/checkpoints/`:
 
-- `tdn` → `vith_roberta_v3_coco_ft/ckpt/99/`
-- `tddn` → `fused_dinov3_cleandift_coco_ft/ckpt/{149, 199}/` (averaged)
+- `tdn` → `vith_roberta_v3_coco_ft/ckpt/tdn/`
+- `tddn` → `fused_dinov3_cleandift_coco_ft/ckpt/tddn/`
 
 ## Supported models
 

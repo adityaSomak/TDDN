@@ -28,10 +28,7 @@ from . import config, metrics
 
 def _registry() -> dict:
     spec = yaml.safe_load(config.MODELS_YAML.read_text())
-    out = {}
-    for group in ("autoregressive", "diffusion"):
-        out.update(spec.get(group) or {})
-    return out
+    return dict(spec.get("autoregressive") or {})
 
 
 def _paper_order() -> list[tuple[str, dict]]:

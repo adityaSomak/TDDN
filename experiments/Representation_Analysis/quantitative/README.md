@@ -53,3 +53,9 @@ in `run.py`):
 
 The CSVs are committed with the published numbers. `python run.py plots`
 re-renders all six figures from them.
+
+Two further analyses live alongside `global/`/`patch/` but are standalone
+drivers, not `run.py` subcommands: `alignment/run_alignment.py` (Wang & Isola
+alignment) and `cross_prediction/run_cross_prediction.py`
+(DINOv3↔CleanDIFT cross-prediction). Each is invoked directly with
+`--smoke`/`--full`; see their module docstrings.
