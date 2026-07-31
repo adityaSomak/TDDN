@@ -33,6 +33,14 @@ datasets/Existing_Datasets/Keypoint_Matching/SPair-71K/SPair-71k/
 datasets/Existing_Datasets/Retrieval/Flickr30K/*
 !datasets/Existing_Datasets/Retrieval/Flickr30K/.gitkeep
 datasets/Existing_Datasets/Segmentation/ADE20K/ADEChallengeData2016/
+datasets/Existing_Datasets/Segmentation/PASCAL_VOC/VOCdevkit/
+datasets/Existing_Datasets/Segmentation/PASCAL_Context/VOCtrainval_03-May-2010.tar
+datasets/Existing_Datasets/Segmentation/PASCAL_Context/trainval_merged.json
+datasets/Existing_Datasets/Segmentation/PASCAL_Context/VOCdevkit/
+datasets/Existing_Datasets/Segmentation/COCO_Stuff/images/
+datasets/Existing_Datasets/Segmentation/COCO_Stuff/annotations/
+datasets/Existing_Datasets/Segmentation/Cityscapes/gtFine/
+datasets/Existing_Datasets/Segmentation/Cityscapes/leftImg8bit/
 datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/train2014/
 datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/val2014/
 datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/annotations/
@@ -72,3 +80,8 @@ datasets/_local/*
 experiments/CRG/evaluation/results/**/*.log
 experiments/CRG/evaluation/results/*/_live/*
 !experiments/CRG/evaluation/results/*/_live/.gitkeep
+
+# Vision_Language_Alignment: same _live/ convention as CRG above — runs without
+# --publish land here so a smoke test can't overwrite a paper number.
+experiments/Vision_Language_Alignment/evaluation/results/*/_live/*
+!experiments/Vision_Language_Alignment/evaluation/results/*/_live/.gitkeep
