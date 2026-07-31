@@ -1,0 +1,8 @@
+{
+  "model": "siglip2_l16",
+  "dataset": "coco_stuff",
+  "protocol": "slide_448_224",
+  "n_classes": 171,
+  "n_images": 5000,
+  "miou": 17.38416701555252
+}

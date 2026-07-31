@@ -1,6 +1,0 @@
-{
-  "model": "tddn",
-  "dataset": "cifar100",
-  "mode": "tip_adapter_k16",
-  "top1": 86.8
-}

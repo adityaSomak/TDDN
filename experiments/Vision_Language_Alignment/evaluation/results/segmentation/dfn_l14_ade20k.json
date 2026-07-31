@@ -1,0 +1,8 @@
+{
+  "model": "dfn_l14",
+  "dataset": "ade20k",
+  "protocol": "slide_448_224",
+  "n_classes": 150,
+  "n_images": 2000,
+  "miou": 4.303060844540596
+}

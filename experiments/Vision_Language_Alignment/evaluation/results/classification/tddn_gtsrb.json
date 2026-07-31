@@ -1,0 +1,8 @@
+{
+  "model": "tddn",
+  "dataset": "gtsrb",
+  "mode": "zero_shot",
+  "n_samples": 12630,
+  "top1": 8.749010413885117,
+  "top5": 28.0997633934021
+}

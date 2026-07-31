@@ -1,6 +1,13 @@
 {
   "model": "tdn",
   "dataset": "flickr30k",
-  "i2t_r1": 86.0,
-  "t2i_r1": 72.8
+  "protocol": "karpathy_test_1k",
+  "n_images": 1000,
+  "n_captions": 5000,
+  "i2t_r1": 85.8,
+  "i2t_r5": 98.0,
+  "i2t_r10": 98.8,
+  "t2i_r1": 72.88,
+  "t2i_r5": 91.92,
+  "t2i_r10": 95.62
 }

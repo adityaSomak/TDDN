@@ -1,0 +1,8 @@
+{
+  "model": "siglip2_l16",
+  "dataset": "food101",
+  "mode": "zero_shot",
+  "n_samples": 25250,
+  "top1": 94.45148706436157,
+  "top5": 98.2534646987915
+}

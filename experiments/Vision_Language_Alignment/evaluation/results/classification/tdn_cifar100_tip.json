@@ -1,0 +1,7 @@
+{
+  "model": "tdn",
+  "dataset": "cifar100",
+  "mode": "tip",
+  "top1": 85.7,
+  "k": 16
+}

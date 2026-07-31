@@ -384,8 +384,17 @@ class VithRobertaExtractor:
         B, N, D = out.patch_tokens.shape
         side = int(round(N ** 0.5))
         patch_grid = out.patch_tokens.reshape(B, side, side, D).permute(0, 3, 1, 2).contiguous()
+
+        backbone_grid = None
+        if out.backbone_patches is not None:
+            Bb, Nb, Db = out.backbone_patches.shape
+            sideb = int(round(Nb ** 0.5))
+            backbone_grid = out.backbone_patches.reshape(
+                Bb, sideb, sideb, Db).permute(0, 3, 1, 2).contiguous().float()
+
         return {
             "patch_tokens": patch_grid.float(),
+            "backbone_patches": backbone_grid,  # (B,C,H,W) frozen backbone, before the alignment head
             "cls": None,                       # CLS lives inside `aligned`
             "patch_mean": patch_grid.mean(dim=(2, 3)).float(),
             "global": out.aligned.float(),
@@ -418,14 +427,21 @@ class FusedDINOv3CDExtractor:
 
         patch_grid = None
         patch_mean = None
+        backbone_grid = None
         if self.return_patches and out.patch_tokens is not None:
             B, N, D = out.patch_tokens.shape
             side = int(round(N ** 0.5))
             patch_grid = out.patch_tokens.reshape(B, side, side, D).permute(0, 3, 1, 2).contiguous().float()
             patch_mean = patch_grid.mean(dim=(2, 3))
+        if self.return_patches and out.backbone_patches is not None:
+            Bb, Nb, Db = out.backbone_patches.shape
+            sideb = int(round(Nb ** 0.5))
+            backbone_grid = out.backbone_patches.reshape(
+                Bb, sideb, sideb, Db).permute(0, 3, 1, 2).contiguous().float()
 
         return {
             "patch_tokens": patch_grid,
+            "backbone_patches": backbone_grid,  # (B,C,H,W) fused DINOv3+CleanDIFT, before the head
             "cls": None,
             "patch_mean": patch_mean,
             "global": out.aligned.float(),

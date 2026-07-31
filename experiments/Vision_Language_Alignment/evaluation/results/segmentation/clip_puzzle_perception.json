@@ -1,0 +1,21 @@
+{
+  "model": "clip",
+  "dataset": "puzzle_perception",
+  "protocol": "slide_336_168",
+  "n_classes": 11,
+  "n_images": 1500,
+  "miou": 11.043762415647507,
+  "per_class_iou": [
+    1.8,
+    5.31,
+    5.42,
+    21.87,
+    7.44,
+    7.35,
+    17.91,
+    20.52,
+    2.9,
+    29.33,
+    1.64
+  ]
+}

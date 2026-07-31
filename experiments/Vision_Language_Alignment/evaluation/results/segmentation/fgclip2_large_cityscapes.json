@@ -1,0 +1,8 @@
+{
+  "model": "fgclip2_large",
+  "dataset": "cityscapes",
+  "protocol": "slide_448_224",
+  "n_classes": 19,
+  "n_images": 500,
+  "miou": 31.39003813266754
+}

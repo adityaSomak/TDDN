@@ -1,0 +1,8 @@
+{
+  "model": "tddn",
+  "dataset": "caltech101",
+  "mode": "zero_shot",
+  "n_samples": 8677,
+  "top1": 75.0605046749115,
+  "top5": 88.1295382976532
+}

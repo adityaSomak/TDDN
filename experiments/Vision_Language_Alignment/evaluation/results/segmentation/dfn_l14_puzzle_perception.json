@@ -1,0 +1,21 @@
+{
+  "model": "dfn_l14",
+  "dataset": "puzzle_perception",
+  "protocol": "slide_336_168",
+  "n_classes": 11,
+  "n_images": 1500,
+  "miou": 11.158312112092972,
+  "per_class_iou": [
+    9.63,
+    1.88,
+    4.19,
+    30.27,
+    5.13,
+    13.23,
+    1.94,
+    1.46,
+    34.47,
+    11.23,
+    9.32
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "model": "fgclip2_large",
+  "dataset": "caltech101",
+  "mode": "zero_shot",
+  "n_samples": 8677,
+  "top1": 91.1259651184082,
+  "top5": 99.70035552978516
+}

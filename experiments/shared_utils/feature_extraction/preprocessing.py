@@ -29,6 +29,18 @@ from .constants import NORMALIZATION, PATCH_SIZES
 _Strategy = str  # "square_resize" | "aspect_pad" | "imagenet_center_crop"
 
 
+def aspect_fit_size(w: int, h: int, target_res: int) -> tuple[int, int]:
+    """Long side -> ``target_res``, short side scaled to preserve aspect ratio.
+
+    Shared by ``_aspect_pad_pil`` (forward letterbox pad) and any inverse
+    crop that needs to locate the same valid region within the padded
+    canvas — both must agree on this exact geometry.
+    """
+    if w >= h:
+        return target_res, int(round(target_res * h / w))
+    return int(round(target_res * w / h)), target_res
+
+
 def _aspect_pad_pil(img: Image.Image, target_res: int) -> Image.Image:
     """Resize preserving aspect ratio (LANCZOS), then center-pad to a square.
 
@@ -36,12 +48,7 @@ def _aspect_pad_pil(img: Image.Image, target_res: int) -> Image.Image:
     coordinate frame.
     """
     w, h = img.size
-    if w >= h:
-        new_w = target_res
-        new_h = int(round(target_res * h / w))
-    else:
-        new_h = target_res
-        new_w = int(round(target_res * w / h))
+    new_w, new_h = aspect_fit_size(w, h, target_res)
     img = img.resize((new_w, new_h), Image.Resampling.LANCZOS)
     canvas = Image.new(img.mode, (target_res, target_res), 0)
     canvas.paste(img, ((target_res - new_w) // 2, (target_res - new_h) // 2))

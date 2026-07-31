@@ -1,0 +1,8 @@
+{
+  "model": "tdn",
+  "dataset": "food101",
+  "mode": "zero_shot",
+  "n_samples": 25250,
+  "top1": 51.809900999069214,
+  "top5": 77.70296931266785
+}

@@ -1,0 +1,8 @@
+{
+  "model": "dfn_l14",
+  "dataset": "caltech101",
+  "mode": "zero_shot",
+  "n_samples": 8677,
+  "top1": 93.02754402160645,
+  "top5": 99.95390176773071
+}

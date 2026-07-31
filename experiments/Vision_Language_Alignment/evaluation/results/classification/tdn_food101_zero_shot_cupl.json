@@ -1,6 +1,0 @@
-{
-  "model": "tdn",
-  "dataset": "food101",
-  "mode": "zero_shot_cupl",
-  "top1": 63.8
-}

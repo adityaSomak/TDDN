@@ -1,0 +1,6 @@
+{
+  "model": "tdn",
+  "dataset": "cifar100",
+  "mode": "cupl",
+  "top1": 75.7
+}

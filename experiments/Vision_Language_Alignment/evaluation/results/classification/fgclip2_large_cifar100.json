@@ -1,0 +1,8 @@
+{
+  "model": "fgclip2_large",
+  "dataset": "cifar100",
+  "mode": "zero_shot",
+  "n_samples": 10000,
+  "top1": 81.84999823570251,
+  "top5": 95.55000066757202
+}

@@ -1,6 +1,0 @@
-{
-  "model": "tddn",
-  "dataset": "gtsrb",
-  "mode": "tip_adapter_k16",
-  "top1": 36.3
-}

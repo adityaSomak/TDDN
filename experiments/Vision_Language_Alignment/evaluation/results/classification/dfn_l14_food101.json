@@ -1,0 +1,8 @@
+{
+  "model": "dfn_l14",
+  "dataset": "food101",
+  "mode": "zero_shot",
+  "n_samples": 25250,
+  "top1": 92.57822036743164,
+  "top5": 98.05148243904114
+}

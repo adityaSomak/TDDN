@@ -1,0 +1,13 @@
+{
+  "model": "dfn_l14",
+  "dataset": "flickr30k",
+  "protocol": "karpathy_test_1k",
+  "n_images": 1000,
+  "n_captions": 5000,
+  "i2t_r1": 89.8,
+  "i2t_r5": 98.5,
+  "i2t_r10": 99.3,
+  "t2i_r1": 75.34,
+  "t2i_r5": 92.8,
+  "t2i_r10": 96.04
+}

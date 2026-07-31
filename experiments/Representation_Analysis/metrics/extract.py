@@ -108,13 +108,13 @@ def _load_image(coco_dir: Path, stem: str, transform) -> torch.Tensor:
 
 def _build_extractor(tag: str, model_entry: dict, device):
     """Build an extractor from the models.yaml entry for ``tag``."""
-    from shared_utils.feature_extraction import build_extractor, build_transform
+    from shared_utils.feature_extraction import build_extractor, build_transform, loader_kwargs_for
 
     backbone = model_entry["backbone"]
     tfm_cfg = model_entry.get("transform", {}) or {}
     input_size = int(tfm_cfg.get("input_size", 1024))
     extractor_kwargs = dict(model_entry.get("extractor", {}) or {})
-    loader_kwargs: dict = {}
+    loader_kwargs: dict = dict(loader_kwargs_for(model_entry))
 
     # The fused TDDN extractor needs ``return_patches=True`` to expose
     # the patch grid, and ``common_grid_override`` so the internal

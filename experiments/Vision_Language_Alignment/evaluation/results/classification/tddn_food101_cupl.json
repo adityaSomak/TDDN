@@ -1,0 +1,6 @@
+{
+  "model": "tddn",
+  "dataset": "food101",
+  "mode": "cupl",
+  "top1": 66.8
+}

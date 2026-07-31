@@ -1,0 +1,8 @@
+{
+  "model": "openclip_l14",
+  "dataset": "gtsrb",
+  "mode": "zero_shot",
+  "n_samples": 12630,
+  "top1": 39.897069334983826,
+  "top5": 62.06650733947754
+}

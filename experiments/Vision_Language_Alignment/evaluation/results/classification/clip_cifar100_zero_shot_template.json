@@ -1,6 +1,0 @@
-{
-  "model": "clip",
-  "dataset": "cifar100",
-  "mode": "zero_shot_template",
-  "top1": 74.6
-}

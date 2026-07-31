@@ -1,0 +1,8 @@
+{
+  "model": "fgclip2_large",
+  "dataset": "coco_stuff",
+  "protocol": "slide_448_224",
+  "n_classes": 171,
+  "n_images": 5000,
+  "miou": 24.166004359722137
+}

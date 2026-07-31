@@ -20,6 +20,29 @@ FORMAT_INSTRUCTIONS = {
     'cell_dict_occupied_first': "\nRespond with only a Python dictionary with exactly two keys: 'occupied_cells' listing all cells with a queen, then 'empty_cells' listing all cells without a queen. Each value is a list of (row, col) tuples. e.g. {'occupied_cells': [(0, 0)], 'empty_cells': [(0, 1), (0, 2)]}.",
 }
 
+# ---------------------------------------------------------------------------
+# RECALL prompts: localized, direct-perceptual VQA on the RAW board (no overlays,
+# no chain-of-thought). Used by the CRG VQA experiment. Composed as
+# SYSTEM_PROMPT_RECALL + "\n\n" + <question> + FORMAT_INSTRUCTIONS_RECALL[answer_type].
+# ---------------------------------------------------------------------------
+SYSTEM_PROMPT_RECALL = (
+    "You are looking at an N-Queens board: a chess-style grid of square cells in two "
+    "alternating colors. Some cells contain a queen (a crown icon); the rest are empty. "
+    "The board has no borders or margins — every square is part of the grid — and may be "
+    "8x8, 9x9, 10x10, or 11x11. Use 0-based indexing: the top-left cell is (0, 0); row "
+    "indices increase downward, column indices increase rightward. "
+    "Answer directly and concisely; do not explain."
+)
+
+FORMAT_INSTRUCTIONS_RECALL = {
+    'yes_no':          '\nAnswer with only Yes or No.',
+    'choice':          '\nAnswer with only {options}.',  # .format(options="left or right")
+    'index':           '\nAnswer with only the {axis} number, e.g. 7.',  # .format(axis="column")
+    'coordinate':      '\nAnswer with only the (row, col), e.g. (3, 7).',
+    'integer':         '\nAnswer with only the number, e.g. 9.',
+    'coordinate_list': '\nAnswer with only a Python list of (row, col) tuples, e.g. [(0, 2), (1, 7)].',
+}
+
 _BASE = {
     'raw': (
         "You are given an image of a N-Queens chess board puzzle."

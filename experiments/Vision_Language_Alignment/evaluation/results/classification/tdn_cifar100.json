@@ -1,0 +1,8 @@
+{
+  "model": "tdn",
+  "dataset": "cifar100",
+  "mode": "zero_shot",
+  "n_samples": 10000,
+  "top1": 75.08999705314636,
+  "top5": 92.29999780654907
+}

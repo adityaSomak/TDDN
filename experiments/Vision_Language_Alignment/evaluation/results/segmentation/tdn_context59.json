@@ -1,0 +1,8 @@
+{
+  "model": "tdn",
+  "dataset": "context59",
+  "protocol": "slide_448_224",
+  "n_classes": 59,
+  "n_images": 5104,
+  "miou": 27.549108862876892
+}

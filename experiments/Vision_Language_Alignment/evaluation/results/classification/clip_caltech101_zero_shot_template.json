@@ -1,6 +1,0 @@
-{
-  "model": "clip",
-  "dataset": "caltech101",
-  "mode": "zero_shot_template",
-  "top1": 83.7
-}

@@ -1,6 +1,0 @@
-{
-  "model": "tdn",
-  "dataset": "gtsrb",
-  "mode": "zero_shot_template",
-  "top1": 8.0
-}

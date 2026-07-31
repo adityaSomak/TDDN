@@ -1,0 +1,13 @@
+{
+  "model": "openclip_l14",
+  "dataset": "flickr30k",
+  "protocol": "karpathy_test_1k",
+  "n_images": 1000,
+  "n_captions": 5000,
+  "i2t_r1": 89.5,
+  "i2t_r5": 98.7,
+  "i2t_r10": 99.4,
+  "t2i_r1": 75.52,
+  "t2i_r5": 92.92,
+  "t2i_r10": 95.94
+}

@@ -1,0 +1,8 @@
+{
+  "model": "metaclip_l14",
+  "dataset": "caltech101",
+  "mode": "zero_shot",
+  "n_samples": 8677,
+  "top1": 90.1694118976593,
+  "top5": 99.94237422943115
+}

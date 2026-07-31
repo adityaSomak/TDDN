@@ -1,0 +1,8 @@
+{
+  "model": "siglip2_l16",
+  "dataset": "cifar100",
+  "mode": "zero_shot",
+  "n_samples": 10000,
+  "top1": 82.16999769210815,
+  "top5": 95.31999826431274
+}

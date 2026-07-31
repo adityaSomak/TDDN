@@ -1,0 +1,8 @@
+{
+  "model": "openclip_l14",
+  "dataset": "food101",
+  "mode": "zero_shot",
+  "n_samples": 25250,
+  "top1": 88.91088962554932,
+  "top5": 97.25148677825928
+}

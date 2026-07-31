@@ -1,0 +1,8 @@
+{
+  "model": "clip",
+  "dataset": "caltech101",
+  "mode": "zero_shot",
+  "n_samples": 8677,
+  "top1": 86.4930272102356,
+  "top5": 96.94594740867615
+}

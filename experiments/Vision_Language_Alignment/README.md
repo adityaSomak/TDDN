@@ -1,205 +1,206 @@
 # Vision_Language_Alignment
 
-Image-text alignment evaluation across three tasks, run against three
-encoder variants:
+Evaluates image–text alignment encoders on three tasks, against eight models on
+equal footing. Every number comes from one entry point over one model registry.
 
-| Task | Datasets | Modes |
+| Task | Datasets | Metric |
 |---|---|---|
-| **Classification** | CIFAR-100, Caltech-101, Food-101, GTSRB, ImageNet-1K | zero-shot template, zero-shot CuPL, few-shot TIP-Adapter (K ∈ {1, 2, 4, 8, 16}) |
-| **Retrieval** | Flickr30K, COCO val2014 | bidirectional Recall@{1, 5, 10} |
-| **Zero-shot segmentation** | ADE20K (150 classes), Puzzle-Perception (30 classes) | open-vocabulary mIoU (cosine sim between patch features and per-class text embeddings; no segmentation head trained) |
+| Classification | CIFAR-100, Caltech-101, Food-101, GTSRB | top-1 (zero-shot / CuPL / TIP-Adapter) |
+| Retrieval | Flickr30K, COCO val2014 | bidirectional Recall@{1,5,10} |
+| Segmentation | ADE20K, Cityscapes, COCO-Stuff, PASCAL-Context-59, Puzzle-Perception | zero-shot open-vocab mIoU |
 
-The headline metrics in `evaluation/results/*.csv` are the published
-paper numbers, populated by [`scripts/ingest_vla_results.py`](../../scripts/ingest_vla_results.py)
-from a hard-coded `PAPER_TABLE` dictionary. Live runs of `run_eval.py`
-write under `evaluation/results/<task>/_live/` and never overwrite the
-published values.
+Segmentation follows the GroupViT/TCL sliding-window protocol: resize the shorter
+side to the dataset's target (aspect preserved, long side capped at 2048), cover
+the image with `crop`-sized windows at half-crop stride, average the overlaps, and
+score at that resolution — no fixed square, no letterbox. ADE20K, Cityscapes,
+COCO-Stuff and PASCAL-Context use a 448 target; Puzzle-Perception uses 336.
+
+**Retrieval candidate sets differ, and the two datasets' numbers are not on a
+common scale.** Flickr30K uses the 1,000-image Karpathy test split — the published
+protocol. COCO scores against all 40,504 val2014 images rather than the
+5,000-image Karpathy test split, so its Recall@K sits well below figures reported
+elsewhere. The candidate set is recorded as `protocol` in every retrieval result
+and as a column in `retrieval.csv`: comparisons between models are valid,
+comparisons of the COCO column against published numbers are not.
 
 ## Supported models
 
-Three model tags configured in [`configs/models.yaml`](configs/models.yaml):
+Eight tags in [`configs/models.yaml`](configs/models.yaml), which is the single
+source of truth — `evaluation/src/encoders.py` builds both the global and the dense
+encoder for a tag from its entry there.
 
 | Tag | Vision encoder | Text encoder | Checkpoint |
 |---|---|---|---|
-| `clip` | CLIP ViT-L/14 @ 336 | CLIP text transformer | HuggingFace `openai/clip-vit-large-patch14-336` |
-| `tdn`  | DINOv3-H+ + 2 trained head blocks | RoBERTa-large + 2 trained head blocks | `vith_roberta_v3_coco_ft/ckpt/99` |
-| `tddn` | DINOv3-H+ + CleanDIFT (SD-2.1) fused vision + 2 trained head blocks | RoBERTa-large + 2 trained head blocks | average of `fused_dinov3_cleandift_coco_ft/ckpt/{149, 199}` |
-
-The trained encoder modules are imported from
-[`experiments/shared_utils/feature_extraction/text_alignment/`](../shared_utils/feature_extraction/text_alignment/);
-trained-head checkpoints live under
-[`experiments/shared_utils/feature_extraction/checkpoints/`](../shared_utils/feature_extraction/checkpoints/).
+| `clip` | CLIP ViT-L/14 @ 336 | CLIP | `openai/clip-vit-large-patch14-336` |
+| `metaclip_l14` | ViT-L/14 (QuickGELU) | MetaCLIP | `metaclip_fullcc` |
+| `dfn_l14` | ViT-L/14 (QuickGELU) | DFN | `dfn2b` |
+| `openclip_l14` | ViT-L/14 | OpenCLIP | `laion2b_s32b_b82k` |
+| `siglip2_l16` | ViT-L/16 SigLIP2 @ 384 | SigLIP2 | `webli` |
+| `fgclip2_large` | FG-CLIP2 large | FG-CLIP2 | `qihoo360/fg-clip2-large` |
+| `tdn` | DINOv3 ViT-H+ + 2 trained head blocks | RoBERTa-large + 2 trained head blocks | `vith_roberta_v3_coco_ft/ckpt/tdn` |
+| `tddn` | DINOv3 + CleanDIFT (fused) + 2 trained head blocks | RoBERTa-large + 2 trained head blocks | `fused_dinov3_cleandift_coco_ft/ckpt/tddn` |
 
 ## Setup
 
 ```bash
-export HF_TOKEN=<your_token>     # gated DINOv3 / RoBERTa weights
+export HF_TOKEN=<your_token>          # gated DINOv3 / RoBERTa weights
+pip install -r ../../requirements.txt
 ```
 
-Datasets are resolved relative to the repository root. The code expects
-them at:
+Trained-head tags need their checkpoints under
+`experiments/shared_utils/feature_extraction/checkpoints/`:
+
+- `tdn` → `vith_roberta_v3_coco_ft/ckpt/tdn/`
+- `tddn` → `fused_dinov3_cleandift_coco_ft/ckpt/tddn/`
+
+Datasets, all repo-relative:
 
 | Symbol | Path |
 |---|---|
-| `cifar100` | `datasets/Existing_Datasets/Classification/CIFAR-100/cifar100/` |
-| `caltech101` | `datasets/Existing_Datasets/Classification/Caltech-101/caltech101/` |
-| `food101` | `datasets/Existing_Datasets/Classification/Food-101/` |
-| `gtsrb` | `datasets/Existing_Datasets/Classification/GTSRB/` |
-| `imagenet1k` | `datasets/Existing_Datasets/Classification/ImageNet-1K/imagenet_hf/` |
-| `flickr30k` | `datasets/Existing_Datasets/Retrieval/Flickr30K/flickr30k/` |
-| `coco` (val + train) | `datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/` |
-| `ade20k` | `datasets/Existing_Datasets/Segmentation/ADE20K/ade20k/` |
-| `puzzle` | `datasets/Puzzle_Perception/Segmentation/data/` (downloaded via [`datasets/download_datasets.py`](../../datasets/download_datasets.py)) |
+| `cifar100` | `datasets/Existing_Datasets/Classification/CIFAR-100` |
+| `caltech101` | `datasets/Existing_Datasets/Classification/Caltech-101` |
+| `food101` | `datasets/Existing_Datasets/Classification/Food-101` |
+| `gtsrb` | `datasets/Existing_Datasets/Classification/GTSRB` |
+| `flickr30k` | `datasets/Existing_Datasets/Retrieval/Flickr30K` |
+| `coco` | `datasets/Existing_Datasets/Vision_Language_Alignment/MS-COCO-2014/val2014` |
+| `ade20k` | `datasets/Existing_Datasets/Segmentation/ADE20K` |
+| `cityscapes` | `datasets/Existing_Datasets/Segmentation/Cityscapes` |
+| `coco_stuff` | `datasets/Existing_Datasets/Segmentation/COCO_Stuff` |
+| `context59` | `datasets/Existing_Datasets/Segmentation/PASCAL_Context` |
+| `puzzle_perception` | `datasets/Puzzle_Perception/Segmentation/data` |
+
+Fetch the public ones with `python datasets/download_datasets.py --dataset <name>`.
 
 ## Evaluate
 
-A single combination — model ∈ {`clip`, `tdn`, `tddn`}, dataset ∈
-{`cifar100`, `caltech101`, `food101`, `gtsrb`, `imagenet1k`,
-`flickr30k`, `coco`, `ade20k`, `puzzle`}:
-
 ```bash
-python run_eval.py --task classification --model tdn --dataset cifar100                  # zero-shot templates
-python run_eval.py --task classification --model tdn --dataset cifar100 --mode cupl      # zero-shot CuPL
-python run_eval.py --task classification --model tdn --dataset cifar100 --mode tip --k 16  # few-shot TIP-Adapter
-python run_eval.py --task retrieval     --model tdn --dataset flickr30k
-python run_eval.py --task segmentation  --model tdn --dataset ade20k
+python run_eval.py --task classification --model tddn --dataset cifar100
+python run_eval.py --task classification --model tddn --dataset cifar100 --mode cupl
+python run_eval.py --task classification --model tddn --dataset cifar100 --mode tip --k 16
+python run_eval.py --task retrieval      --model clip --dataset flickr30k
+python run_eval.py --task segmentation   --model tddn --dataset cityscapes
+python run_eval.py --task segmentation   --model tddn --dataset ade20k --limit 8   # smoke test
 ```
 
-Any of `--task`, `--model`, `--dataset`, `--mode` accepts `all`; the
-cross-product is dispatched in one go and a summary table prints at
-the end:
+`--task`, `--model`, `--dataset` and `--mode` each accept `all`; the cross-product
+is dispatched in one go and a summary table prints at the end:
 
 ```bash
-python run_eval.py --task classification --model all --dataset cifar100 --mode zero_shot
-python run_eval.py --task all            --model tdn --dataset all
-python run_eval.py --task all            --model all --dataset all --limit 200
+python run_eval.py --task all --model all --dataset all --limit 200
 ```
 
-`--limit N` caps the number of evaluation samples per combo for quick
-checks. Every combo writes a JSON under
-`evaluation/results/<task>/_live/<model>_<dataset>[_<mode>].json`; the
-headline CSVs are not modified.
+| Arg | Default | Meaning |
+|---|---|---|
+| `--task` | _required_ (except `--aggregate`) | `classification` / `retrieval` / `segmentation` / `all` |
+| `--model` | _required_ | a registry tag, or `all` |
+| `--dataset` | _required_ | a dataset name, or `all` to expand within the task |
+| `--mode` | `zero_shot` | classification only: `zero_shot` / `cupl` / `tip` / `all` |
+| `--k` | `16` | TIP-Adapter shots per class |
+| `--k-sweep` | — | comma-separated shot counts, e.g. `1,2,4,8,16` |
+| `--limit` | all | cap samples per combo |
+| `--max-batch` | `32` | segmentation: max windows per forward |
+| `--images-per-chunk` | `32` | segmentation: images accumulated before scoring |
+| `--force` | off | recompute even if the output already exists |
+| `--publish` | off | write the committed result file instead of `_live/` |
+| `--aggregate` | — | rebuild the headline CSVs from committed results and exit |
+| `--device` | `cuda` if available, else `cpu` | |
 
-CuPL falls back to template prompts when a dataset's descriptions JSON
-is missing (applies to ImageNet-1K, which doesn't ship descriptions in
-this tree). The fallback is recorded in the live JSON as
-`"used_template_fallback": true`.
+Runs write to `evaluation/results/<task>/_live/` unless `--publish` is given, so a
+smoke test cannot overwrite a published number. `_live/` is not committed.
+
+CuPL falls back to template prompts when `descriptions/<dataset>.json` is missing;
+the fallback is recorded as `"used_template_fallback": true`.
 
 ## Ablations
 
-The TIP-Adapter K ∈ {1, 2, 4, 8, 16} sweep is a single command via
-`--k-sweep`:
+TIP-Adapter shot count, one command per (model, dataset):
 
 ```bash
-python run_eval.py --task classification --model tdn --dataset caltech101 \
-                   --mode tip --k-sweep 1,2,4,8,16
-# Produces _live/tdn_caltech101_tip_k{1,2,4,8,16}.json
+python run_eval.py --task classification --model tddn --dataset caltech101 \
+    --mode tip --k-sweep 1,2,4,8,16
 ```
 
-The paper-canonical aggregate is committed at
-[`evaluation/results/classification/tip_k_sweep.csv`](evaluation/results/classification/tip_k_sweep.csv).
-
-## Train
-
-Two-round protocol; both rounds use FSDP2 with `bf16` parameters and
-`fp32` gradient reduction, plus selective activation checkpointing and
-`torch.compile` on the trainable head blocks:
-
-| Round | Data | LR | Iters | Grad-cache micro-batches |
-|---|---|---|---|---|
-| 1 | LAION + COCO (`ConcatDataset`) | 1e-3 | 5000 | 16 |
-| 2 | COCO only (fine-tune of round-1 final) | 1e-4 | 500 (TDN) / 200 (TDDN) | 32 |
-
-Loss = symmetric InfoNCE with all-gathered negatives + JS-divergence
-structure regularizer (λ=10, level=1) against the frozen-backbone
-reference embeddings. Hyperparameters live in
-[`configs/training/round_{1,2}.yaml`](configs/training/) and
-[`configs/models.yaml`](configs/models.yaml). Edit the YAMLs to tune;
-the runner is intentionally CLI-light.
-
-Launch under `torchrun` (single- or multi-GPU; the script relies on a
-process group for FSDP + DCP checkpointing):
-
-```bash
-torchrun --nproc_per_node=N python run_train.py --variant tdn  --round 1
-torchrun --nproc_per_node=N python run_train.py --variant tddn --round 2 \
-    --resume-checkpoint <path/to/round1/ckpt/4999>
-```
-
-`--nproc_per_node=1` is fine for a sanity check. A plain
-`python run_train.py ...` invocation exits immediately with a launcher
-hint.
-
-**Effective contrastive batch scales with GPU count.** At each
-iteration the loss sees `batch_size × grad_cache_multiplier ×
-world_size` (image, caption) pairs:
-
-| Round | 1 GPU | 4 GPUs (published) | 8 GPUs |
-|---|---:|---:|---:|
-| 1 (`batch=64`, `grad_cache=16`) | 1,024 | **4,096** | 8,192 |
-| 2 (`batch=64`, `grad_cache=32`) | 2,048 | **8,192** | 16,384 |
-
-The published checkpoints were trained at 4 GPUs. If you train on
-fewer GPUs and want to keep the same effective batch (contrastive
-quality is batch-size-sensitive), bump
-`gradient_cache.grad_cache_multiplier` in
-[`configs/training/round_{1,2}.yaml`](configs/training/)
-proportionally — e.g. 1 GPU + round-1 with `grad_cache_multiplier=64`
-reproduces the 4-GPU effective batch of 4,096.
-
-Checkpoints land at
-`<out_root>/checkpoints/<variant>-round<n>/ckpt/<step>/` as DCP shards
-(`.metadata` + `__<rank>_0.distcp` per rank) — the same on-disk format
-the inference loaders consume. The merged config used for the run is
-saved alongside as `config.yaml`.
-
-The bundled checkpoints under
-`experiments/shared_utils/feature_extraction/checkpoints/{vith_roberta_v3_coco_ft,fused_dinov3_cleandift_coco_ft}/`
-already provide the published round-2 finals; `run_train.py` is for
-retraining on new data.
+Writes `_live/tddn_caltech101_tip_k{1,2,4,8,16}.json`; `--aggregate` folds them
+into `tip_k_sweep.csv`.
 
 ## Results
 
-| File | Contents |
+Committed artifacts. The three main CSVs are regenerated from the per-model JSONs
+by `--aggregate`, so they carry nothing the JSONs don't:
+
+- [`evaluation/results/classification/classification.csv`](evaluation/results/classification/classification.csv)
+  — `model, dataset, mode, top1`. 48 rows: 8 models × 4 datasets zero-shot, plus
+  `tdn`/`tddn` CuPL and TIP-Adapter.
+- [`evaluation/results/retrieval/retrieval.csv`](evaluation/results/retrieval/retrieval.csv)
+  — `model, dataset, protocol, n_images, i2t_r1, t2i_r1`. 16 rows.
+- [`evaluation/results/segmentation/segmentation.csv`](evaluation/results/segmentation/segmentation.csv)
+  — `model, dataset, miou` (percent). 40 rows: 8 models × 5 datasets.
+- [`evaluation/results/classification/tip_k_sweep.csv`](evaluation/results/classification/tip_k_sweep.csv)
+  — `model, dataset, k_1, k_2, k_4, k_8, k_16`, 8 rows. Retained from an earlier
+  sweep whose per-run JSONs are not in the tree, so unlike the three above it is
+  not currently regenerable; `--aggregate` leaves it untouched. Re-run
+  `--mode tip --k-sweep 1,2,4,8,16` per (model, dataset) to rebuild it.
+
+Per-run detail, `<model>_<dataset>[_<mode>].json` under each task directory:
+
+| Task | Keys |
 |---|---|
-| [`evaluation/results/classification/classification.csv`](evaluation/results/classification/classification.csv) | headline (`model, dataset, mode, top1`) |
-| [`evaluation/results/retrieval/retrieval.csv`](evaluation/results/retrieval/retrieval.csv) | headline (`model, dataset, i2t_r1, t2i_r1`) |
-| [`evaluation/results/segmentation/segmentation.csv`](evaluation/results/segmentation/segmentation.csv) | headline (`model, dataset, miou`) |
-| `evaluation/results/classification/tip_k_sweep.csv` | TIP-Adapter K ∈ {1, 2, 4, 8, 16} ablation |
-| `evaluation/results/<task>/<model>_<dataset>[_<mode>].json` | paper-canonical per-run detail (top1 / per-class IoU / recall@K) |
-| `evaluation/results/<task>/_live/<model>_<dataset>[_<mode>].json` | live runs of `run_eval.py`; not committed |
+| classification | `model, dataset, mode, n_samples, top1, top5`; TIP instead carries `k, n_cache, n_query, per_alpha, best_alpha, best_top1` |
+| retrieval | `model, dataset, protocol, n_images, n_captions, i2t_r{1,5,10}, t2i_r{1,5,10}` |
+| segmentation | `model, dataset, protocol, n_classes, n_images, miou, per_class_iou` |
+
+mIoU is a percent in every committed artifact. The `cupl` and `tip` files carry
+`model, dataset, mode, top1` only — they predate the current writer, which also
+records sample counts. Likewise, only the `puzzle_perception` segmentation
+files carry `per_class_iou`; the other four datasets' files predate the writer
+adding it. Re-run to backfill (`--force --publish`).
 
 ## Prompts
 
-[`evaluation/prompts/`](evaluation/prompts/) holds the text inputs the
-encoder consumes to build per-class classifiers:
+- `evaluation/prompts/<dataset>.py` — one ALL-CAPS class-name list per dataset,
+  ordered to match the dataset's integer labels. `context59` reads
+  `pascal_context.py`; every other dataset key matches its module name.
+- `evaluation/prompts/openai_templates.py` — the 80 OpenAI prompt templates, as
+  callables.
+- `evaluation/prompts/descriptions/<dataset>.json` — 50 CuPL descriptions per class.
 
-- `<dataset>.py` — `*_CLASSES` list per dataset (CIFAR-100 / Caltech-101 /
-  Food-101 / GTSRB / ImageNet-1K, ADE20K, Puzzle).
-- `openai_templates.py` — canonical 80 OpenAI zero-shot templates
-  (Radford et al., 2021), shared across all classification + zero-shot
-  segmentation datasets.
-- `descriptions/<dataset>.json` — CuPL LLM-generated descriptions for
-  zero-shot CuPL classification, 50 descriptions per class. Ships for
-  CIFAR-100, Caltech-101, Food-101, GTSRB. Missing JSONs fall back to
-  the template ensemble at runtime.
+## Train
+
+Two rounds, configured in [`configs/training/`](configs/training/):
+
+| Round | Data | LR | Iters | Grad-cache micro-batches |
+|---|---|---|---|---|
+| 1 | Recaptioned LAION + COCO | `1e-3` | 5,000 | 16 |
+| 2 | COCO only | `1e-4` | 200–500 (per tag) | 32 |
+
+```bash
+torchrun --nproc_per_node=4 run_train.py --variant tddn --round 1
+torchrun --nproc_per_node=4 run_train.py --variant tddn --round 2
+```
+
+The effective contrastive batch scales with GPU count; the published runs used 4.
 
 ## Files
 
 ```
 Vision_Language_Alignment/
-├── README.md                  (this file)
+├── README.md                     (this file)
+├── run_eval.py                   one entry point; --task / --model / --dataset
+├── run_train.py
 ├── configs/
-│   ├── models.yaml            # per-variant arch + round overrides
-│   └── training/
-│       ├── round_1.yaml       # LAION + COCO pretrain hyperparameters
-│       └── round_2.yaml       # COCO fine-tune hyperparameters
+│   ├── models.yaml               8 tags — the single source of encoder wiring
+│   └── training/{round_1,round_2}.yaml
 ├── evaluation/
-│   ├── prompts/               # class names + templates + CuPL descriptions
-│   ├── results/               # paper-canonical CSVs + detail JSONs (+ _live/ from local runs)
-│   └── src/                   # classifier / retrieval / segmentation / TIP-Adapter / encoder adapters / dataset wrappers
-├── run_eval.py                # eval entry point (per-combo or sweep)
-├── run_train.py               # training entry point (launch under torchrun)
-└── training/
-    └── src/                   # data loaders, losses, FSDP setup, checkpoint I/O, training loop
+│   ├── prompts/                  per-dataset class names + templates + CuPL
+│   ├── src/
+│   │   ├── encoders.py           build_alignment_encoder / build_dense_encoder
+│   │   ├── datasets.py           per-task dataset builders
+│   │   ├── classifier.py         text class-prototype matrices
+│   │   ├── tip_adapter.py        few-shot cache + alpha sweep
+│   │   ├── retrieval.py          bidirectional Recall@K
+│   │   ├── segmentation.py       mIoU + running confusion
+│   │   ├── slide_inference.py    sliding-window tiling + overlap averaging
+│   │   └── aggregate.py          rebuilds the headline CSVs
+│   └── results/{classification,retrieval,segmentation}/
+└── training/src/                 data, losses, FSDP, checkpoint I/O, loop
 ```

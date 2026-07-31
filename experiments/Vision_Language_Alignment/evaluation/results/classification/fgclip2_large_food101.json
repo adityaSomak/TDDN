@@ -1,0 +1,8 @@
+{
+  "model": "fgclip2_large",
+  "dataset": "food101",
+  "mode": "zero_shot",
+  "n_samples": 25250,
+  "top1": 93.8534677028656,
+  "top5": 98.15841317176819
+}

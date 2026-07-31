@@ -1,0 +1,8 @@
+{
+  "model": "clip",
+  "dataset": "cifar100",
+  "mode": "zero_shot",
+  "n_samples": 10000,
+  "top1": 77.7899980545044,
+  "top5": 94.33000087738037
+}

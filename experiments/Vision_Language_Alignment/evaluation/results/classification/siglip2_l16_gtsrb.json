@@ -1,0 +1,8 @@
+{
+  "model": "siglip2_l16",
+  "dataset": "gtsrb",
+  "mode": "zero_shot",
+  "n_samples": 12630,
+  "top1": 48.3847975730896,
+  "top5": 70.87094187736511
+}

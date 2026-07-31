@@ -1,6 +1,0 @@
-{
-  "model": "tdn",
-  "dataset": "caltech101",
-  "mode": "tip_adapter_k16",
-  "top1": 89.6
-}

@@ -1,0 +1,8 @@
+{
+  "model": "metaclip_l14",
+  "dataset": "gtsrb",
+  "mode": "zero_shot",
+  "n_samples": 12630,
+  "top1": 48.6144095659256,
+  "top5": 62.39113211631775
+}

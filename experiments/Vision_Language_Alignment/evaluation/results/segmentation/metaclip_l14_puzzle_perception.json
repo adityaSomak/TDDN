@@ -1,0 +1,21 @@
+{
+  "model": "metaclip_l14",
+  "dataset": "puzzle_perception",
+  "protocol": "slide_336_168",
+  "n_classes": 11,
+  "n_images": 1500,
+  "miou": 20.201745629310608,
+  "per_class_iou": [
+    15.77,
+    35.9,
+    7.68,
+    19.54,
+    6.23,
+    14.54,
+    19.72,
+    17.33,
+    10.43,
+    30.71,
+    44.35
+  ]
+}

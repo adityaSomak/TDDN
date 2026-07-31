@@ -1,0 +1,8 @@
+{
+  "model": "openclip_l14",
+  "dataset": "cifar100",
+  "mode": "zero_shot",
+  "n_samples": 10000,
+  "top1": 83.8100016117096,
+  "top5": 96.78999781608582
+}

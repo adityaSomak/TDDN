@@ -1,0 +1,7 @@
+{
+  "model": "tdn",
+  "dataset": "gtsrb",
+  "mode": "tip",
+  "top1": 41.6,
+  "k": 16
+}

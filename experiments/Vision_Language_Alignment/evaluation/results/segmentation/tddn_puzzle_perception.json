@@ -1,0 +1,21 @@
+{
+  "model": "tddn",
+  "dataset": "puzzle_perception",
+  "protocol": "slide_336_168",
+  "n_classes": 11,
+  "n_images": 1500,
+  "miou": 20.916394889354706,
+  "per_class_iou": [
+    13.73,
+    42.98,
+    3.05,
+    59.4,
+    20.62,
+    5.08,
+    0.01,
+    6.5,
+    52.48,
+    25.96,
+    0.26
+  ]
+}

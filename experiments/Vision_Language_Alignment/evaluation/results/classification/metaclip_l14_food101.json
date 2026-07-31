@@ -1,0 +1,8 @@
+{
+  "model": "metaclip_l14",
+  "dataset": "food101",
+  "mode": "zero_shot",
+  "n_samples": 25250,
+  "top1": 91.68713092803955,
+  "top5": 98.03564548492432
+}

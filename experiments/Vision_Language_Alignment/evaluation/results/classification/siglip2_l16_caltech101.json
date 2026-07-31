@@ -1,0 +1,8 @@
+{
+  "model": "siglip2_l16",
+  "dataset": "caltech101",
+  "mode": "zero_shot",
+  "n_samples": 8677,
+  "top1": 93.9264714717865,
+  "top5": 99.98847246170044
+}

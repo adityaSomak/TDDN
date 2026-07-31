@@ -1,0 +1,21 @@
+{
+  "model": "fgclip2_large",
+  "dataset": "puzzle_perception",
+  "protocol": "slide_336_168",
+  "n_classes": 11,
+  "n_images": 1500,
+  "miou": 23.640207946300507,
+  "per_class_iou": [
+    0.37,
+    38.6,
+    12.71,
+    72.93,
+    28.37,
+    18.72,
+    16.22,
+    25.51,
+    20.14,
+    22.34,
+    4.15
+  ]
+}

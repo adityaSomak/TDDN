@@ -1,0 +1,8 @@
+{
+  "model": "openclip_l14",
+  "dataset": "caltech101",
+  "mode": "zero_shot",
+  "n_samples": 8677,
+  "top1": 91.22968912124634,
+  "top5": 99.89627599716187
+}

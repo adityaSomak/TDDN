@@ -1,0 +1,8 @@
+{
+  "model": "clip",
+  "dataset": "gtsrb",
+  "mode": "zero_shot",
+  "n_samples": 12630,
+  "top1": 39.05780017375946,
+  "top5": 54.05384302139282
+}

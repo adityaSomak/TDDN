@@ -1,0 +1,8 @@
+{
+  "model": "fgclip2_large",
+  "dataset": "gtsrb",
+  "mode": "zero_shot",
+  "n_samples": 12630,
+  "top1": 33.65004062652588,
+  "top5": 48.669832944869995
+}

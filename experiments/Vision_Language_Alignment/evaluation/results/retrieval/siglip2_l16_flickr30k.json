@@ -1,0 +1,13 @@
+{
+  "model": "siglip2_l16",
+  "dataset": "flickr30k",
+  "protocol": "karpathy_test_1k",
+  "n_images": 1000,
+  "n_captions": 5000,
+  "i2t_r1": 95.0,
+  "i2t_r5": 99.6,
+  "i2t_r10": 100.0,
+  "t2i_r1": 82.56,
+  "t2i_r5": 96.06,
+  "t2i_r10": 97.92
+}

@@ -1,6 +1,13 @@
 {
   "model": "clip",
   "dataset": "flickr30k",
-  "i2t_r1": 88.1,
-  "t2i_r1": 71.5
+  "protocol": "karpathy_test_1k",
+  "n_images": 1000,
+  "n_captions": 5000,
+  "i2t_r1": 87.7,
+  "i2t_r5": 98.5,
+  "i2t_r10": 99.4,
+  "t2i_r1": 66.96,
+  "t2i_r5": 88.96,
+  "t2i_r10": 93.36
 }

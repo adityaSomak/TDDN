@@ -1,0 +1,7 @@
+{
+  "model": "tddn",
+  "dataset": "food101",
+  "mode": "tip",
+  "top1": 86.2,
+  "k": 16
+}

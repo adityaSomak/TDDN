@@ -1,0 +1,6 @@
+{
+  "model": "tdn",
+  "dataset": "caltech101",
+  "mode": "cupl",
+  "top1": 78.3
+}

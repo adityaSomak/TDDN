@@ -1,0 +1,8 @@
+{
+  "model": "dfn_l14",
+  "dataset": "gtsrb",
+  "mode": "zero_shot",
+  "n_samples": 12630,
+  "top1": 47.60094881057739,
+  "top5": 69.54869627952576
+}

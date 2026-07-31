@@ -1,0 +1,6 @@
+{
+  "model": "tddn",
+  "dataset": "gtsrb",
+  "mode": "cupl",
+  "top1": 11.1
+}

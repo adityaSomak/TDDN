@@ -1,0 +1,7 @@
+{
+  "model": "tddn",
+  "dataset": "caltech101",
+  "mode": "tip",
+  "top1": 90.5,
+  "k": 16
+}

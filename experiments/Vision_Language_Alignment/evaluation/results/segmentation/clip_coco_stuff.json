@@ -1,0 +1,8 @@
+{
+  "model": "clip",
+  "dataset": "coco_stuff",
+  "protocol": "slide_448_224",
+  "n_classes": 171,
+  "n_images": 5000,
+  "miou": 7.3500581085681915
+}

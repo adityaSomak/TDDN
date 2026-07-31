@@ -1,0 +1,8 @@
+{
+  "model": "tdn",
+  "dataset": "coco_stuff",
+  "protocol": "slide_448_224",
+  "n_classes": 171,
+  "n_images": 5000,
+  "miou": 20.67437171936035
+}
