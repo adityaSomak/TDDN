@@ -14,7 +14,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional, Sequence
+from typing import Optional
 
 import torch
 from omegaconf import OmegaConf
@@ -232,22 +232,47 @@ def _build_alignment_model(config_path: Path, device, dtype: torch.dtype):
     return model, config
 
 
+def _resolve_ckpt_paths(ckpt_dir: Path, spec) -> list[Path]:
+    """Normalize a checkpoint selector and check the directories exist.
+
+    Raises before any load so a bad selector reports itself, rather than failing
+    deep inside ``dcp.load`` with an opaque error.
+    """
+    from .text_alignment import resolve_ckpt_steps
+
+    root = Path(ckpt_dir) / "ckpt"
+    names = resolve_ckpt_steps(spec)
+    paths = [root / n for n in names]
+    missing = [p.name for p in paths if not p.is_dir()]
+    if missing:
+        available = sorted(p.name for p in root.iterdir() if p.is_dir()) if root.is_dir() else []
+        raise FileNotFoundError(
+            f"checkpoint(s) {missing} not found under {root}. "
+            f"Available: {available or '(none)'}")
+    return paths
+
+
 def load_vith_roberta(
     device: torch.device | str,
     ckpt_dir: Optional[Path] = None,
-    ckpt_step: int = 99,
+    ckpt_steps="tdn",
     dtype: torch.dtype = torch.float16,
 ) -> tuple[torch.nn.Module, ModelMeta]:
-    """Text-aligned DINOv3-H+ + RoBERTa model. Loads a single trainable ckpt."""
-    from .text_alignment import load_trainable_state
+    """Text-aligned DINOv3-H+ + RoBERTa model.
+
+    ``ckpt_steps`` names one checkpoint directory, or lists two to weight-average.
+    """
+    from .text_alignment import average_states, load_trainable_state
 
     if ckpt_dir is None:
         ckpt_dir = _CHECKPOINTS_ROOT / "vith_roberta_v3_coco_ft"
     ckpt_dir = Path(ckpt_dir)
 
     model, config = _build_alignment_model(ckpt_dir / "config.yaml", device, dtype)
-    trainable = load_trainable_state(model, ckpt_dir / "ckpt" / str(ckpt_step))
-    missing, unexpected = model.load_state_dict(trainable, strict=False)
+    paths = _resolve_ckpt_paths(ckpt_dir, ckpt_steps)
+    states = [load_trainable_state(model, p) for p in paths]
+    trainable = average_states(states) if len(states) > 1 else states[0]
+    _, unexpected = model.load_state_dict(trainable, strict=False)
     # Only frozen-backbone keys should be "missing" — that's expected.
     if unexpected:
         raise RuntimeError(f"Unexpected keys when loading vith_roberta: {unexpected[:5]}...")
@@ -257,8 +282,8 @@ def load_vith_roberta(
         patch_size=16,
         dim=config.embed_dim,  # global = 2*hidden (CLS + mean(patches))
         num_special_tokens=5,   # DINOv3-H+
-        extra={"ckpt_step": ckpt_step, "ckpt_dir": str(ckpt_dir), "dtype": dtype,
-               "config": config},
+        extra={"ckpt_steps": [p.name for p in paths], "ckpt_dir": str(ckpt_dir),
+               "dtype": dtype, "config": config},
     )
     return model, meta
 
@@ -266,12 +291,15 @@ def load_vith_roberta(
 def load_fused_dinov3_cd(
     device: torch.device | str,
     ckpt_dir: Optional[Path] = None,
-    avg_ckpts: Sequence[int] = (149, 199),
+    ckpt_steps="tddn",
     dtype: torch.dtype = torch.float32,
     common_grid_override: Optional[int] = None,
 ) -> tuple[torch.nn.Module, ModelMeta]:
-    """Trained DINOv3+CleanDIFT fused encoder. Averages multiple ckpts."""
-    from .text_alignment import load_trainable_state, average_states
+    """Trained DINOv3+CleanDIFT fused encoder.
+
+    ``ckpt_steps`` names one checkpoint directory, or lists two to weight-average.
+    """
+    from .text_alignment import average_states, load_trainable_state
 
     if ckpt_dir is None:
         ckpt_dir = _CHECKPOINTS_ROOT / "fused_dinov3_cleandift_coco_ft"
@@ -284,7 +312,8 @@ def load_fused_dinov3_cd(
     if hasattr(model, "load_cleandift_backbone"):
         model.load_cleandift_backbone(device)
 
-    states = [load_trainable_state(model, ckpt_dir / "ckpt" / str(s)) for s in avg_ckpts]
+    paths = _resolve_ckpt_paths(ckpt_dir, ckpt_steps)
+    states = [load_trainable_state(model, p) for p in paths]
     avg = average_states(states) if len(states) > 1 else states[0]
     _, unexpected = model.load_state_dict(avg, strict=False)
     if unexpected:
@@ -301,7 +330,7 @@ def load_fused_dinov3_cd(
         patch_size=16,
         dim=config.embed_dim,
         num_special_tokens=5,
-        extra={"avg_ckpts": list(avg_ckpts), "ckpt_dir": str(ckpt_dir), "dtype": dtype,
-               "common_grid": common_grid_override},
+        extra={"ckpt_steps": [p.name for p in paths], "ckpt_dir": str(ckpt_dir),
+               "dtype": dtype, "common_grid": common_grid_override},
     )
     return model, meta

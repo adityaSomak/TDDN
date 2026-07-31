@@ -39,7 +39,7 @@ _EXPERIMENTS = _THIS.parents[1]
 if str(_EXPERIMENTS) not in sys.path:
     sys.path.insert(0, str(_EXPERIMENTS))
 
-from shared_utils.feature_extraction import build_extractor, build_transform  # noqa: E402
+from shared_utils.feature_extraction import build_extractor, build_transform, loader_kwargs_for  # noqa: E402
 from shared_utils.paths import DATASETS_ROOT                                   # noqa: E402
 
 from training.src.data import PuzzleSegmentationFeatures                       # noqa: E402
@@ -89,7 +89,7 @@ def _fit_pca_for(
         sub_cfg["backbone"],
         device=device,
         extractor_kwargs=sub_cfg.get("extractor", {}) or {},
-        loader_kwargs_override=sub_cfg.get("loader_kwargs", {}) or {},
+        loader_kwargs_override={**loader_kwargs_for(sub_cfg), **(sub_cfg.get("loader_kwargs", {}) or {})},
     )
     transform = build_transform(
         sub_cfg["backbone"],

@@ -4,6 +4,10 @@
 # ImageNet_Classification so the paper-table comparisons line up one-to-one. All
 # entries become trainable linear heads on top of frozen features
 # (`run_train.py`); the head is the only learned component.
+#
+# For the tdn/tddn tags, `checkpoint` names the checkpoint tree and
+# `checkpoint_step` selects the weights inside its `ckpt/` directory: a name for
+# a single checkpoint, or a two-element list to weight-average at load time.
 
 baselines:
   dinov2-vitb:
@@ -56,13 +60,13 @@ trained:
     extractor: {return_patches: true}
     transform: {strategy: square_resize, input_size: 512}
     checkpoint: vith_roberta_v3_coco_ft
-    checkpoint_step: 99
+    checkpoint_step: tdn
   tddn:
     backbone: fused-dinov3-cd
     extractor: {return_patches: true}
     transform: {strategy: square_resize, input_size: 512}
     checkpoint: fused_dinov3_cleandift_coco_ft
-    checkpoint_step: [149, 199]
+    checkpoint_step: tddn
 
 # Head configuration shared across model_tags (overridable per-tag).
 default_head:

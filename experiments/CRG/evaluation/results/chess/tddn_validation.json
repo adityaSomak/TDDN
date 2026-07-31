@@ -1,0 +1,26 @@
+{
+  "n_boards": 259,
+  "presence": {
+    "P": 0.991,
+    "R": 0.999,
+    "F1": 0.995
+  },
+  "localized_n": 6654,
+  "type_acc": 0.934,
+  "color_acc": 0.897,
+  "exact_acc": 0.835,
+  "perclass_f1": {
+    "w_pawn": 0.913,
+    "w_knight": 1.0,
+    "w_bishop": 0.706,
+    "w_rook": 0.878,
+    "w_queen": 0.638,
+    "w_king": 0.852,
+    "b_pawn": 0.872,
+    "b_knight": 0.999,
+    "b_bishop": 0.563,
+    "b_rook": 0.657,
+    "b_queen": 0.157,
+    "b_king": 0.839
+  }
+}

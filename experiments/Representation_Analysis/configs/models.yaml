@@ -8,6 +8,10 @@
 #   - `extractor`: kwargs passed to build_extractor (facet, timestep, etc.)
 #   - `transform`: kwargs passed to build_transform (strategy, input_size)
 #   - `fusion`:   for handcraft combos, the list of (backbone, weight) pairs
+#   - `checkpoint`: trained-head checkpoint tree (tdn/tddn only)
+#   - `checkpoint_step`: which weights to load from that tree's `ckpt/`
+#                 directory -- a name for a single checkpoint, or a two-element
+#                 list to weight-average at load time
 
 # Per-model `input_size` is fixed to the highest multiple of the patch size
 # that's <= 1024 (so the patch grid is ~64x64). The final PNG resolution
@@ -55,14 +59,14 @@ trained:
     extractor: {}
     transform: {strategy: square_resize, input_size: 1024}   # patch=16
     checkpoint: vith_roberta_v3_coco_ft
-    checkpoint_step: 99
+    checkpoint_step: tdn
   tddn:
     backbone: fused-dinov3-cd
     group: tddn
     extractor: {return_patches: true}
     transform: {strategy: square_resize, input_size: 1024}
     checkpoint: fused_dinov3_cleandift_coco_ft
-    checkpoint_step: [149, 199]                              # averaged
+    checkpoint_step: tddn
 
 # Handcraft fusions (DiffusedDINO family). Strategy = `fuse_concat`; the
 # tag's leaf dir is `<backbone_a>+<backbone_b>` for human-readable output paths.

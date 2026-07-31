@@ -12,7 +12,11 @@
 #   - `co_pca`        per-layer co-PCA dim for diffusion backbones.
 #   - `components`    handcraft fusion of two existing tags (concat-L2).
 #   - `loader_kwargs` extra kwargs threaded into the backbone loader.
-#   - `checkpoint`    trained-head checkpoint name + step (for tdn/tddn).
+#   - `checkpoint`    trained-head checkpoint tree (for tdn/tddn).
+#   - `checkpoint_step`
+#                     which weights to load from that tree's `ckpt/` directory:
+#                     a name for a single checkpoint, or a two-element list to
+#                     weight-average at load time.
 
 baselines:
   dinov2-vitb:
@@ -65,14 +69,14 @@ trained:
     extractor: {return_patches: true}
     transform: {strategy: aspect_pad, input_size: 960}
     checkpoint: vith_roberta_v3_coco_ft
-    checkpoint_step: 99
+    checkpoint_step: tdn
   tddn:
     backbone: fused-dinov3-cd
     extractor: {return_patches: true}
     loader_kwargs: {common_grid_override: 60}
     transform: {strategy: aspect_pad, input_size: 960}
     checkpoint: fused_dinov3_cleandift_coco_ft
-    checkpoint_step: [149, 199]
+    checkpoint_step: tddn
 
 defaults:
   split: test

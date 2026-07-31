@@ -14,7 +14,7 @@ Models are registered by short name (e.g., `dinov3-vith16plus`). See
 ``registry.py`` for the full list and ``loaders.py`` for the loader
 factories. Trained-model code is vendored under ``text_alignment/``.
 """
-from .registry import MODEL_REGISTRY, RegistryEntry, build_extractor
+from .registry import MODEL_REGISTRY, RegistryEntry, build_extractor, loader_kwargs_for
 from .preprocessing import build_transform, load_image
 from .fusion import fuse_concat, fuse_concat_global
 from .pooling import pool_to_vector
@@ -29,7 +29,7 @@ from .pca_reduction import (
 )
 
 __all__ = [
-    "MODEL_REGISTRY", "RegistryEntry", "build_extractor",
+    "MODEL_REGISTRY", "RegistryEntry", "build_extractor", "loader_kwargs_for",
     "build_transform", "load_image",
     "fuse_concat", "fuse_concat_global",
     "pool_to_vector",

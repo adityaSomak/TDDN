@@ -110,14 +110,14 @@ class _FusedEncoder:
         self.grid = grid or t["grid"]
         self.img_size = self.grid * PATCH_SIZE
         self.tip_alpha, self.tip_beta = t["tip_alpha"], t["tip_beta"]
-        ckpts = tuple(t["checkpoint_step"])
+        ckpts = t["checkpoint_step"]
         self.preprocess = transforms.Compose([
             transforms.Resize((self.img_size, self.img_size)),
             transforms.ToTensor(),
             transforms.Normalize(mean=_IMAGENET_MEAN, std=_IMAGENET_STD),
         ])
-        print(f"loading TDDN (fused dinov3+cleandift, avg ckpts {ckpts}) ...", flush=True)
-        self.model, _ = load_fused_dinov3_cd(device, avg_ckpts=ckpts,
+        print(f"loading TDDN (fused dinov3+cleandift, ckpt {ckpts}) ...", flush=True)
+        self.model, _ = load_fused_dinov3_cd(device, ckpt_steps=ckpts,
                                              common_grid_override=self.grid)
         self.model.eval()
         self.prompts: dict[str, str] = {}

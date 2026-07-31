@@ -23,7 +23,7 @@ except ModuleNotFoundError:
 import torch
 import torch.nn.functional as F
 
-from shared_utils.feature_extraction import build_extractor, fuse_concat   # noqa: E402
+from shared_utils.feature_extraction import build_extractor, fuse_concat, loader_kwargs_for   # noqa: E402
 
 from .loss import CombinedSegLoss
 from .metrics import ConfusionMatrixMetric
@@ -127,7 +127,7 @@ class SegmentationLitModule(pl.LightningModule):
                 ex = build_extractor(
                     sub["backbone"], device,
                     extractor_kwargs=sub.get("extractor", {}) or {},
-                    loader_kwargs_override=sub.get("loader_kwargs", {}) or {},
+                    loader_kwargs_override={**loader_kwargs_for(sub), **(sub.get("loader_kwargs", {}) or {})},
                 )
                 self._components.append({
                     "tag": comp["tag"],
@@ -139,7 +139,8 @@ class SegmentationLitModule(pl.LightningModule):
             self.extractor = build_extractor(
                 self.model_cfg["backbone"], device,
                 extractor_kwargs=self.model_cfg.get("extractor", {}) or {},
-                loader_kwargs_override=self.model_cfg.get("loader_kwargs", {}) or {},
+                loader_kwargs_override={**loader_kwargs_for(self.model_cfg),
+                                        **(self.model_cfg.get("loader_kwargs", {}) or {})},
             )
             self._single_pca_basis = self.pca_bases.get(self.model_tag)
 

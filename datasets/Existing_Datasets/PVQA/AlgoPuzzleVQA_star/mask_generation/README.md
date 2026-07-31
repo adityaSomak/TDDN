@@ -65,7 +65,7 @@ Optional overrides:
 
 | Variable                | Default     | Purpose                                                |
 |-------------------------|-------------|--------------------------------------------------------|
-| `ALIGNMENT_CKPT_STEPS`  | `149,199`   | Comma-separated checkpoint steps to weight-average     |
+| `ALIGNMENT_CKPT_STEPS`  | `tddn`      | Checkpoint name under `ckpt/` to load, or two comma-separated names to weight-average |
 | `HF_HOME`               | system default | HuggingFace cache directory                         |
 
 Example:

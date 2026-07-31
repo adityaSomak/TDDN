@@ -50,6 +50,19 @@ MODEL_REGISTRY: dict[str, RegistryEntry] = {
 }
 
 
+def loader_kwargs_for(spec: dict[str, Any] | None) -> dict[str, Any]:
+    """Loader kwargs implied by a ``models.yaml`` entry.
+
+    Currently just the checkpoint selector: ``checkpoint_step`` in the config
+    becomes ``ckpt_steps`` for the trained loaders. Entries without one (the
+    untrained baselines) contribute nothing, so callers can apply this
+    unconditionally.
+    """
+    if not spec or "checkpoint_step" not in spec:
+        return {}
+    return {"ckpt_steps": spec["checkpoint_step"]}
+
+
 def build_extractor(
     name: str,
     device,

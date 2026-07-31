@@ -12,8 +12,9 @@ loader where to find it:
 
 Optionally:
 
-    ALIGNMENT_CKPT_STEPS   comma-separated list of step numbers to weight-
-                           average (defaults to "149,199")
+    ALIGNMENT_CKPT_STEPS   which checkpoint(s) to load from ``ckpt/`` under
+                           ALIGNMENT_CKPT: one name, or two comma-separated
+                           names to weight-average (defaults to "tddn")
     HF_HOME                HuggingFace cache directory
 """
 
@@ -61,14 +62,16 @@ def load_alignment_model(
 
     cfg_path = alignment_ckpt / "config.yaml"
     ckpt_dir = alignment_ckpt / "ckpt"
-    ckpt_steps = tuple(
-        int(s) for s in os.environ.get("ALIGNMENT_CKPT_STEPS", "149,199").split(",")
-    )
+    ckpt_steps = [s.strip() for s in os.environ.get("ALIGNMENT_CKPT_STEPS", "tddn").split(",")]
+    if len(ckpt_steps) > 2:
+        raise ValueError(f"ALIGNMENT_CKPT_STEPS names {len(ckpt_steps)} checkpoints "
+                         f"({ckpt_steps}); at most 2 are supported (one, or two to average)")
 
     cfg = OmegaConf.load(cfg_path)
     model = AlignmentModel(AlignConfig(**OmegaConf.to_container(cfg, resolve=True))).to(device)
-    states = [load_trainable_state(model, ckpt_dir / str(s)) for s in ckpt_steps]
-    model.load_state_dict(average_states(states), strict=False)
+    states = [load_trainable_state(model, ckpt_dir / s) for s in ckpt_steps]
+    trainable = average_states(states) if len(states) > 1 else states[0]
+    model.load_state_dict(trainable, strict=False)
     model.image_encoder.load_backbone(device)
     model.text_encoder.backbone.to(device).eval()
     model.eval()

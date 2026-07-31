@@ -37,7 +37,7 @@ if str(_EXPERIMENTS) not in sys.path:
     sys.path.insert(0, str(_EXPERIMENTS))
 
 from shared_utils.feature_extraction import (                                  # noqa: E402
-    build_extractor, build_transform, fuse_concat_global, pool_to_vector,
+    build_extractor, build_transform, fuse_concat_global, loader_kwargs_for, pool_to_vector,
 )
 from shared_utils.paths import REPO_ROOT                                       # noqa: E402
 
@@ -97,6 +97,7 @@ def _extract_single(
     extractor = build_extractor(
         cfg["backbone"], device=device,
         extractor_kwargs=cfg.get("extractor", {}) or {},
+        loader_kwargs_override=loader_kwargs_for(cfg),
     )
     transform = build_transform(
         cfg["backbone"], cfg["transform"]["input_size"], cfg["transform"]["strategy"],

@@ -1,23 +1,75 @@
 # Model registry for vision-language alignment evaluation.
 #
-# Each entry specifies the backbone tag (resolved by
-# `shared_utils.feature_extraction.build_extractor`), the text encoder,
-# and the preprocessing transform. Architecture knobs live under
-# `arch:`; per-round iteration overrides live under `round_<n>:`.
+# Single source of truth for encoder wiring: `evaluation/src/encoders.py` builds
+# both the global and the dense encoder for a tag from its entry here.
+#
+# Fields
+#   family        selects the encoder implementation:
+#                   clip       HuggingFace CLIP
+#                   open_clip  open_clip ViT
+#                   siglip     open_clip timm-backed SigLIP ViT
+#                   fgclip2    FG-CLIP2 (trust_remote_code)
+#                   trained    a trained alignment head via shared_utils
+#   arch          open_clip/siglip architecture name
+#   pretrained    open_clip pretrained tag
+#   hf_id         HuggingFace repo id (fgclip2)
+#   patch_mode    fgclip2 patch budget: native | fixed576 | fixed1024
+#   backbone      shared_utils backbone tag (trained)
+#   input_size    global-task input resolution
+#   dense_bypass  dense-readout variant: none | last | all
+#   checkpoint    checkpoint tree under shared_utils/feature_extraction/checkpoints/
+#   checkpoint_step
+#                 which weights to load from that tree's ckpt/ directory: a name
+#                 for a single checkpoint, or a two-element list to weight-average
+#                 at load time
+#
+# `arch` and the `round_<n>` blocks are read by run_train.py.
 
 baselines:
   clip:
+    family: clip
     backbone: clip-vitl14
     text_encoder: clip-vitl14
+    input_size: 336
     transform: {strategy: imagenet_center_crop, input_size: 336}
+
+  # openai/metaclip/dfn checkpoints were trained with QuickGELU; the plain arch
+  # name silently mismatches the activation. LAION-2B used plain GELU.
+  metaclip_l14:
+    family: open_clip
+    arch: ViT-L-14-quickgelu
+    pretrained: metaclip_fullcc
+
+  dfn_l14:
+    family: open_clip
+    arch: ViT-L-14-quickgelu
+    pretrained: dfn2b
+
+  openclip_l14:
+    family: open_clip
+    arch: ViT-L-14
+    pretrained: laion2b_s32b_b82k
+
+  siglip2_l16:
+    family: siglip
+    arch: ViT-L-16-SigLIP2-384
+    pretrained: webli
+
+  fgclip2_large:
+    family: fgclip2
+    hf_id: qihoo360/fg-clip2-large
+    patch_mode: fixed1024
 
 trained:
   tdn:
+    family: trained
     backbone: vith-roberta
     text_encoder: roberta-large
+    input_size: 336
+    dense_bypass: last
     transform: {strategy: imagenet_center_crop, input_size: 336}
     checkpoint: vith_roberta_v3_coco_ft
-    checkpoint_step: 99
+    checkpoint_step: tdn
     arch:
       embed_dim: 2560
       vision_num_head_blocks: 2
@@ -29,11 +81,14 @@ trained:
     round_2: {max_iterations: 500, warmup_iterations: 50}
 
   tddn:
+    family: trained
     backbone: fused-dinov3-cd
     text_encoder: roberta-large
+    input_size: 336
+    dense_bypass: all
     transform: {strategy: imagenet_center_crop, input_size: 336}
     checkpoint: fused_dinov3_cleandift_coco_ft
-    checkpoint_step: [149, 199]       # averaged
+    checkpoint_step: tddn
     arch:
       embed_dim: 2560
       vision_num_head_blocks: 2
@@ -54,3 +109,5 @@ defaults:
     tip_k_sweep: [1, 2, 4, 8, 16]
   retrieval:
     k_list: [1, 5, 10]
+  segmentation:
+    stride_ratio: 0.5                 # sliding-window stride as a fraction of crop size
