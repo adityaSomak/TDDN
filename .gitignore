@@ -85,3 +85,13 @@ experiments/CRG/evaluation/results/*/_live/*
 # --publish land here so a smoke test can't overwrite a paper number.
 experiments/Vision_Language_Alignment/evaluation/results/*/_live/*
 !experiments/Vision_Language_Alignment/evaluation/results/*/_live/.gitkeep
+
+# Representation_Analysis alignment/cross_prediction: run logs, cached feature
+# matrices (multi-hundred-MB .npz), intermediate item/stem manifests, and the
+# downloaded ImageNet sample JPEGs used to compute them. The CSV/JSON results
+# themselves are committed.
+experiments/Representation_Analysis/quantitative/*/results/*.log
+experiments/Representation_Analysis/quantitative/*/results/*.npz
+experiments/Representation_Analysis/quantitative/*/results/_*.tsv
+experiments/Representation_Analysis/quantitative/*/results/_*.txt
+experiments/Representation_Analysis/quantitative/*/results/imagenet_jpg/

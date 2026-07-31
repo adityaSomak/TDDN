@@ -1,0 +1,14 @@
+setting,representation,alignment_mean,alignment_std,uniformity_mean,uniformity_std,n_pairs,n_points,d,resolution,seed,positives_definition,uniformity_population,note
+patch,DNp,0.32587,0.000279,-1.097429,0.001199,19562,39124,1280,512,42,SPair matched keypoints,SPair keypoint features (src∪trg),
+patch,CDp,1.255309,0.000859,-3.092836,0.001027,19562,39124,1536,512,42,SPair matched keypoints,SPair keypoint features (src∪trg),
+patch,DDNp,0.790589,0.000449,-2.122374,0.00066,19562,39124,2816,512,42,SPair matched keypoints,SPair keypoint features (src∪trg),
+patch,SDp,1.397994,0.00092,-3.296299,0.001306,19562,39124,1536,512,42,SPair matched keypoints,SPair keypoint features (src∪trg),
+patch,CLIPp,1.095728,0.000668,-2.651619,0.001432,19562,39124,1024,518,42,SPair matched keypoints,SPair keypoint features (src∪trg),
+patch,TDNp,1.287756,0.000742,-3.50134,0.000659,19562,39124,1280,512,42,SPair matched keypoints,SPair keypoint features (src∪trg),
+patch,TDDNp,1.172987,0.001006,-3.370278,0.001836,19562,39124,1280,512,42,SPair matched keypoints,SPair keypoint features (src∪trg),
+global,DNg,1.041392,0.001013,-3.52471,0.000653,45000,10000,1280,512,42,ImageNet same-class,ImageNet global-vector pool,"class-alignment / semantic clustering — measures same-class clustering, a semantic property, NOT patch-matching discriminability."
+global,CDpbar,0.590831,0.000282,-1.423038,0.001715,45000,10000,1536,512,42,ImageNet same-class,ImageNet global-vector pool,"class-alignment / semantic clustering — measures same-class clustering, a semantic property, NOT patch-matching discriminability."
+global,DDNg,0.861472,0.000774,-2.896688,0.000662,45000,10000,4096,512,42,ImageNet same-class,ImageNet global-vector pool,"class-alignment / semantic clustering — measures same-class clustering, a semantic property, NOT patch-matching discriminability."
+global,CLIPg,0.932716,0.000816,-2.930272,0.002006,45000,10000,1024,512,42,ImageNet same-class,ImageNet global-vector pool,"class-alignment / semantic clustering — measures same-class clustering, a semantic property, NOT patch-matching discriminability."
+global,TDNg,1.00754,0.00068,-3.656101,0.000744,45000,10000,2560,512,42,ImageNet same-class,ImageNet global-vector pool,"class-alignment / semantic clustering — measures same-class clustering, a semantic property, NOT patch-matching discriminability."
+global,TDDNg,1.022051,0.000911,-3.677295,0.000879,45000,10000,2560,512,42,ImageNet same-class,ImageNet global-vector pool,"class-alignment / semantic clustering — measures same-class clustering, a semantic property, NOT patch-matching discriminability."

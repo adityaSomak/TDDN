@@ -1,0 +1,118 @@
+[
+  {
+    "r2_per_fold": [
+      0.181468,
+      0.178505,
+      0.176995,
+      0.172732,
+      0.179446
+    ],
+    "r2_mean": 0.177829,
+    "r2_std": 0.002932,
+    "alpha": 3162.2777,
+    "alpha_per_fold": [
+      3162.2777,
+      3162.2777,
+      3162.2777,
+      3162.2777,
+      3162.2777
+    ],
+    "n": 5000,
+    "d": 1536,
+    "d_in": 1280,
+    "n_train_min": 4000,
+    "n_leq_d": false,
+    "n_train_over_d": 2.604,
+    "standardized": true,
+    "setting": "global",
+    "direction": "DN->CD",
+    "fold_grouping": "KFold(5,shuffle,seed=42)"
+  },
+  {
+    "r2_per_fold": [
+      0.161892,
+      0.169436,
+      0.168537,
+      0.152755,
+      0.168344
+    ],
+    "r2_mean": 0.164193,
+    "r2_std": 0.00632,
+    "alpha": 3162.2777,
+    "alpha_per_fold": [
+      3162.2777,
+      3162.2777,
+      3162.2777,
+      3162.2777,
+      3162.2777
+    ],
+    "n": 5000,
+    "d": 1280,
+    "d_in": 1536,
+    "n_train_min": 4000,
+    "n_leq_d": false,
+    "n_train_over_d": 3.125,
+    "standardized": true,
+    "setting": "global",
+    "direction": "CD->DN",
+    "fold_grouping": "KFold(5,shuffle,seed=42)"
+  },
+  {
+    "r2_per_fold": [
+      0.09578,
+      0.101239,
+      0.096565,
+      0.095399,
+      0.096999
+    ],
+    "r2_mean": 0.097196,
+    "r2_std": 0.002098,
+    "alpha": 1000.0,
+    "alpha_per_fold": [
+      1000.0,
+      1000.0,
+      1000.0,
+      1000.0,
+      1000.0
+    ],
+    "n": 100000,
+    "d": 1536,
+    "d_in": 1280,
+    "n_train_min": 80000,
+    "n_leq_d": false,
+    "n_train_over_d": 52.083,
+    "standardized": true,
+    "setting": "patch",
+    "direction": "DN->CD",
+    "fold_grouping": "GroupKFold(5,image_id)"
+  },
+  {
+    "r2_per_fold": [
+      0.335198,
+      0.342496,
+      0.33996,
+      0.329947,
+      0.334081
+    ],
+    "r2_mean": 0.336336,
+    "r2_std": 0.004434,
+    "alpha": 1000.0,
+    "alpha_per_fold": [
+      1000.0,
+      1000.0,
+      1000.0,
+      1000.0,
+      1000.0
+    ],
+    "n": 100000,
+    "d": 1280,
+    "d_in": 1536,
+    "n_train_min": 80000,
+    "n_leq_d": false,
+    "n_train_over_d": 62.5,
+    "standardized": true,
+    "setting": "patch",
+    "direction": "CD->DN",
+    "fold_grouping": "GroupKFold(5,image_id)"
+  }
+]
