@@ -55,20 +55,23 @@ benchmark these encoders against complementary criteria:
 | [Segmentation](experiments/Segmentation/) | linear-probe dense prediction (frozen backbone, trained head) | weighted mIoU on Puzzle-Perception (30 classes) |
 | [Keypoint_Matching](experiments/Keypoint_Matching/) | fine-grained spatial correspondence | PCK@{0.1, 0.05, 0.01} on SPair-71K |
 | [ImageNet_Classification](experiments/ImageNet_Classification/) | global-feature semantic separability | top-1 / top-5 k-NN (k=20) on ImageNet-1K |
-| [Vision_Language_Alignment](experiments/Vision_Language_Alignment/) | end-to-end vision-language alignement and evaluation | top-1 (zero-shot / CuPL / TIP-Adapter) + Recall@1 + zero-shot open-vocab mIoU |
-| [Puzzle_Understanding](experiments/Puzzle_Understanding/) | do TDDN segmentation masks help downstream VLMs reason about algorithmic puzzles? | per-task accuracy across GPT-5.x / Qwen2.5-VL / InternVL3 / ... |
+| [Vision_Language_Alignment](experiments/Vision_Language_Alignment/) | end-to-end vision-language alignment, benchmarked against 5 public CLIP-lineage baselines | top-1 (zero-shot / CuPL / TIP-Adapter) + Recall@1 + zero-shot open-vocab mIoU |
+| [Puzzle_Understanding](experiments/Puzzle_Understanding/) | do TDDN segmentation masks help downstream VLMs reason about algorithmic puzzles? *(earlier track, kept as originally written)* | per-task accuracy across GPT-5.x / Qwen2.5-VL / InternVL3 / ... |
 | [CRG](experiments/CRG/) | can TDDN-predicted regions replace GT regions in a decode-side intervention on a *frozen* VLM? | Δ question accuracy vs. the raw image, macro over questions (8 VLMs × 2 puzzles) |
 
 Each `experiments/<name>/README.md` documents how to run its
 evaluation; this top-level README handles shared setup and conventions.
+
+Most tracks share one layout — `run_eval.py` at the root over
+`configs/models.yaml` and `evaluation/{src,results}/`. `Puzzle_Understanding`
+predates that convention and is deliberately left in its original form.
 
 ## Repository layout
 
 ```
 DiffusedDINOv1/
 ├── README.md                              # this file
-├── requirements.txt                       # main env (every experiment)
-├── requirements_vllm.txt                  # separate env for vLLM-served VLMs
+├── requirements.txt                       # single env for every experiment
 ├── datasets/                              # shared dataset trees
 ├── scripts/                               # repo-level helpers (e.g. ingest_*.py)
 └── experiments/
@@ -110,7 +113,7 @@ DiffusedDINOv1/
     │   ├── configs/                       # models.yaml (11 tags)
     │   └── evaluation/{src,results}/
     │
-    ├── Vision_Language_Alignment/         # zero-shot / few-shot classification + bidirectional retrieval + zero-shot open-vocab segmentation across {clip, tdn, tddn}.
+    ├── Vision_Language_Alignment/         # zero-shot / few-shot classification + bidirectional retrieval + sliding-window open-vocab segmentation, across 8 models (clip, tdn, tddn + 5 public CLIP-lineage baselines).
     │   ├── README.md
     │   ├── run_eval.py
     │   ├── run_train.py
@@ -118,7 +121,7 @@ DiffusedDINOv1/
     │   ├── evaluation/                    # prompts (class names + 80 OpenAI templates + CuPL JSONs) + src/ (classifier, retrieval, segmentation, TIP-Adapter) + results/ (paper-canonical CSVs + per-run JSONs)
     │   └── training/                      # data, losses, FSDP setup, checkpoint I/O, training loop
     │
-    ├── Puzzle_Understanding/              # VLM evaluation on AlgoPuzzleVQA tasks (full Q1..QN + seg-eval grid reconstruction)
+    ├── Puzzle_Understanding/              # VLM evaluation on AlgoPuzzleVQA tasks (full Q1..QN + seg-eval grid reconstruction). Earlier track: keeps its own prompts/ + results/ layout rather than the configs/ + evaluation/ one the others use.
     │   ├── README.md
     │   ├── run_full_eval.py
     │   ├── run_seg_eval.py
@@ -144,12 +147,11 @@ pip install -e <path>/dinov3            # Meta AI DINOv3 reference impl
 ```
 
 For the open-source VLM serving used by
-`Puzzle_Understanding/scripts/launch_vllm.sh`, install
-[`requirements_vllm.txt`](requirements_vllm.txt) into a **separate**
-venv (vLLM has a heavy CUDA dependency tree that shouldn't pollute the
-main env). See
+`Puzzle_Understanding/scripts/launch_vllm.sh`, install `vllm` into a
+**separate** venv (it has a heavy CUDA dependency tree that shouldn't
+pollute the main env). See
 [`experiments/Puzzle_Understanding/README.md`](experiments/Puzzle_Understanding/README.md)
-for the two-env install recipe.
+for that install recipe.
 
 ## Environment variables
 

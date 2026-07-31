@@ -35,21 +35,20 @@ Puzzle_Understanding/
 
 ## Environments
 
-Two separate venvs — the eval runner uses the repo-wide
-[`requirements.txt`](../../requirements.txt); the vLLM server has a
-heavy CUDA dependency tree and uses
-[`requirements_vllm.txt`](../../requirements_vllm.txt).
+The eval runner uses the repo-wide [`requirements.txt`](../../requirements.txt).
+Serving open-source models locally additionally needs `vllm`, which has a heavy
+CUDA dependency tree best kept out of the main env — install it into its own venv:
 
 ```bash
 # eval runner (OpenAI calls, parsing, analysis)
-python -m venv .eval_env
-source .eval_env/bin/activate
+python -m venv .venv
+source .venv/bin/activate
 pip install -r ../../requirements.txt
 
 # vLLM server (only needed for open-source models)
 python -m venv .vllm_env
 source .vllm_env/bin/activate
-pip install -r ../../requirements_vllm.txt
+pip install vllm
 ```
 
 For OpenAI runs, export the API key:
