@@ -1,197 +1,213 @@
-# DiffusedDINOv1
+<h1 align="center">TDDN: Text-aligned Diffused DINO Network<br>for Puzzle Understanding</h1>
 
-Solving structured reasoning tasks over images (such as image puzzle
-solving) requires reasoning over fine-grained visual perception
-abilities — which seems missing from current state-of-the-art
-Vision-Language Models (VLMs). In fact, VLMs using CLIP-based ViT
-backbones seem to sacrifice fine-grained visual details to capture
-high-level semantic understanding. We empirically observe that
-failure of these ViT backbones propagates to downstream tasks when
-attempting to solve visual puzzles. Therefore, we propose a novel
-visual perception module (**DiffusedDINO**) that integrates ViT
-(DINOv3) and Diffusion (CleanDIFT) representations to achieve a
-superior fine-coarse tradeoff, suitable for downstream visual
-reasoning tasks. We perform detailed analysis of the effectiveness
-of this fused representation. Representation-quality analysis along
-with performance on image perception tasks show informativeness and
-discriminative properties of this representation. We specifically
-benchmark effectiveness in the semantic-segmentation task using a
-novel puzzle-based segmentation dataset (namely **Puzzle
-Perception**). Next, we show that traditional image-text alignment
-techniques are sufficient to maintain effectiveness in multimodal
-(vision-language) tasks such as image-text retrieval. Lastly, we
-show that segmentation masks predicted using **DiffusedDINO** can
-assist various VLMs to detect objects of various abstract shapes and
-sizes, often with considerable improvements.
+<p align="center">
+  <a href="#">Harsha Patnala</a><sup>1,*</sup> &nbsp;·&nbsp;
+  <a href="#">Debopriyo Banerjee</a><sup>2,*</sup> &nbsp;·&nbsp;
+  <a href="#">Ayush Sunil Munot</a><sup>3</sup> &nbsp;·&nbsp;
+  <a href="#">Somak Aditya</a><sup>3</sup>
+</p>
 
-## What's in this repository
+<p align="center">
+  <sup>1</sup>Eightfold AI &nbsp;&nbsp; <sup>2</sup>Inception42 &nbsp;&nbsp;
+  <sup>3</sup>Indian Institute of Technology Kharagpur
+  <br><sub><sup>*</sup>Equal contribution</sub>
+</p>
 
-The paper's three model tags map to the codebase as follows:
+<p align="center">
+  <a href="https://harsha963.github.io/TDDN/">
+    <img src="https://img.shields.io/badge/Project-Page-blue?style=flat-square" alt="Project Page"></a>
+  <a href="#">
+    <img src="https://img.shields.io/badge/arXiv-coming%20soon-b31b1b?style=flat-square&logo=arxiv&logoColor=white" alt="arXiv"></a>
+  <a href="https://huggingface.co/datasets/PuzzleBench/Puzzle_Perception">
+    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-Puzzle%20Perception-yellow?style=flat-square" alt="Dataset"></a>
+  <img src="https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python">
+</p>
 
-- **`ddn` = DiffusedDINO** — the proposed visual perception module.
-  L2-normalized concatenation of frozen DINOv3 patches with frozen
-  CleanDIFT layer features; no training.
-- **`tdn` = text-aligned DINOv3** — DINOv3-H+ vision + RoBERTa-large
-  text + two trained alignment-head blocks per encoder. Baseline
-  showing how pure-DINOv3 alignment performs without the diffusion
-  fusion.
-- **`tddn` = text-aligned DiffusedDINO** — the same trained alignment
-  heads on top of the `ddn` (DiffusedDINO) fused vision encoder. The
-  vision-language-aligned version of DiffusedDINO.
+<!-- PLACEHOLDER: paper Figure 2 (PCA visualisation of patch features, maze image) — save as assets/teaser.png -->
+<p align="center">
+  <img src="assets/teaser.png" width="90%" alt="PCA visualisation of patch features across encoders">
+  <br><sub>Patch features projected onto their top three principal components. CLIP produces fragmented,
+  spatially inconsistent maps on structured images. DiffusedDINO keeps CleanDIFT's boundary precision
+  while recovering DINOv3's object-level signal.</sub>
+</p>
 
-Both `tdn` and `tddn` are trained with a CLIP-style symmetric
-InfoNCE loss plus a structure-preservation regularizer (Jensen-
-Shannon on softmaxed similarity matrices) on LAION + COCO captions.
-The remaining tags (`dinov3`, `dinov2-vitb`, `dinov2-vitg`, `clip`,
-`sd-2.1`, `cd`, `sd+dinov2-vitb`, `sd+dinov2-vitg`) are unmodified
-baselines wired through the same registry.
+---
 
-Seven independent evaluation tracks under [`experiments/`](experiments/)
-benchmark these encoders against complementary criteria:
+## Overview
 
-| Track | Tests | Headline metric |
-|---|---|---|
-| [Representation_Analysis](experiments/Representation_Analysis/) | intrinsic feature quality + cross-encoder similarity | CKA / PWCCA + uniformity / effective-rank |
-| [Segmentation](experiments/Segmentation/) | linear-probe dense prediction (frozen backbone, trained head) | weighted mIoU on Puzzle-Perception (30 classes) |
-| [Keypoint_Matching](experiments/Keypoint_Matching/) | fine-grained spatial correspondence | PCK@{0.1, 0.05, 0.01} on SPair-71K |
-| [ImageNet_Classification](experiments/ImageNet_Classification/) | global-feature semantic separability | top-1 / top-5 k-NN (k=20) on ImageNet-1K |
-| [Vision_Language_Alignment](experiments/Vision_Language_Alignment/) | end-to-end vision-language alignment, benchmarked against 5 public CLIP-lineage baselines | top-1 (zero-shot / CuPL / TIP-Adapter) + Recall@1 + zero-shot open-vocab mIoU |
-| [Puzzle_Understanding](experiments/Puzzle_Understanding/) | do TDDN segmentation masks help downstream VLMs reason about algorithmic puzzles? *(earlier track, kept as originally written)* | per-task accuracy across GPT-5.x / Qwen2.5-VL / InternVL3 / ... |
-| [CRG](experiments/CRG/) | can TDDN-predicted regions replace GT regions in a decode-side intervention on a *frozen* VLM? | Δ question accuracy vs. the raw image, macro over questions (8 VLMs × 2 puzzles) |
+Structured visual reasoning, like solving image puzzles, needs fine-grained visual perception — an
+ability that CLIP-based VLM backbones largely lack, because their global contrastive objective trades
+local spatial detail for high-level semantics. We recover it by fusing ViT (DINOv3) and Diffusion
+(CleanDIFT) representations into a perception encoder, **DiffusedDINO**, then aligning it with a frozen
+RoBERTa-L to produce **TDDN**.
 
-Each `experiments/<name>/README.md` documents how to run its
-evaluation; this top-level README handles shared setup and conventions.
+TDDN matches CLIP on image–text retrieval while substantially surpassing it on dense prediction, using
+frozen backbones and a fraction of the alignment data. We further show that the regions TDDN predicts
+can steer a **frozen** VLM through Contrastive Region Guidance, improving its puzzle perception without
+updating a single VLM weight. Alongside the model we release **Puzzle Perception**, a benchmark that
+pairs pixel-level segmentation with puzzle-based visual question answering.
 
-Most tracks share one layout — `run_eval.py` at the root over
-`configs/models.yaml` and `evaluation/{src,results}/`. `Puzzle_Understanding`
-predates that convention and is deliberately left in its original form.
+<!-- PLACEHOLDER: TDDN architecture diagram (the figure used on the project page) — save as assets/architecture.png -->
+<p align="center">
+  <img src="assets/architecture.png" width="80%" alt="TDDN architecture">
+  <br><sub>Frozen CleanDIFT UNet and DINOv3 ViT-H/16+ feed a trainable fusion path; RoBERTa-L is frozen
+  on the text side. Only the per-layer MLPs, the fusion MLP, the self-attention blocks and the text
+  projection are trained.</sub>
+</p>
 
-## Repository layout
+## Results
 
-```
-DiffusedDINOv1/
-├── README.md                              # this file
-├── requirements.txt                       # single env for every experiment
-├── datasets/                              # shared dataset trees
-├── scripts/                               # repo-level helpers (e.g. ingest_*.py)
-└── experiments/
-    ├── shared_utils/
-    │   └── feature_extraction/            # unified extractor + transform registry
-    │
-    ├── Representation_Analysis/           # CKA + PWCCA similarity, uniformity / effective-rank quality + PCA→RGB activation maps
-    │   ├── README.md
-    │   ├── run.py                         # CLI: plots / activation-maps / metrics
-    │   ├── configs/                       # metrics + models + activation-maps + coco sample IDs
-    │   ├── metrics/                       # similarity / quality / feature_utils + third_party CCA
-    │   ├── pca_viz/                       # render_one() — single-image activation map
-    │   ├── qualitative/                   # input samples + per-model activation-map outputs
-    │   │   ├── README.md
-    │   │   ├── samples/
-    │   │   └── {baselines,ddn,tdn,tddn}/
-    │   └── quantitative/                  # CSV + plot outputs
-    │       ├── README.md
-    │       ├── global/{results,plots}/
-    │       └── patch/{results,plots}/
-    │
-    ├── Segmentation/                      # linear-probe segmentation on Puzzle-Perception (30-class unified label space). Headline: weighted mIoU.
-    │   ├── README.md
-    │   ├── run_train.py
-    │   ├── run_eval.py
-    │   ├── configs/                       # models + training
-    │   ├── training/{src,checkpoints,logs}/
-    │   └── evaluation/{src,results}/
-    │
-    ├── Keypoint_Matching/                 # SPair-71K PCK@α evaluation. Headline: PCK@0.1 (bbox).
-    │   ├── README.md
-    │   ├── run_eval.py
-    │   ├── configs/                       # models.yaml (11 tags)
-    │   └── evaluation/{src,results,results/ablations}/
-    │
-    ├── ImageNet_Classification/                      # k-NN (k=20) classification on ImageNet-1K from image-encoder features. Headline: top-1 accuracy.
-    │   ├── README.md
-    │   ├── run_eval.py
-    │   ├── configs/                       # models.yaml (11 tags)
-    │   └── evaluation/{src,results}/
-    │
-    ├── Vision_Language_Alignment/         # zero-shot / few-shot classification + bidirectional retrieval + sliding-window open-vocab segmentation, across 8 models (clip, tdn, tddn + 5 public CLIP-lineage baselines).
-    │   ├── README.md
-    │   ├── run_eval.py
-    │   ├── run_train.py
-    │   ├── configs/                       # models.yaml + training/{round_1,round_2}.yaml
-    │   ├── evaluation/                    # prompts (class names + 80 OpenAI templates + CuPL JSONs) + src/ (classifier, retrieval, segmentation, TIP-Adapter) + results/ (paper-canonical CSVs + per-run JSONs)
-    │   └── training/                      # data, losses, FSDP setup, checkpoint I/O, training loop
-    │
-    ├── Puzzle_Understanding/              # VLM evaluation on AlgoPuzzleVQA tasks (full Q1..QN + seg-eval grid reconstruction). Earlier track: keeps its own prompts/ + results/ layout rather than the configs/ + evaluation/ one the others use.
-    │   ├── README.md
-    │   ├── run_full_eval.py
-    │   ├── run_seg_eval.py
-    │   ├── prompts/                       # per-task prompt registries
-    │   ├── scripts/                       # launch_vllm.sh for open-source VLMs
-    │   └── results/{full_eval,seg_eval}/
-    │
-    └── CRG/                               # Contrastive Region Guidance: do TDDN-predicted regions improve a frozen VLM's perception at decode time?
-        ├── README.md
-        ├── run_eval.py                    # eval + --aggregate / --validate-* / --redetect
-        ├── run_generate.py                # mint a NEW chess board set (rare, destructive)
-        ├── configs/models.yaml            # the 8 probed VLMs + defaults (alpha, arms, TDDN tuning)
-        └── evaluation/                    # src/ (data, negatives, CRG decode, per-task evals, aggregate, TDDN) + results/ (paper table + per-model per-question JSONs + qualitative figures)
-```
+Zero-shot open-vocabulary segmentation (mIoU) and keypoint matching (PCK@0.1):
 
-## Setup
+| Model | ADE20K | Cityscapes | COCO-Stuff | PASCAL-Ctx | Puzzle | SPair-71k |
+|:---|---:|---:|---:|---:|---:|---:|
+| CLIP ViT-L/14 | 5.20 | 10.05 | 7.35 | 10.44 | 11.04 | 24.89 |
+| TDN (ours) | 16.51 | 24.29 | 20.67 | 27.55 | 20.92 | 28.29 |
+| **TDDN (ours)** | **18.11** | **32.38** | **24.44** | **32.48** | **22.51** | **32.39** |
+
+Both of our models are trained on ~590K alignment pairs with every backbone frozen, against CLIP's 400M.
+See the [paper](#) or the [project page](https://harsha963.github.io/TDDN/) for the full comparison
+against SigLIP 2, MetaCLIP, OpenCLIP, DFN and FG-CLIP 2, plus retrieval, classification and CRG results.
+
+## Models
+
+| Paper | Tag | What it is |
+|:---|:---|:---|
+| DiffusedDINO | `fused-dinov3-cd` | Frozen DINOv3 ⊕ frozen CleanDIFT fusion. No training. |
+| TDN | `tdn` | Text-aligned DINOv3 (backbone `vith-roberta`). The no-fusion ablation. |
+| **TDDN** | `tddn` | Text-aligned DiffusedDINO (backbone `fused-dinov3-cd`). The full model. |
+
+Tags come in two layers: **backbone tags** live in
+[`registry.py`](experiments/shared_utils/feature_extraction/registry.py) and name a feature extractor,
+while **model tags** live in each experiment's `configs/models.yaml` and wire a backbone to an
+evaluation. `tdn` and `tddn` are model tags; `fused-dinov3-cd` is a backbone tag.
+
+<details>
+<summary>Baseline tags</summary>
+
+**Backbones** (`registry.py`): `dinov3-vitb16`, `dinov3-vith16plus`, `dinov2-vitb14`, `dinov2-vitl14`,
+`dinov2-vitg14`, `clip-vitl14`, `clip-vitl14-336`, `sd`, `cleandift`, `vith-roberta`, `fused-dinov3-cd`
+
+**Vision-language baselines** (`Vision_Language_Alignment/configs/models.yaml`): `clip`, `metaclip_l14`,
+`dfn_l14`, `openclip_l14`, `siglip2_l16`, `fgclip2_large`
+
+</details>
+
+## Installation
+
+One environment covers every experiment and dataset script.
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
+python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-pip install -e <path>/dinov3            # Meta AI DINOv3 reference impl
+pip install -e <path>/dinov3          # Meta AI DINOv3 reference impl
 ```
 
-For the open-source VLM serving used by
-`Puzzle_Understanding/scripts/launch_vllm.sh`, install `vllm` into a
-**separate** venv (it has a heavy CUDA dependency tree that shouldn't
-pollute the main env). See
-[`experiments/Puzzle_Understanding/README.md`](experiments/Puzzle_Understanding/README.md)
-for that install recipe.
+`dinov3` is not on PyPI. Either `pip install -e` it as above, or point `DINOV3_ROOT` at its source
+tree and the loaders will add it to `sys.path` at runtime.
 
 ## Environment variables
 
-Create a `.env` at the repo root with the variables below, then export
-them to the current shell:
+| Variable | Required | Purpose |
+|:---|:---:|:---|
+| `HF_TOKEN` | **yes** | Gated DINOv3 and RoBERTa-large weights |
+| `DINOV3_ROOT` | no | Path to the DINOv3 source tree, if not `pip install -e`'d |
+| `EXPERIMENTS_DATASETS_ROOT` | no | Keep datasets outside the repo tree |
+| `EXPERIMENTS_CHECKPOINTS_ROOT` | no | Keep checkpoints outside the repo tree |
+| `EXPERIMENTS_FEATURES_ROOT` | no | Relocate the feature cache |
+| `EXPERIMENTS_LOCAL_DATA_ROOT` | no | Relocate [`datasets/_local/`](datasets/_local/) |
+
+Defaults for all four path overrides are resolved in
+[`shared_utils/paths.py`](experiments/shared_utils/paths.py). Individual scripts also honour
+`DATASET_ROOT`, `IMAGENET_HF_CACHE`, `CHESS_DATASET` and `ALIGNMENT_CKPT_STEPS`.
+
+## Dataset — Puzzle Perception
+
+Existing benchmarks cover only half of this problem: segmentation datasets give pixel-level annotations
+but no question answering, while puzzle-reasoning datasets test reasoning without dense supervision.
+Puzzle Perception pairs both across four structured domains — Maze, Chess, Tower of Hanoi and N-Queens —
+rendered at 512×512 over 30 classes, with masks taken straight from the rendering pipeline so there is
+no annotation noise. None of its images appear in the alignment corpus, so every result on it is
+zero-shot transfer.
+
+<!-- PLACEHOLDER: Puzzle Perception sample grid (maze / chess / hanoi renders) — save as assets/puzzle_perception.png -->
+<p align="center">
+  <img src="assets/puzzle_perception.png" width="85%" alt="Puzzle Perception samples">
+</p>
+
+| Puzzle | Seg | PVQA | Classes | Train | Val | Test |
+|:---|:---:|:---:|---:|---:|---:|---:|
+| Maze | ✓ | ✗ | 8 | 2,000 | 500 | 500 |
+| Chess | ✓ | ✓ | 15 | 2,000 | 500 | 500 |
+| Tower of Hanoi | ✓ | ✗ | 7 | 2,000 | 500 | 500 |
+| N-Queens | ✗ | ✓ | 2 | – | – | 100 |
 
 ```bash
-set -a; source .env; set +a
+python datasets/download_datasets.py --dataset puzzle_perception
 ```
 
-`.env` is gitignored and not auto-loaded — every script reads from
-`os.environ` directly.
+Also on the Hub: [`PuzzleBench/Puzzle_Perception`](https://huggingface.co/datasets/PuzzleBench/Puzzle_Perception).
 
-**Required**
-- `HF_TOKEN` — gated DINOv3 / RoBERTa-large weights; needed for every
-  experiment except `Puzzle_Understanding`.
-- `OPENAI_API_KEY` — only for `Puzzle_Understanding/run_*_eval.py
-  --backend openai`.
+## Experiments
 
-**Optional**
-- `VLLM_PY` — path to the vLLM venv's Python interpreter, used by
-  `Puzzle_Understanding/scripts/launch_vllm.sh`. Defaults to the
-  first `python` on `PATH`.
-- `DINOV3_ROOT` — path to the Meta DINOv3 source tree. Needed only when
-  `dinov3` is not `pip install -e`'d: by the `mask_generation` overlays
-  and by `CRG/run_eval.py --redetect`.
+Six evaluation tracks, each self-contained under [`experiments/`](experiments/):
 
-If you need to keep datasets / checkpoints / the metrics feature
-cache outside the repo tree, four `EXPERIMENTS_*_ROOT` overrides
-exist — including `EXPERIMENTS_LOCAL_DATA_ROOT` for the
-locally-supplied data in [`datasets/_local/`](datasets/_local/README.md).
-See [`shared_utils/paths.py`](experiments/shared_utils/paths.py).
+| Track | Tests | Headline metric | Paper |
+|:---|:---|:---|:---:|
+| [Representation_Analysis](experiments/Representation_Analysis/) | Intrinsic feature quality and cross-encoder similarity | CKA / PWCCA, uniformity / alignment | §5.1 |
+| [Segmentation](experiments/Segmentation/) | Linear-probe dense prediction, frozen backbone | mIoU on Puzzle Perception | §5.1 |
+| [Keypoint_Matching](experiments/Keypoint_Matching/) | Fine-grained spatial correspondence | PCK@0.1 on SPair-71K | §5.1–5.2 |
+| [ImageNet_Classification](experiments/ImageNet_Classification/) | Global-feature semantic separability | k-NN top-1 (k=20) | §5.1 |
+| [Vision_Language_Alignment](experiments/Vision_Language_Alignment/) | End-to-end alignment vs CLIP-lineage encoders | Open-vocab mIoU, R@1, top-1 | §5.2 |
+| [CRG](experiments/CRG/) | Can TDDN's regions steer a frozen VLM at decode time? | Δ question accuracy | §5.3 |
 
-## Per-experiment entry points
+Each track's README documents its own flags. Representative invocations:
 
-- [`experiments/Representation_Analysis/`](experiments/Representation_Analysis/README.md)
-- [`experiments/Segmentation/`](experiments/Segmentation/README.md)
-- [`experiments/Keypoint_Matching/`](experiments/Keypoint_Matching/README.md)
-- [`experiments/ImageNet_Classification/`](experiments/ImageNet_Classification/README.md)
-- [`experiments/Vision_Language_Alignment/`](experiments/Vision_Language_Alignment/README.md)
-- [`experiments/Puzzle_Understanding/`](experiments/Puzzle_Understanding/README.md)
-- [`experiments/CRG/`](experiments/CRG/README.md)
-- [`experiments/shared_utils/feature_extraction/`](experiments/shared_utils/feature_extraction/README.md)
+```bash
+# Representation analysis — plots, activation maps, metrics
+python experiments/Representation_Analysis/run.py --help
+
+# Train, then evaluate, a segmentation probe
+python experiments/Segmentation/run_train.py
+python experiments/Segmentation/run_eval.py
+
+# Evaluate a single tag on a downstream task
+python experiments/Keypoint_Matching/run_eval.py --model tddn
+python experiments/ImageNet_Classification/run_eval.py --model tddn
+
+# Vision-language alignment: train the heads, then evaluate
+python experiments/Vision_Language_Alignment/run_train.py
+python experiments/Vision_Language_Alignment/run_eval.py --model tddn
+
+# Contrastive Region Guidance on a frozen VLM
+python experiments/CRG/run_eval.py
+```
+
+## Training setup
+
+TDN and TDDN share one alignment pipeline and differ only in the vision representation they consume.
+
+| | |
+|:---|:---|
+| Input resolution | 336×336 (21×21 patch grid) |
+| CleanDIFT layers | {2, 5, 8}, each projected to 512-d |
+| Attention blocks | K = 2 per branch, RoPE |
+| Trainable params | ~80M (all backbones frozen) |
+| Objective | Symmetric InfoNCE + STRUCTURE regulariser |
+| Schedule | 5,000 iterations, AdamW, cosine decay |
+| Hardware | 4× A100 80GB (FSDP, bf16), ~15 hours |
+
+## Citation
+
+```bibtex
+
+```
+
+## Acknowledgements
+
+Built on [DINOv3](https://github.com/facebookresearch/dinov3),
+[CleanDIFT](https://github.com/CompVis/cleandift),
+[RoBERTa](https://huggingface.co/FacebookAI/roberta-large), and
+[Contrastive Region Guidance](https://github.com/uw-mad-dash/contrastive-region-guidance).
+Alignment follows the low-data recipe of STRUCTURE. We thank the authors of all of the above for
+releasing their code and weights.
