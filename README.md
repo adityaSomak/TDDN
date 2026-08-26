@@ -23,9 +23,8 @@
   <img src="https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python">
 </p>
 
-<!-- PLACEHOLDER: paper Figure 2 (PCA visualisation of patch features, maze image) — save as assets/teaser.png -->
 <p align="center">
-  <img src="assets/teaser.png" width="90%" alt="PCA visualisation of patch features across encoders">
+  <img src="assets/teaser.png" width="88%" alt="PCA visualisation of patch features across encoders">
   <br><sub>Patch features projected onto their top three principal components. CLIP produces fragmented,
   spatially inconsistent maps on structured images. DiffusedDINO keeps CleanDIFT's boundary precision
   while recovering DINOv3's object-level signal.</sub>
@@ -47,9 +46,8 @@ can steer a **frozen** VLM through Contrastive Region Guidance, improving its pu
 updating a single VLM weight. Alongside the model we release **Puzzle Perception**, a benchmark that
 pairs pixel-level segmentation with puzzle-based visual question answering.
 
-<!-- PLACEHOLDER: TDDN architecture diagram (the figure used on the project page) — save as assets/architecture.png -->
 <p align="center">
-  <img src="assets/architecture.png" width="80%" alt="TDDN architecture">
+  <img src="assets/architecture.png" width="82%" alt="TDDN architecture">
   <br><sub>Frozen CleanDIFT UNet and DINOv3 ViT-H/16+ feed a trainable fusion path; RoBERTa-L is frozen
   on the text side. Only the per-layer MLPs, the fusion MLP, the self-attention blocks and the text
   projection are trained.</sub>
@@ -130,9 +128,10 @@ rendered at 512×512 over 30 classes, with masks taken straight from the renderi
 no annotation noise. None of its images appear in the alignment corpus, so every result on it is
 zero-shot transfer.
 
-<!-- PLACEHOLDER: Puzzle Perception sample grid (maze / chess / hanoi renders) — save as assets/puzzle_perception.png -->
 <p align="center">
-  <img src="assets/puzzle_perception.png" width="85%" alt="Puzzle Perception samples">
+  <img src="assets/puzzle_perception.png" width="618" alt="Puzzle Perception samples">
+  <br><sub>Maze varies wall texture while holding topology fixed, Chess mixes 2D and 3D renders, and
+  Tower of Hanoi spans arrangements up to five disks per peg.</sub>
 </p>
 
 | Puzzle | Seg | PVQA | Classes | Train | Val | Test |
