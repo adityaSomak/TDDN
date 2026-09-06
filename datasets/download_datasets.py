@@ -430,13 +430,18 @@ def _dl_coco(target: Path) -> None:
         _curl_extract(target, f"{base}/{rel}", name, "zip")
 
 
-def _hf_snapshot(target: Path, repo_id: str) -> None:
+def _hf_snapshot(target: Path, repo_id: str, allow_patterns: list[str] | None = None) -> None:
     try:
         from huggingface_hub import snapshot_download
     except ImportError:
         sys.exit(f"{repo_id}: pip install huggingface-hub")
-    _log("dl", f"{repo_id} -> {target}")
-    snapshot_download(repo_id=repo_id, repo_type="dataset", local_dir=str(target))
+    _log("dl", f"{repo_id} -> {target}" + (f" {allow_patterns}" if allow_patterns else ""))
+    snapshot_download(
+        repo_id=repo_id,
+        repo_type="dataset",
+        local_dir=str(target),
+        allow_patterns=allow_patterns,
+    )
 
 
 def _dl_recaptioned_laion(target: Path) -> None:
@@ -489,22 +494,83 @@ def _dl_recaptioned_laion(target: Path) -> None:
 
 
 def _dl_puzzle_perception(target: Path) -> None:
-    """Fetch the Puzzle-Perception segmentation dataset and extract its splits.
+    """Fetch Puzzle-Perception and materialise the layout ``dataset.py`` expects.
 
-    Pulls ``train.tar``, ``val.tar`` and ``test.tar`` from HuggingFace, then
-    extracts them in place to give the on-disk layout that ``dataset.py``
-    expects (``train/{images,masks}/``, etc.).
+    The HuggingFace repo ships a single unified Parquet table covering both the
+    segmentation and pVQA halves (built by
+    ``Puzzle_Perception/build_hf_release.py``, an internal tool not in this repo),
+    with the label maps alongside it as PNG files. It no longer ships
+    ``{train,val,test}.tar``.
+
+    ``dataset.py`` and every segmentation probe read
+    ``<root>/{train,val,test}/{images,masks}/<task>_<id>.png``, where each mask is
+    a single-channel PNG with pixel values ``0..29`` (the unified class ids).
+    Reconstruct exactly that: move the shipped RAW masks into place, and write
+    the images back out of the Parquet.
+
+    IMPORTANT: the repo ships TWO mask directories, and only one is the raw
+    class-id data training needs —
+
+        masks/<split>/*.png       colorized RGB renders, for the HF viewer only
+        raw_masks/<split>/*.png   raw single-channel PNGs, values 0..29 <- THIS ONE
+
+    Fetching ``masks/*`` here would silently install 3-channel colorized PNGs as
+    training masks — ``dataset.py`` would then read RGB images where it expects
+    single-channel label maps, corrupting every downstream segmentation-probe run
+    with no obvious error (wrong shape/dtype, not a crash, since PIL opens either
+    just fine). Always fetch ``raw_masks/*``, never ``masks/*``.
+
+    Images are copied as **raw bytes** — the ``image`` column is cast with
+    ``decode=False`` so PIL never re-encodes them, which keeps the extracted
+    PNGs byte-identical to the published ones.
+
+    Only ``type == "segmentation"`` rows are materialised. The pVQA rows are an
+    eval-only probe set whose authoritative copy is committed under
+    ``Puzzle_Perception/PVQA/``; nothing reading this tree consumes them.
     """
-    _hf_snapshot(target, "PuzzleBench/Puzzle_Perception")
-    for tar_name in ("train.tar", "val.tar", "test.tar"):
-        tar_path = target / tar_name
-        if not tar_path.exists():
-            print(f"[warn] expected {tar_name} not found in snapshot, skipping")
+    try:
+        from datasets import Image as HFImage
+        from datasets import load_dataset
+    except ImportError:
+        sys.exit("puzzle_perception: pip install datasets")
+
+    repo_id = "PuzzleBench/Puzzle_Perception"
+
+    # raw_masks/ (not masks/, which is the colorized viewer render) and the side
+    # files are plain files in the repo. Fetch just those, so this step does not
+    # also pull the multi-GB Parquet a second time.
+    _hf_snapshot(
+        target, repo_id, allow_patterns=["raw_masks/*", "classes.yaml", "manifest.csv"]
+    )
+
+    # The shipped directory is named raw_masks/ to distinguish it from the
+    # colorized masks/ on the repo; the LOCAL on-disk name dataset.py expects is
+    # still masks/ — only the repo-side name changed.
+    masks_root = target / "raw_masks"
+    for split in ("train", "val", "test"):
+        src = masks_root / split
+        if not src.is_dir():
+            print(f"[warn] no raw_masks/{split}/ in snapshot, skipping")
             continue
-        print(f"[extract] {tar_name}")
-        with tarfile.open(tar_path) as tf:
-            tf.extractall(target)
-        tar_path.unlink()
+        dst = target / split / "masks"
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        shutil.move(str(src), str(dst))
+        _log("masks", f"{split}: {len(list(dst.glob('*.png')))} files")
+    shutil.rmtree(masks_root, ignore_errors=True)
+
+    for split in ("train", "val", "test"):
+        images_dir = target / split / "images"
+        images_dir.mkdir(parents=True, exist_ok=True)
+        ds = load_dataset(repo_id, split=split).cast_column("image", HFImage(decode=False))
+        count = 0
+        for row in ds:
+            if row["type"] != "segmentation":
+                continue
+            # image_path is "<split>/images/<task>_<id>.png"; keep the stem, as
+            # dataset.py derives source_task/source_id by parsing the filename.
+            (images_dir / Path(row["image_path"]).name).write_bytes(row["image"]["bytes"])
+            count += 1
+        _log("extract", f"{split}: {count} images")
 
 
 # ---------- registry ----------------------------------------------------------
