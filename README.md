@@ -51,8 +51,8 @@ updating a single VLM weight. Alongside the model we release **Puzzle Perception
 pairs pixel-level segmentation with puzzle-based visual question answering.
 
 <p align="center">
-  <img src="assets/architecture.png" width="82%" alt="TDDN architecture">
-  <br><sub>Frozen CleanDIFT UNet and DINOv3 ViT-H/16+ feed a trainable fusion path; RoBERTa-L is frozen
+  <img src="assets/architecture.png" width="70%" height="auto" alt="TDDN architecture">
+  <br><sub><strong>TDDN architecture.</strong> Frozen CleanDIFT UNet and DINOv3 ViT-H/16+ feed a trainable fusion path; RoBERTa-L is frozen
   on the text side. Only the per-layer MLPs, the fusion MLP, the self-attention blocks and the text
   projection are trained.</sub>
 </p>
