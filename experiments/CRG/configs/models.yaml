@@ -130,10 +130,7 @@ defaults:
   tddn:
     # Only read by --redetect / --validate-tddn; plain eval uses the committed
     # tddn_detections.json and never loads the encoder.
-    checkpoint: fused_dinov3_cleandift_coco_ft
-    # A name selects one checkpoint under that tree's ckpt/; a two-element list
-    # weight-averages two at load time.
-    checkpoint_step: tddn
+    checkpoint: TDDN
     grid: 64                      # patch grid -> 1024 px forward (64 * 16)
     tip_alpha: 2.0
     tip_beta: 5.5

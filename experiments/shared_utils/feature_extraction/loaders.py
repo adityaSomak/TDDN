@@ -6,23 +6,43 @@ small set of facts that downstream extractors need to know about the
 backbone (patch size, hidden dim, number of special tokens, etc.) without
 re-querying the model.
 
-Most loaders read configs from HuggingFace. The two trained models
-(`vith_roberta`, `fused-dinov3-cd`) load weights from this package's
-`checkpoints/` directory via the vendored `text_alignment` package.
+Most loaders read configs from Hugging Face. TDN and TDDN use the generic
+``load_model`` API with flat local or Hub-hosted Safetensors releases; explicit
+legacy DCP steps remain supported for reproducibility.
 """
 from __future__ import annotations
 
-from dataclasses import dataclass
+import json
+import os
+import sys
+from dataclasses import dataclass, fields
 from pathlib import Path
 from typing import Optional
 
 import torch
 from omegaconf import OmegaConf
 
+from ..paths import CHECKPOINTS_ROOT
 from .constants import require_hf_token
 
-_PKG_ROOT = Path(__file__).resolve().parent
-_CHECKPOINTS_ROOT = _PKG_ROOT / "checkpoints"
+_VARIANTS = {
+    "tdn": {
+        "release_dir": "TDN",
+        "hub_repo": "PuzzleBench/TDN",
+        "legacy_dir": "vith_roberta_v3_coco_ft",
+        "meta_name": "vith-roberta",
+        "default_dtype": torch.bfloat16,
+        "fused": False,
+    },
+    "tddn": {
+        "release_dir": "TDDN",
+        "hub_repo": "PuzzleBench/TDDN",
+        "legacy_dir": "fused_dinov3_cleandift_coco_ft",
+        "meta_name": "fused-dinov3-cd",
+        "default_dtype": torch.float32,
+        "fused": True,
+    },
+}
 
 
 @dataclass
@@ -222,17 +242,26 @@ def load_diffusion(
 
 def _build_alignment_model(config_path: Path, device, dtype: torch.dtype):
     """Construct an AlignmentModel from a saved training config."""
+    dinov3_root = os.environ.get("DINOV3_ROOT")
+    if dinov3_root and dinov3_root not in sys.path:
+        sys.path.insert(0, dinov3_root)
+
     from .text_alignment import AlignConfig, AlignmentModel
 
-    cfg = OmegaConf.load(config_path)
-    config = AlignConfig(**OmegaConf.to_container(cfg))
+    if config_path.suffix == ".json":
+        payload = json.loads(config_path.read_text())
+        allowed = {f.name for f in fields(AlignConfig)}
+        cfg = {k: v for k, v in payload.items() if k in allowed}
+    else:
+        cfg = OmegaConf.to_container(OmegaConf.load(config_path))
+    config = AlignConfig(**cfg)
     model = AlignmentModel(config).to(device=device, dtype=dtype).eval()
     for p in model.parameters():
         p.requires_grad = False
     return model, config
 
 
-def _resolve_ckpt_paths(ckpt_dir: Path, spec) -> list[Path]:
+def _resolve_legacy_paths(ckpt_dir: Path, spec) -> list[Path]:
     """Normalize a checkpoint selector and check the directories exist.
 
     Raises before any load so a bad selector reports itself, rather than failing
@@ -252,85 +281,144 @@ def _resolve_ckpt_paths(ckpt_dir: Path, spec) -> list[Path]:
     return paths
 
 
-def load_vith_roberta(
+def _download_release_snapshot(repo_id: str) -> Path:
+    """Download the minimal release snapshot required by the generic loader."""
+    from huggingface_hub import snapshot_download
+
+    try:
+        return Path(snapshot_download(
+            repo_id=repo_id,
+            allow_patterns=["config.json", "model.safetensors"],
+            token=require_hf_token(),
+        ))
+    except Exception as exc:
+        raise RuntimeError(f"Could not download checkpoint repository {repo_id!r}: {exc}") from exc
+
+
+def _resolve_release_dir(checkpoint, variant: dict) -> Path:
+    """Resolve a local release directory or a Hugging Face model snapshot."""
+    required_names = ("config.json", "model.safetensors")
+    if checkpoint is None:
+        local_path = CHECKPOINTS_ROOT / variant["release_dir"]
+        path = (local_path if all((local_path / name).is_file() for name in required_names)
+                else _download_release_snapshot(variant["hub_repo"]))
+    elif isinstance(checkpoint, Path):
+        path = checkpoint.expanduser()
+    else:
+        raw = str(checkpoint)
+        candidate = Path(raw).expanduser()
+        if candidate.is_dir() or candidate.is_absolute() or raw.startswith("."):
+            path = candidate
+        elif "/" not in raw:
+            path = CHECKPOINTS_ROOT / raw
+        else:
+            path = _download_release_snapshot(raw)
+
+    required = [path / name for name in required_names]
+    missing = [p.name for p in required if not p.is_file()]
+    if missing:
+        raise FileNotFoundError(
+            f"Incomplete {variant['release_dir']} checkpoint at {path}: missing {missing}. "
+            "Expected a Hugging Face-style directory containing config.json and model.safetensors."
+        )
+    return path
+
+
+def _load_release_state(model, path: Path) -> dict[str, torch.Tensor]:
+    from safetensors.torch import load_file
+    from .text_alignment import trainable_keys
+
+    state = load_file(str(path / "model.safetensors"), device="cpu")
+    expected = set(trainable_keys(model))
+    actual = set(state)
+    if actual != expected:
+        missing = sorted(expected - actual)
+        unexpected = sorted(actual - expected)
+        raise RuntimeError(
+            f"Checkpoint tensor keys do not match the model (missing={missing[:5]}, "
+            f"unexpected={unexpected[:5]})."
+        )
+    return {k: v.float() for k, v in state.items()}
+
+
+def load_model(
+    name: str,
     device: torch.device | str,
-    ckpt_dir: Optional[Path] = None,
-    ckpt_steps="tdn",
-    dtype: torch.dtype = torch.float16,
-) -> tuple[torch.nn.Module, ModelMeta]:
-    """Text-aligned DINOv3-H+ + RoBERTa model.
-
-    ``ckpt_steps`` names one checkpoint directory, or lists two to weight-average.
-    """
-    from .text_alignment import average_states, load_trainable_state
-
-    if ckpt_dir is None:
-        ckpt_dir = _CHECKPOINTS_ROOT / "vith_roberta_v3_coco_ft"
-    ckpt_dir = Path(ckpt_dir)
-
-    model, config = _build_alignment_model(ckpt_dir / "config.yaml", device, dtype)
-    paths = _resolve_ckpt_paths(ckpt_dir, ckpt_steps)
-    states = [load_trainable_state(model, p) for p in paths]
-    trainable = average_states(states) if len(states) > 1 else states[0]
-    _, unexpected = model.load_state_dict(trainable, strict=False)
-    # Only frozen-backbone keys should be "missing" — that's expected.
-    if unexpected:
-        raise RuntimeError(f"Unexpected keys when loading vith_roberta: {unexpected[:5]}...")
-
-    meta = ModelMeta(
-        name="vith-roberta",
-        patch_size=16,
-        dim=config.embed_dim,  # global = 2*hidden (CLS + mean(patches))
-        num_special_tokens=5,   # DINOv3-H+
-        extra={"ckpt_steps": [p.name for p in paths], "ckpt_dir": str(ckpt_dir),
-               "dtype": dtype, "config": config},
-    )
-    return model, meta
-
-
-def load_fused_dinov3_cd(
-    device: torch.device | str,
-    ckpt_dir: Optional[Path] = None,
-    ckpt_steps="tddn",
-    dtype: torch.dtype = torch.float32,
+    checkpoint: str | Path | None = None,
+    checkpoint_steps=None,
+    dtype: torch.dtype | None = None,
     common_grid_override: Optional[int] = None,
 ) -> tuple[torch.nn.Module, ModelMeta]:
-    """Trained DINOv3+CleanDIFT fused encoder.
+    """Load a released TDN/TDDN model or explicit legacy DCP training steps.
 
-    ``ckpt_steps`` names one checkpoint directory, or lists two to weight-average.
+    The default and Hub formats are ``config.json`` + ``model.safetensors``.
+    Supplying ``checkpoint_steps`` switches to the legacy
+    ``<checkpoint>/ckpt/<step>`` DCP layout, with up to two steps averaged.
     """
     from .text_alignment import average_states, load_trainable_state
 
-    if ckpt_dir is None:
-        ckpt_dir = _CHECKPOINTS_ROOT / "fused_dinov3_cleandift_coco_ft"
-    ckpt_dir = Path(ckpt_dir)
+    key = str(name).lower()
+    if key not in _VARIANTS:
+        raise ValueError(f"Unknown trained model {name!r}; expected one of {sorted(_VARIANTS)}")
+    variant = _VARIANTS[key]
+    dtype = dtype or variant["default_dtype"]
+    if key == "tdn" and dtype == torch.float16:
+        raise ValueError("TDN's DINOv3 backbone is numerically unstable in fp16; use bf16 or fp32.")
 
-    model, config = _build_alignment_model(ckpt_dir / "config.yaml", device, dtype)
+    if checkpoint_steps is None:
+        ckpt_dir = _resolve_release_dir(checkpoint, variant)
+        config_path = ckpt_dir / "config.json"
+        release_config = json.loads(config_path.read_text())
+        if release_config.get("variant") != key:
+            raise ValueError(
+                f"Checkpoint {ckpt_dir} declares variant {release_config.get('variant')!r}, "
+                f"but load_model was called with {key!r}."
+            )
+        if release_config.get("format_version") != 1:
+            raise ValueError(
+                f"Unsupported checkpoint format_version "
+                f"{release_config.get('format_version')!r} in {config_path}; expected 1."
+            )
+    else:
+        if checkpoint is None:
+            ckpt_dir = CHECKPOINTS_ROOT / variant["legacy_dir"]
+        else:
+            ckpt_dir = Path(checkpoint).expanduser()
+        config_path = ckpt_dir / "config.yaml"
+        if not config_path.is_file():
+            raise FileNotFoundError(
+                f"Legacy checkpoint config not found: {config_path}. "
+                "Pass the training-output tree containing config.yaml and ckpt/."
+            )
 
-    # Load CleanDIFT backbone weights — these are frozen and not in the DCP
-    # checkpoint (which holds only the trainable heads).
-    if hasattr(model, "load_cleandift_backbone"):
+    model, config = _build_alignment_model(config_path, device, dtype)
+
+    if variant["fused"] and hasattr(model, "load_cleandift_backbone"):
         model.load_cleandift_backbone(device)
 
-    paths = _resolve_ckpt_paths(ckpt_dir, ckpt_steps)
-    states = [load_trainable_state(model, p) for p in paths]
-    avg = average_states(states) if len(states) > 1 else states[0]
-    _, unexpected = model.load_state_dict(avg, strict=False)
-    if unexpected:
-        raise RuntimeError(f"Unexpected keys when loading fused model: {unexpected[:5]}...")
+    if checkpoint_steps is None:
+        trainable = _load_release_state(model, ckpt_dir)
+        source = str(ckpt_dir)
+    else:
+        paths = _resolve_legacy_paths(ckpt_dir, checkpoint_steps)
+        states = [load_trainable_state(model, p) for p in paths]
+        trainable = average_states(states) if len(states) > 1 else states[0]
+        source = [str(p) for p in paths]
 
-    # Optional: override the trained common_grid (typically 21 @ 336) so we
-    # can run a single forward at a larger resolution (e.g., 32 @ 512).
-    if common_grid_override is not None and hasattr(model, "image_encoder"):
+    _, unexpected = model.load_state_dict(trainable, strict=False)
+    if unexpected:
+        raise RuntimeError(f"Unexpected keys when loading {key}: {unexpected[:5]}...")
+
+    if variant["fused"] and common_grid_override is not None and hasattr(model, "image_encoder"):
         if hasattr(model.image_encoder, "common_grid"):
             model.image_encoder.common_grid = common_grid_override
 
     meta = ModelMeta(
-        name="fused-dinov3-cd",
+        name=variant["meta_name"],
         patch_size=16,
         dim=config.embed_dim,
         num_special_tokens=5,
-        extra={"ckpt_steps": [p.name for p in paths], "ckpt_dir": str(ckpt_dir),
-               "dtype": dtype, "common_grid": common_grid_override},
+        extra={"variant": key, "checkpoint": source, "dtype": dtype,
+               "config": config, "common_grid": common_grid_override},
     )
     return model, meta

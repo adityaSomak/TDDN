@@ -45,15 +45,17 @@ NORMALIZATION = {
     "fused-dinov3-cd": (IMAGENET_MEAN, IMAGENET_STD),
 }
 
-# HuggingFace token. Read from environment. Many backbones are gated.
-HF_TOKEN = os.environ.get("HF_TOKEN")
-
-
 def require_hf_token() -> str:
-    if not HF_TOKEN:
+    token = os.environ.get("HF_TOKEN")
+    if not token:
+        try:
+            from huggingface_hub import get_token
+            token = get_token()
+        except ImportError:
+            token = None
+    if not token:
         raise RuntimeError(
-            "HF_TOKEN environment variable is not set. DINOv3 and RoBERTa-large "
-            "are gated HuggingFace models. Run `export HF_TOKEN=<your_token>` "
-            "or `huggingface-cli login` before invoking the feature extractor."
+            "No Hugging Face token was found. DINOv3 is gated; run `hf auth login` "
+            "or export HF_TOKEN before invoking the feature extractor."
         )
-    return HF_TOKEN
+    return token

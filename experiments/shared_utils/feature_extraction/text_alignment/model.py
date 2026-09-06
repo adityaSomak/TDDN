@@ -15,6 +15,7 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 
+from ..constants import require_hf_token
 from .config import AlignConfig
 from .image_encoder import DINOv3ImageEncoder
 from .cleandift_encoder import CleanDIFTImageEncoder
@@ -23,12 +24,6 @@ from .text_encoder import CLIPTextEncoder
 from .roberta_encoder import RoBERTaTextEncoder
 
 logger = logging.getLogger("text_alignment")
-
-import os
-
-# Gated DINOv3 / RoBERTa weights require an HF token. Read from the
-# environment so it never gets committed.
-HF_TOKEN = os.environ.get("HF_TOKEN")
 
 
 class AlignmentOutput(NamedTuple):
@@ -53,7 +48,7 @@ def _build_vision_backbone(config: AlignConfig) -> nn.Module:
     backbone = AutoModel.from_pretrained(
         model_id,
         trust_remote_code=True,
-        token=HF_TOKEN,
+        token=require_hf_token(),
     )
     backbone.eval()
     for p in backbone.parameters():

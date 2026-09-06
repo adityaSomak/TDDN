@@ -6,8 +6,8 @@
 # (`run_train.py`); the head is the only learned component.
 #
 # For the tdn/tddn tags, `checkpoint` names the checkpoint tree and
-# `checkpoint_step` selects the weights inside its `ckpt/` directory: a name for
-# a single checkpoint, or a two-element list to weight-average at load time.
+# `checkpoint` names a flat local checkpoint directory under
+# EXPERIMENTS_CHECKPOINTS_ROOT, or a Hugging Face model repository.
 
 baselines:
   dinov2-vitb:
@@ -59,15 +59,12 @@ trained:
     backbone: vith-roberta
     extractor: {return_patches: true}
     transform: {strategy: square_resize, input_size: 512}
-    checkpoint: vith_roberta_v3_coco_ft
-    checkpoint_step: tdn
+    checkpoint: TDN
   tddn:
     backbone: fused-dinov3-cd
     extractor: {return_patches: true}
     transform: {strategy: square_resize, input_size: 512}
-    checkpoint: fused_dinov3_cleandift_coco_ft
-    checkpoint_step: tddn
-
+    checkpoint: TDDN
 # Head configuration shared across model_tags (overridable per-tag).
 default_head:
   kind: linear         # `linear` for a 1×1 conv head; `mlp` for [256, 256] hidden

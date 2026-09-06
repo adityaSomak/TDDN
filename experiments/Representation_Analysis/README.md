@@ -84,8 +84,8 @@ See `configs/models.yaml` for extractor and preprocessing kwargs.
 
 ```
 shared_utils/feature_extraction/checkpoints/
-├── vith_roberta_v3_coco_ft/ckpt/tdn/
-└── fused_dinov3_cleandift_coco_ft/ckpt/tddn/
+├── TDN/{config.json,model.safetensors}
+└── TDDN/{config.json,model.safetensors}
 ```
 
 The `.distcp` shards are gitignored (~3.9 GB); place them yourself before

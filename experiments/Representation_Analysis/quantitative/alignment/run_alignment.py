@@ -13,7 +13,7 @@ For L2-normed rows this is  mean( 2 − 2·cos ).  Lower = positives closer = be
 All features extracted at 512px square_resize (CLIP at 518 = 14×37), the
 Representation_Analysis protocol (DINOv3 facet=token; CleanDIFT resnets[2] t=0);
 CD uses per-layer PCA→512 (CDp=1536). Trained tdn/tddn loaded from the named
-`ckpt/tdn` / `ckpt/tddn` checkpoints (configs/models.yaml's `checkpoint_step`).
+flat TDN / TDDN checkpoints (configured by `checkpoint` in models.yaml).
 Analysis-only; no model/other-experiment/committed file touched.
 
 Single-file driver+worker, --smoke/--full, --setting patch|global|both.
@@ -515,4 +515,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

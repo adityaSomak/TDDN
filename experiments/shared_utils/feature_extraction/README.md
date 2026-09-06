@@ -55,7 +55,23 @@ per-experiment configs for the values in use.
 
 ## Trained-model checkpoints
 
-`vith-roberta` and `fused-dinov3-cd` load weights from
-`checkpoints/<name>/ckpt/<step>/`. The `.distcp` shards are not
-committed (~3.9 GB); place them at the expected paths before using
-these backbones.
+TDN and TDDN load their release weights from `checkpoints/TDN/` and
+`checkpoints/TDDN/`. Each directory follows the Hugging Face layout with a
+`config.json` and `model.safetensors`; the large Safetensors files are not
+committed to GitHub. Override the local source with the model's Hugging Face
+repo id through the `checkpoint` argument.
+
+```python
+from shared_utils.feature_extraction import load_model
+
+model, meta = load_model("tddn", device="cuda")
+```
+
+Legacy raw training checkpoints remain available explicitly for reproducibility:
+
+```python
+model, meta = load_model(
+    "tddn", device="cuda", checkpoint="/path/to/training-tree",
+    checkpoint_steps=99,
+)
+```

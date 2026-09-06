@@ -1,27 +1,13 @@
-"""Build the named checkpoints the evaluations load: ``tdn`` and ``tddn``.
+"""Convert legacy raw DCP steps into flat Hugging Face release checkpoints.
 
-Both are derived from the raw training steps that stay alongside them:
+Examples
+--------
+    python build_named_checkpoints.py --source-root /path/to/checkpoints
+    python build_named_checkpoints.py --source-root /path/to/checkpoints --name tddn
 
-    vith_roberta_v3_coco_ft/ckpt/99            -> .../ckpt/tdn
-    fused_dinov3_cleandift_coco_ft/ckpt/99,149 -> .../ckpt/tddn   (averaged)
-
-Only the trainable parameters (projection heads + logit scale) are stored, which
-is exactly what ``load_trainable_state`` reads back; the frozen backbones come
-from HuggingFace at load time.
-
-Averaging weights before the forward pass is equivalent to averaging them at load
-time, which is what the evaluations did previously — one model, one forward,
-either way. This script asserts that equivalence rather than assuming it: every
-tensor it writes is reloaded and compared with ``torch.equal``.
-
-Usage
------
-    python build_named_checkpoints.py             # build what's missing, then verify
-    python build_named_checkpoints.py --force     # rebuild even if present
-    python build_named_checkpoints.py --verify-only
-
-Runs on CPU in a few minutes; no GPU needed. ``HF_TOKEN`` must be set for the
-gated DINOv3 / RoBERTa weights, and ``dinov3`` must be importable.
+The source root must contain the original training trees and ``ckpt/<step>``
+directories. Outputs are deterministic CPU ``model.safetensors`` files under
+this directory's ``TDN/`` and ``TDDN/`` release folders.
 """
 from __future__ import annotations
 
@@ -32,11 +18,11 @@ import sys
 from pathlib import Path
 
 import torch
-import torch.distributed.checkpoint as dcp
+from safetensors.torch import load_file, save_file
 
 _HERE = Path(__file__).resolve().parent
-sys.path.insert(0, str(_HERE.parents[2]))          # experiments/ on the import path
-if os.environ.get("DINOV3_ROOT"):                  # unneeded if dinov3 is pip-installed
+sys.path.insert(0, str(_HERE.parents[2]))
+if os.environ.get("DINOV3_ROOT"):
     sys.path.insert(0, os.environ["DINOV3_ROOT"])
 
 from shared_utils.feature_extraction.loaders import _build_alignment_model  # noqa: E402
@@ -45,85 +31,96 @@ from shared_utils.feature_extraction.text_alignment import (  # noqa: E402
     load_trainable_state,
 )
 
-# name -> (checkpoint tree, source step directories to combine)
 TARGETS = {
-    "tdn": ("vith_roberta_v3_coco_ft", ("99",)),
-    "tddn": ("fused_dinov3_cleandift_coco_ft", ("99", "149")),
+    "tdn": ("TDN", "vith_roberta_v3_coco_ft", ("99",)),
+    "tddn": ("TDDN", "fused_dinov3_cleandift_coco_ft", ("99", "149")),
 }
 
 
 def _build_model(tree: Path) -> torch.nn.Module:
-    """Instantiate the alignment model to supply state-dict keys and shapes."""
     model, config = _build_alignment_model(tree / "config.yaml", "cpu", torch.float32)
     if config.use_cleandift or getattr(config, "use_fused_encoder", False):
         model.load_cleandift_backbone("cpu")
     return model
 
 
-def _combine(model: torch.nn.Module, ckpt_root: Path, steps: tuple[str, ...]) -> dict:
-    states = [load_trainable_state(model, ckpt_root / s) for s in steps]
-    return average_states(states) if len(states) > 1 else states[0]
+def _expected_state(model: torch.nn.Module, tree: Path, steps: tuple[str, ...]) -> dict:
+    states = [load_trainable_state(model, tree / "ckpt" / step) for step in steps]
+    state = average_states(states) if len(states) > 1 else states[0]
+    return {key: state[key].detach().cpu().contiguous() for key in sorted(state)}
 
 
-def _compare(model: torch.nn.Module, expected: dict, path: Path) -> bool:
-    """Reload ``path`` and report whether it is bit-identical to ``expected``."""
-    reloaded = load_trainable_state(model, path)
-    if set(reloaded) != set(expected):
-        print(f"    FAIL: key sets differ "
-              f"({len(expected)} expected vs {len(reloaded)} on disk)")
+def _verify(expected: dict, output: Path) -> bool:
+    actual = load_file(str(output), device="cpu")
+    if set(actual) != set(expected):
+        print(f"    FAIL: key sets differ ({len(expected)} expected, {len(actual)} found)")
         return False
-    bad = [k for k in expected if not torch.equal(expected[k], reloaded[k])]
+    bad = [key for key in expected if not torch.equal(expected[key], actual[key])]
     if bad:
-        worst = max((expected[k].double() - reloaded[k].double()).abs().max().item()
-                    for k in bad)
-        print(f"    FAIL: {len(bad)}/{len(expected)} tensors differ, "
-              f"worst abs diff {worst:.3e} (e.g. {bad[0]})")
+        worst = max(
+            (expected[key].double() - actual[key].double()).abs().max().item()
+            for key in bad
+        )
+        print(f"    FAIL: {len(bad)} tensors differ; worst absolute difference {worst:.3e}")
         return False
-    print(f"    OK: {len(expected)}/{len(expected)} tensors bit-identical")
+    print(f"    OK: {len(expected)} tensors are bit-identical")
     return True
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--name", choices=sorted(TARGETS), action="append",
-                    help="build only this checkpoint (repeatable); default is all")
-    ap.add_argument("--force", action="store_true",
-                    help="rebuild even if the target directory already exists")
-    ap.add_argument("--verify-only", action="store_true",
-                    help="compare existing targets against their sources, write nothing")
-    args = ap.parse_args()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--source-root", type=Path, required=True,
+                        help="directory containing the legacy checkpoint trees")
+    parser.add_argument("--name", choices=sorted(TARGETS), action="append",
+                        help="convert only this model; repeatable")
+    parser.add_argument("--force", action="store_true",
+                        help="replace an existing model.safetensors")
+    parser.add_argument("--verify-only", action="store_true",
+                        help="compare existing Safetensors outputs without writing")
+    args = parser.parse_args()
 
     ok = True
+    source_root = args.source_root.expanduser().resolve()
     for name in args.name or sorted(TARGETS):
-        tree_name, steps = TARGETS[name]
-        tree = _HERE / tree_name
-        target = tree / "ckpt" / name
-        print(f"\n{name}: {tree_name}/ckpt/{{{','.join(steps)}}} -> ckpt/{name}")
+        release_name, legacy_name, steps = TARGETS[name]
+        source = source_root / legacy_name
+        target = _HERE / release_name
+        output = target / "model.safetensors"
+        print(f"\n{name}: {legacy_name}/ckpt/{{{','.join(steps)}}} -> {release_name}/model.safetensors")
 
-        if args.verify_only and not target.is_dir():
-            print(f"    SKIP: {target} does not exist")
+        required = [source / "config.yaml", *(source / "ckpt" / s / ".metadata" for s in steps)]
+        missing = [str(path) for path in required if not path.is_file()]
+        if missing:
+            print(f"    FAIL: missing source files: {missing}")
             ok = False
             continue
-        if target.is_dir() and not (args.force or args.verify_only):
-            print(f"    exists; verifying (pass --force to rebuild)")
+        if not (target / "config.json").is_file():
+            print(f"    FAIL: missing release config: {target / 'config.json'}")
+            ok = False
+            continue
 
-        model = _build_model(tree)
-        expected = _combine(model, tree / "ckpt", steps)
-        print(f"    combined {len(steps)} source ckpt(s): {len(expected)} tensors")
+        model = _build_model(source)
+        expected = _expected_state(model, source, steps)
 
-        if not target.is_dir() or args.force:
-            if target.is_dir():
-                shutil.rmtree(target)
-            target.mkdir(parents=True)
-            dcp.save({"model": expected}, checkpoint_id=str(target))
-            size = sum(p.stat().st_size for p in target.rglob("*") if p.is_file())
-            print(f"    wrote {target} ({size / 2**20:,.0f} MiB)")
-
-        ok &= _compare(model, expected, target)
+        if args.verify_only and not output.is_file():
+            print(f"    FAIL: missing output: {output}")
+            ok = False
+        else:
+            if not args.verify_only:
+                target.mkdir(parents=True, exist_ok=True)
+                if not (target / "training_config.yaml").exists():
+                    shutil.copy2(source / "config.yaml", target / "training_config.yaml")
+            if not args.verify_only and (args.force or not output.is_file()):
+                save_file(expected, str(output), metadata={
+                    "format": "pt",
+                    "variant": name,
+                    "source_steps": ",".join(steps),
+                })
+                print(f"    wrote {output} ({output.stat().st_size / 2**20:,.0f} MiB)")
+            ok &= _verify(expected, output)
         del model
 
-    print("\n" + ("all named checkpoints match their sources"
-                  if ok else "MISMATCH — see above"))
+    print("\n" + ("all release checkpoints verified" if ok else "verification failed"))
     return 0 if ok else 1
 
 

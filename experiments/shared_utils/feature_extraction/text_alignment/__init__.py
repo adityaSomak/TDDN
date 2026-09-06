@@ -20,6 +20,16 @@ from .config import AlignConfig
 from .model import AlignmentModel
 
 
+def trainable_keys(model) -> list[str]:
+    """Return the alignment-head keys persisted by release checkpoints."""
+    return [
+        k for k in model.state_dict()
+        if not k.startswith("image_encoder.backbone.")
+        and not k.startswith("image_encoder.pca_")
+        and not k.startswith("text_encoder.backbone.")
+    ]
+
+
 def load_trainable_state(model, ckpt_path):
     """Load an FSDP DCP checkpoint and return only the trainable params.
 
@@ -36,13 +46,7 @@ def load_trainable_state(model, ckpt_path):
         dict[str, torch.Tensor] of trainable params on CPU as float32.
     """
     full_sd = model.state_dict()
-    trainable_keys = [
-        k for k in full_sd
-        if not k.startswith("image_encoder.backbone.")
-        and not k.startswith("image_encoder.pca_")
-        and not k.startswith("text_encoder.backbone.")
-    ]
-    state_dict = {"model": {k: full_sd[k] for k in trainable_keys}}
+    state_dict = {"model": {k: full_sd[k] for k in trainable_keys(model)}}
     dcp.load(state_dict, checkpoint_id=str(ckpt_path))
     return {k: v.cpu().float() for k, v in state_dict["model"].items()}
 
@@ -97,5 +101,5 @@ def resolve_ckpt_steps(spec) -> list[str]:
     return [str(s) for s in steps]
 
 
-__all__ = ["AlignConfig", "AlignmentModel", "load_trainable_state", "average_states",
-           "resolve_ckpt_steps", "MAX_CKPT_STEPS"]
+__all__ = ["AlignConfig", "AlignmentModel", "trainable_keys", "load_trainable_state",
+           "average_states", "resolve_ckpt_steps", "MAX_CKPT_STEPS"]

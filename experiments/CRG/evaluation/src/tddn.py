@@ -99,7 +99,7 @@ class _FusedEncoder:
     def __init__(self, device: str = "cuda", grid: int | None = None):
         _ensure_paths()
         try:
-            from shared_utils.feature_extraction.loaders import load_fused_dinov3_cd
+            from shared_utils.feature_extraction import load_model
         except ImportError as e:
             raise SystemExit(
                 f"cannot import the fused DINOv3 encoder ({e}).\n"
@@ -110,15 +110,15 @@ class _FusedEncoder:
         self.grid = grid or t["grid"]
         self.img_size = self.grid * PATCH_SIZE
         self.tip_alpha, self.tip_beta = t["tip_alpha"], t["tip_beta"]
-        ckpts = t["checkpoint_step"]
+        checkpoint = t["checkpoint"]
         self.preprocess = transforms.Compose([
             transforms.Resize((self.img_size, self.img_size)),
             transforms.ToTensor(),
             transforms.Normalize(mean=_IMAGENET_MEAN, std=_IMAGENET_STD),
         ])
-        print(f"loading TDDN (fused dinov3+cleandift, ckpt {ckpts}) ...", flush=True)
-        self.model, _ = load_fused_dinov3_cd(device, ckpt_steps=ckpts,
-                                             common_grid_override=self.grid)
+        print(f"loading TDDN checkpoint {checkpoint} ...", flush=True)
+        self.model, _ = load_model("tddn", device, checkpoint=checkpoint,
+                                   common_grid_override=self.grid)
         self.model.eval()
         self.prompts: dict[str, str] = {}
         self.text_cls: torch.Tensor | None = None     # (n_classes, D)

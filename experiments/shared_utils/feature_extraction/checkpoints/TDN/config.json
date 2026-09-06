@@ -1,0 +1,28 @@
+{
+  "model_type": "tddn_alignment",
+  "variant": "tdn",
+  "format_version": 1,
+  "architectures": ["AlignmentModel"],
+  "base_models": [
+    "facebook/dinov3-vith16plus-pretrain-lvd1689m",
+    "sentence-transformers/all-roberta-large-v1"
+  ],
+  "embed_dim": 2560,
+  "vision_backbone_hf_model_id": "facebook/dinov3-vith16plus-pretrain-lvd1689m",
+  "vision_backbone_config": null,
+  "vision_backbone_pretrained_weights": null,
+  "vision_model_train_img_size": 336,
+  "vision_num_head_blocks": 2,
+  "head_blocks_drop_path": 0.1,
+  "use_rope_in_head": true,
+  "use_linear_projection": false,
+  "text_encoder_name": "sentence-transformers/all-roberta-large-v1",
+  "text_encoder_pretrained": null,
+  "text_layer_idx": 24,
+  "text_num_head_blocks": 2,
+  "text_head_blocks_drop_path": 0.1,
+  "init_logit_scale": 2.659260036932778,
+  "freeze_logit_scale": true,
+  "use_cleandift": false,
+  "use_fused_encoder": false
+}

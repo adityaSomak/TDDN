@@ -47,7 +47,7 @@ Only `--redetect`, `--validate-tddn` and `run_generate.py` need more than the ab
 They require `DINOV3_ROOT=/path/to/dinov3` (or `pip install -e <path>/dinov3`), the
 TDDN checkpoints under `experiments/shared_utils/feature_extraction/checkpoints/`:
 
-- `tddn` → `fused_dinov3_cleandift_coco_ft/ckpt/tddn/`
+- `tddn` → `TDDN/{config.json,model.safetensors}`
 
 and, for chess, the locally-supplied 269-board segmentation set described in
 [`datasets/_local/README.md`](../../datasets/_local/README.md).

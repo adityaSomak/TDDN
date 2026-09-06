@@ -23,8 +23,7 @@ from .loaders import (
     load_diffusion,
     load_dinov2,
     load_dinov3,
-    load_fused_dinov3_cd,
-    load_vith_roberta,
+    load_model,
 )
 
 
@@ -45,22 +44,23 @@ MODEL_REGISTRY: dict[str, RegistryEntry] = {
     "clip-vitl14-336":    RegistryEntry(load_clip,   CLIPExtractor,   {"variant": "vit-l-14-336"}),
     "sd":                 RegistryEntry(load_diffusion, DiffusionExtractor, {"backbone": "sd21"}),
     "cleandift":          RegistryEntry(load_diffusion, DiffusionExtractor, {"backbone": "cleandift"}),
-    "vith-roberta":       RegistryEntry(load_vith_roberta, VithRobertaExtractor, {}),
-    "fused-dinov3-cd":    RegistryEntry(load_fused_dinov3_cd, FusedDINOv3CDExtractor, {}),
+    "vith-roberta":       RegistryEntry(load_model, VithRobertaExtractor, {"name": "tdn"}),
+    "fused-dinov3-cd":    RegistryEntry(load_model, FusedDINOv3CDExtractor, {"name": "tddn"}),
 }
 
 
 def loader_kwargs_for(spec: dict[str, Any] | None) -> dict[str, Any]:
     """Loader kwargs implied by a ``models.yaml`` entry.
 
-    Currently just the checkpoint selector: ``checkpoint_step`` in the config
-    becomes ``ckpt_steps`` for the trained loaders. Entries without one (the
-    untrained baselines) contribute nothing, so callers can apply this
-    unconditionally.
+    ``checkpoint`` may be a local release name/path or a Hugging Face repo id.
+    ``checkpoint_step`` remains accepted only for legacy raw DCP configs.
     """
-    if not spec or "checkpoint_step" not in spec:
+    if not spec or "checkpoint" not in spec:
         return {}
-    return {"ckpt_steps": spec["checkpoint_step"]}
+    out = {"checkpoint": spec["checkpoint"]}
+    if "checkpoint_step" in spec:
+        out["checkpoint_steps"] = spec["checkpoint_step"]
+    return out
 
 
 def build_extractor(

@@ -3,9 +3,8 @@
 # Tags are kept identical across Segmentation / Keypoint_Matching /
 # ImageNet_Classification so the paper-table comparisons line up one-to-one.
 #
-# For the tdn/tddn tags, `checkpoint` names the checkpoint tree and
-# `checkpoint_step` selects the weights inside its `ckpt/` directory: a name for
-# a single checkpoint, or a two-element list to weight-average at load time.
+# For tdn/tddn, `checkpoint` names a flat local checkpoint directory under
+# EXPERIMENTS_CHECKPOINTS_ROOT, or a Hugging Face model repository.
 
 baselines:
   dinov2-vitb:
@@ -53,16 +52,13 @@ trained:
     extractor: {}
     transform: {strategy: imagenet_center_crop, input_size: 224}
     pool: global
-    checkpoint: vith_roberta_v3_coco_ft
-    checkpoint_step: tdn
+    checkpoint: TDN
   tddn:
     backbone: fused-dinov3-cd
     extractor: {return_patches: false}
     transform: {strategy: imagenet_center_crop, input_size: 224}
     pool: global
-    checkpoint: fused_dinov3_cleandift_coco_ft
-    checkpoint_step: tddn
-
+    checkpoint: TDDN
 defaults:
   k: 20
   per_class_train: 100

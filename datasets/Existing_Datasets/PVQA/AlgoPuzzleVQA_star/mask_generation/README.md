@@ -51,34 +51,31 @@ DATASET_ROOT=/path/to/AlgoPuzzleVQA_star ./build_oracle_masks.sh
 
 ## TDDN dependencies
 
-`tddn_mask.py` depends on a trained vision/text alignment model that is
-**not** shipped in this repository. The loader (`tddn_loader.py`) reads
-three required environment variables:
+`tddn_mask.py` loads the repository's flat TDDN checkpoint through the shared
+feature-extraction API. Optional overrides are:
 
 | Variable           | Purpose                                                                |
 |--------------------|------------------------------------------------------------------------|
-| `PUZZLEBENCH_ROOT` | Path to `PuzzleBench/text_alignment/` (source for `core.*`, `eval.*`)  |
 | `DINOV3_ROOT`      | Path to the `dinov3/` source tree (vision backbone)                    |
-| `ALIGNMENT_CKPT`   | Training-output dir containing `config.yaml` and `ckpt/<step>/` folders|
+| `ALIGNMENT_CKPT`   | Flat checkpoint directory or Hugging Face model repository             |
 
 Optional overrides:
 
 | Variable                | Default     | Purpose                                                |
 |-------------------------|-------------|--------------------------------------------------------|
-| `ALIGNMENT_CKPT_STEPS`  | `tddn`      | Checkpoint name under `ckpt/` to load, or two comma-separated names to weight-average |
+| `ALIGNMENT_CKPT_STEPS`  | unset       | Explicit legacy raw DCP checkpoint step                               |
 | `HF_HOME`               | system default | HuggingFace cache directory                         |
 
 Example:
 
 ```bash
-export PUZZLEBENCH_ROOT=/path/to/PuzzleBench/text_alignment
 export DINOV3_ROOT=/path/to/dinov3
-export ALIGNMENT_CKPT=/path/to/output/<run_name>
+export ALIGNMENT_CKPT=/path/to/TDDN
 ./build_tddn_mask.sh --alpha 2.0 --beta 5.5
 ```
 
-See the PuzzleBench project's text-alignment pipeline for training the
-alignment model and producing the checkpoint directory.
+For a legacy training tree, point `ALIGNMENT_CKPT` at the tree and set
+`ALIGNMENT_CKPT_STEPS` to the required step.
 
 ## Chess
 

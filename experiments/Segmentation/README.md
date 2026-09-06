@@ -21,8 +21,8 @@ Place the dataset at
 Trained-head tags need their alignment checkpoints under
 `experiments/shared_utils/feature_extraction/checkpoints/`:
 
-- `tdn` → `vith_roberta_v3_coco_ft/ckpt/tdn/`
-- `tddn` → `fused_dinov3_cleandift_coco_ft/ckpt/tddn/`
+- `tdn` → `TDN/{config.json,model.safetensors}`
+- `tddn` → `TDDN/{config.json,model.safetensors}`
 
 ## Supported models
 

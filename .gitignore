@@ -16,6 +16,14 @@ __pycache__/
 
 # Representation_Analysis: trained-model checkpoints (~3.9 GB)
 experiments/shared_utils/feature_extraction/checkpoints/**/ckpt/
+# Release weights are uploaded to the Hugging Face model repos, not GitHub.
+experiments/shared_utils/feature_extraction/checkpoints/TDN/model.safetensors
+experiments/shared_utils/feature_extraction/checkpoints/TDDN/model.safetensors
+# Temporary named DCP artifacts retained only until conversion is verified.
+experiments/shared_utils/feature_extraction/checkpoints/TDN/.metadata
+experiments/shared_utils/feature_extraction/checkpoints/TDN/*.distcp
+experiments/shared_utils/feature_extraction/checkpoints/TDDN/.metadata
+experiments/shared_utils/feature_extraction/checkpoints/TDDN/*.distcp
 
 # Feature cache for `run.py metrics --cache` runs (~14 GB)
 .features_cache/

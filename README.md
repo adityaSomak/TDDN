@@ -20,6 +20,10 @@
     <img src="https://img.shields.io/badge/arXiv-coming%20soon-b31b1b?style=flat-square&logo=arxiv&logoColor=white" alt="arXiv"></a>
   <a href="https://huggingface.co/datasets/PuzzleBench/Puzzle_Perception">
     <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-Puzzle%20Perception-yellow?style=flat-square" alt="Dataset"></a>
+  <a href="https://huggingface.co/PuzzleBench/TDN">
+    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Model-TDN-yellow?style=flat-square" alt="TDN model"></a>
+  <a href="https://huggingface.co/PuzzleBench/TDDN">
+    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Model-TDDN-yellow?style=flat-square" alt="TDDN model"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python">
 </p>
 
@@ -72,8 +76,8 @@ against SigLIP 2, MetaCLIP, OpenCLIP, DFN and FG-CLIP 2, plus retrieval, classif
 | Paper | Tag | What it is |
 |:---|:---|:---|
 | DiffusedDINO | `fused-dinov3-cd` | Frozen DINOv3 ⊕ frozen CleanDIFT fusion. No training. |
-| TDN | `tdn` | Text-aligned DINOv3 (backbone `vith-roberta`). The no-fusion ablation. |
-| **TDDN** | `tddn` | Text-aligned DiffusedDINO (backbone `fused-dinov3-cd`). The full model. |
+| [TDN](https://huggingface.co/PuzzleBench/TDN) | `tdn` | Text-aligned DINOv3 (backbone `vith-roberta`). The no-fusion ablation. |
+| [**TDDN**](https://huggingface.co/PuzzleBench/TDDN) | `tddn` | Text-aligned DiffusedDINO (backbone `fused-dinov3-cd`). The full model. |
 
 Tags come in two layers: **backbone tags** live in
 [`registry.py`](experiments/shared_utils/feature_extraction/registry.py) and name a feature extractor,
@@ -117,7 +121,8 @@ tree and the loaders will add it to `sys.path` at runtime.
 
 Defaults for all four path overrides are resolved in
 [`shared_utils/paths.py`](experiments/shared_utils/paths.py). Individual scripts also honour
-`DATASET_ROOT`, `IMAGENET_HF_CACHE`, `CHESS_DATASET` and `ALIGNMENT_CKPT_STEPS`.
+`DATASET_ROOT`, `IMAGENET_HF_CACHE`, `CHESS_DATASET`, `ALIGNMENT_CKPT`, and the
+legacy-only `ALIGNMENT_CKPT_STEPS`.
 
 ## Dataset — Puzzle Perception
 

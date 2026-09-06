@@ -37,8 +37,8 @@ encoder for a tag from its entry there.
 | `openclip_l14` | ViT-L/14 | OpenCLIP | `laion2b_s32b_b82k` |
 | `siglip2_l16` | ViT-L/16 SigLIP2 @ 384 | SigLIP2 | `webli` |
 | `fgclip2_large` | FG-CLIP2 large | FG-CLIP2 | `qihoo360/fg-clip2-large` |
-| `tdn` | DINOv3 ViT-H+ + 2 trained head blocks | RoBERTa-large + 2 trained head blocks | `vith_roberta_v3_coco_ft/ckpt/tdn` |
-| `tddn` | DINOv3 + CleanDIFT (fused) + 2 trained head blocks | RoBERTa-large + 2 trained head blocks | `fused_dinov3_cleandift_coco_ft/ckpt/tddn` |
+| `tdn` | DINOv3 ViT-H+ + 2 trained head blocks | RoBERTa-large + 2 trained head blocks | `TDN/model.safetensors` |
+| `tddn` | DINOv3 + CleanDIFT (fused) + 2 trained head blocks | RoBERTa-large + 2 trained head blocks | `TDDN/model.safetensors` |
 
 ## Setup
 
@@ -50,8 +50,8 @@ pip install -r ../../requirements.txt
 Trained-head tags need their checkpoints under
 `experiments/shared_utils/feature_extraction/checkpoints/`:
 
-- `tdn` → `vith_roberta_v3_coco_ft/ckpt/tdn/`
-- `tddn` → `fused_dinov3_cleandift_coco_ft/ckpt/tddn/`
+- `tdn` → `TDN/{config.json,model.safetensors}`
+- `tddn` → `TDDN/{config.json,model.safetensors}`
 
 Datasets, all repo-relative:
 

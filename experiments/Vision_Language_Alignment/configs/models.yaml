@@ -17,11 +17,7 @@
 #   backbone      shared_utils backbone tag (trained)
 #   input_size    global-task input resolution
 #   dense_bypass  dense-readout variant: none | last | all
-#   checkpoint    checkpoint tree under shared_utils/feature_extraction/checkpoints/
-#   checkpoint_step
-#                 which weights to load from that tree's ckpt/ directory: a name
-#                 for a single checkpoint, or a two-element list to weight-average
-#                 at load time
+#   checkpoint    flat local checkpoint directory or Hugging Face repo id
 #
 # `arch` and the `round_<n>` blocks are read by run_train.py.
 
@@ -68,8 +64,7 @@ trained:
     input_size: 336
     dense_bypass: last
     transform: {strategy: imagenet_center_crop, input_size: 336}
-    checkpoint: vith_roberta_v3_coco_ft
-    checkpoint_step: tdn
+    checkpoint: TDN
     arch:
       embed_dim: 2560
       vision_num_head_blocks: 2
@@ -87,8 +82,7 @@ trained:
     input_size: 336
     dense_bypass: all
     transform: {strategy: imagenet_center_crop, input_size: 336}
-    checkpoint: fused_dinov3_cleandift_coco_ft
-    checkpoint_step: tddn
+    checkpoint: TDDN
     arch:
       embed_dim: 2560
       vision_num_head_blocks: 2
