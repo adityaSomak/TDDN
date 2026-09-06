@@ -20,8 +20,6 @@
     <img src="https://img.shields.io/badge/arXiv-coming%20soon-b31b1b?style=flat-square&logo=arxiv&logoColor=white" alt="arXiv"></a>
   <a href="https://huggingface.co/datasets/PuzzleBench/Puzzle_Perception">
     <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-Puzzle%20Perception-yellow?style=flat-square" alt="Dataset"></a>
-  <a href="https://huggingface.co/PuzzleBench/TDN">
-    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Model-TDN-yellow?style=flat-square" alt="TDN model"></a>
   <a href="https://huggingface.co/PuzzleBench/TDDN">
     <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Model-TDDN-yellow?style=flat-square" alt="TDDN model"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python">
