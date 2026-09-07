@@ -1,0 +1,42 @@
+source:
+  hf_repo_id: guangyil/laion-coco-aesthetic
+  hf_repo_type: dataset
+  filename: laion-coco_v3_filter.parquet
+  expected_rows: 8563753
+
+# Number of images each published version must contain, and how many versions.
+# Pool target = n_per_version * num_versions (disjoint partition uses all of it).
+n_per_version: 508025
+num_versions: 4
+
+# Post-download attrition budget (sha256 mismatch + phash dedup). The top-up loop in
+# run_pipeline.py keeps pulling more manifest rows until exactly n_per_version *
+# num_versions successes are banked, so this is just a starting-batch-size estimate,
+# not a hard requirement.
+estimated_success_rate: 0.95
+
+download:
+  image_size: 1500
+  resize_mode: keep_ratio
+  resize_only_if_bigger: true
+  skip_reencode: true
+  # 'files' (flat jpg+json per image) rather than 'webdataset': this is an
+  # intermediate/scratch artifact consumed by run_caption.py, not the published
+  # shape -- run_assemble.py builds the final webdataset tars. 'files' makes
+  # indexing by key trivial (path = out_dir/<shard>/<key>.jpg) instead of needing
+  # to parse tars for random access.
+  output_format: files
+  number_sample_per_shard: 10000
+  incremental_mode: incremental
+  processes_count: 16
+  thread_count: 64
+  timeout: 10
+  retries: 1
+  # img2dataset's default (0) lets degenerate images (e.g. a 1x1 placeholder pixel)
+  # through as "success" -- these crash the VLM processor deep inside a vLLM batch
+  # call, taking the whole chunk down with them. 32px is small enough to keep any
+  # image with real content.
+  min_image_size: 32
+
+seeds:
+  master: 20260907
