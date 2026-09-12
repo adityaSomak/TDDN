@@ -16,12 +16,12 @@
 <p align="center">
   <a href="https://harsha963.github.io/TDDN/">
     <img src="https://img.shields.io/badge/Project-Page-blue?style=flat-square" alt="Project Page"></a>
-  <a href="#">
-    <img src="https://img.shields.io/badge/arXiv-coming%20soon-b31b1b?style=flat-square&logo=arxiv&logoColor=white" alt="arXiv"></a>
-  <a href="https://huggingface.co/datasets/PuzzleBench/Puzzle_Perception">
-    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Dataset-Puzzle%20Perception-yellow?style=flat-square" alt="Dataset"></a>
-  <a href="https://huggingface.co/PuzzleBench/TDDN">
-    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Model-TDDN-yellow?style=flat-square" alt="TDDN model"></a>
+  <a href="https://arxiv.org/abs/2609.07937">
+    <img src="https://img.shields.io/badge/arXiv-2609.07937-b31b1b?style=flat-square&logo=arxiv&logoColor=white" alt="arXiv"></a>
+  <a href="https://huggingface.co/PuzzleComm">
+    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Models-TDDN%20%7C%20TDN-yellow?style=flat-square" alt="Models"></a>
+  <a href="https://huggingface.co/datasets/PuzzleComm">
+    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Datasets-PuzzleComm-yellow?style=flat-square" alt="Datasets"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python">
 </p>
 
@@ -66,7 +66,7 @@ Zero-shot open-vocabulary segmentation (mIoU) and keypoint matching (PCK@0.1):
 | **TDDN (ours)** | **18.11** | **32.38** | **24.44** | **32.48** | **22.51** | **32.39** |
 
 Both of our models are trained on ~590K alignment pairs with every backbone frozen, against CLIP's 400M.
-See the [paper](#) or the [project page](https://harsha963.github.io/TDDN/) for the full comparison
+See the [paper](https://arxiv.org/abs/2609.07937) or the [project page](https://harsha963.github.io/TDDN/) for the full comparison
 against SigLIP 2, MetaCLIP, OpenCLIP, DFN and FG-CLIP 2, plus retrieval, classification and CRG results.
 
 ## Models
@@ -74,13 +74,16 @@ against SigLIP 2, MetaCLIP, OpenCLIP, DFN and FG-CLIP 2, plus retrieval, classif
 | Paper | Tag | What it is |
 |:---|:---|:---|
 | DiffusedDINO | `fused-dinov3-cd` | Frozen DINOv3 ⊕ frozen CleanDIFT fusion. No training. |
-| [TDN](https://huggingface.co/PuzzleBench/TDN) | `tdn` | Text-aligned DINOv3 (backbone `vith-roberta`). The no-fusion ablation. |
-| [**TDDN**](https://huggingface.co/PuzzleBench/TDDN) | `tddn` | Text-aligned DiffusedDINO (backbone `fused-dinov3-cd`). The full model. |
+| [TDN](https://huggingface.co/PuzzleComm/TDN) | `tdn` | Text-aligned DINOv3 (backbone `vith-roberta`). The no-fusion ablation. |
+| **[TDDN](https://huggingface.co/PuzzleComm/TDDN)** | `tddn` | Text-aligned DiffusedDINO (backbone `fused-dinov3-cd`). The full model. |
 
 Tags come in two layers: **backbone tags** live in
 [`registry.py`](experiments/shared_utils/feature_extraction/registry.py) and name a feature extractor,
 while **model tags** live in each experiment's `configs/models.yaml` and wire a backbone to an
 evaluation. `tdn` and `tddn` are model tags; `fused-dinov3-cd` is a backbone tag.
+
+Pretrained [TDDN](https://huggingface.co/PuzzleComm/TDDN) and
+[TDN](https://huggingface.co/PuzzleComm/TDN) checkpoints are hosted on Hugging Face.
 
 <details>
 <summary>Baseline tags</summary>
@@ -148,7 +151,7 @@ zero-shot transfer.
 python datasets/download_datasets.py --dataset puzzle_perception
 ```
 
-Also on the Hub: [`PuzzleBench/Puzzle_Perception`](https://huggingface.co/datasets/PuzzleBench/Puzzle_Perception).
+Also on the Hub: [`PuzzleComm/Puzzle_Perception`](https://huggingface.co/datasets/PuzzleComm/Puzzle_Perception).
 
 ## Experiments
 
@@ -202,7 +205,15 @@ TDN and TDDN share one alignment pipeline and differ only in the vision represen
 ## Citation
 
 ```bibtex
-
+@misc{patnala2026tddntextaligneddiffuseddino,
+  title = {TDDN: Text-aligned Diffused DINO Network for Puzzle Understanding},
+  author = {Harsha Patnala and Debopriyo Banerjee and Ayush Sunil Munot and Somak Aditya},
+  year = {2026},
+  eprint = {2609.07937},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.CV},
+  url = {https://arxiv.org/abs/2609.07937}
+}
 ```
 
 ## Acknowledgements
