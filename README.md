@@ -21,7 +21,7 @@
   <a href="https://huggingface.co/PuzzleComm">
     <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Models-TDDN%20%7C%20TDN-yellow?style=flat-square" alt="Models"></a>
   <a href="https://huggingface.co/datasets/PuzzleComm">
-    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Datasets-PuzzleComm-yellow?style=flat-square" alt="Datasets"></a>
+    <img src="https://img.shields.io/badge/%F0%9F%A4%97%20Datasets-Puzzle_Perception%20%7C%20Recaptioned_LAION-yellow?style=flat-square" alt="Datasets"></a>
   <img src="https://img.shields.io/badge/python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python">
 </p>
 
