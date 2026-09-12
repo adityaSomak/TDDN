@@ -1,0 +1,26 @@
+source:
+  hf_repo_id: guangyil/laion-coco-aesthetic
+  hf_repo_type: dataset
+  filename: laion-coco_v3_filter.parquet
+
+download:
+  concurrency: 800
+  timeout: 10
+  max_side: 1500
+  min_side: 32
+
+caption:
+  chunk_size: 750
+  gpu_memory_utilization: 0.85
+  max_num_seqs: 256
+  max_model_len: 1024
+  prompt: >-
+    Describe this image in 20-30 words. Do not include any preamble or
+    introduction, just the description.
+  temperature: 0.0
+  max_tokens: 80
+  seed: 42
+
+assemble:
+  pairs_per_shard: 16935
+  master_seed: 20260907

@@ -68,13 +68,8 @@ experiments/ImageNet_Classification/features/
 # Puzzle_Perception segmentation dataset (downloaded by download_datasets.py)
 datasets/Puzzle_Perception/Segmentation/data/
 
-# recaptioning: old makeshift pipeline (superseded), local dev scratch data, and
-# the URL-liveness pre-check's local artifacts (source parquet, checked-url jsonl).
-# Never committed -- token in launch_servers.sh must be revoked, not published.
-experiments/recaptioning/legacy/
-experiments/recaptioning/_url_check/data/
-experiments/recaptioning/_url_check/output/
-experiments/recaptioning/_url_check/logs/
+# Recaptioning: default --out for the pipeline (images, captions, versions)
+experiments/Recaptioning/recaption-data/
 
 # One-off helper scripts (run locally; not part of the released code)
 scripts/
