@@ -8,7 +8,7 @@ result depends on which images you happened to draw.
 
 ## Setup
 
-Needs **Python 3.11 or 3.12** — vLLM 0.8.5.post1 doesn't support 3.13+.
+Needs **Python 3.11 or 3.12** — vLLM 0.8.5.post1 doesn't support 3.13+. 
 
 ```bash
 python3.11 -m venv .venv && source .venv/bin/activate
